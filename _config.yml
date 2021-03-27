@@ -1,7 +1,8 @@
 title: Global Socket
 author: skyper
 description: Connect like there is no firewall. Securely.
-repository_url: https://github.com/hackerschoice/gsocket
+github:
+  repository_url: https://github.com/hackerschoice/gsocket
 google_analytics:
 theme: jekyll-theme-midnight
 twitter_username: hackerschoice
