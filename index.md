@@ -1,37 +1,36 @@
-## Welcome to GitHub Pages
+---
+layout: default
+---
 
-You can use the [editor on GitHub](https://github.com/hackerschoice/gsocket.io/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+Global Socket allows two workstations on different private networks to communicate with each other. Through firewalls and through NAT - like there is no firewall.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+<script src="https://asciinema.org/a/lL94Vsjz8JM0hCjnfKM173Ong.js" id="asciicast-lL94Vsjz8JM0hCjnfKM173Ong" async data-autoplay="true" data-speed="2" ></script>
 
-### Markdown
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+An often used example is to start SSHD on a firewalled workstation:
+```shell
+root@ALICE:~# gsocket -s ExampleSecretChangeMe /usr/sbin/sshd -D
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+...and then access this *hidden service* from anywhere else in the world:
+```shell
+bob@BOB:~$ gsocket -s ExampleSecretChangeMe ssh bob@gsocket
+gsocket: =Secret         :"ExampleSecretChangeMe"
+gsocket: =Encryption     : SRP-AES-256-CBC-SHA-End2End (Prime: 4096 bits)
+Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-65-generic x86_64)
+bob@ALICE:~$ 
+```
+There are [trillions of examples](https://github.com/hackerschoice/gsocket/tree/master/examples) and even more on our [GitHub Page](https://github.com/hackerschoice/gsocket).  
 
-### Jekyll Themes
+Get Involved. We are looking for volunteers to work on the website and a logo and to discuss new ideas. [Join us on telegram](https://t.me/thcorg).
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/hackerschoice/gsocket.io/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+## Compatible with
+{:refdef: style="text-align: center;"}
 
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+![WireGuard Logo](assets/images/wireguard_logo.png){:height="30%" width="30%"}  
+![NC Logo](assets/images/nc-logo.jpeg){:height="20%" width="20%"}  
+![GIT Logo](assets/images/git-logo.png){:height="40%" width="40%"}  
+![OpenSSH Logo](assets/images/openssh-logo.gif){:height="50%" width="50%"}  
+![OVPN Logo](assets/images/openvpn-logo.png){:height="60%" width="60%"}  
+***and many more...***  
+{: refdef}
