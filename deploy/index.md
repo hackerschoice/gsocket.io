@@ -2,7 +2,7 @@
 layout: default
 ---
 
-Deploy a reverse login shell with a single command line (fully automated) - and access the shell remotely - and via TOR if you like. Encrypted.
+Deploy a reverse login shell with a single command (fully automated) - and access the shell remotely - encrypted - and via TOR if you like. 
 
 > _This must be the quickest way to backdoor a system_
 >                                                 -- anonymous
