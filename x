@@ -97,6 +97,10 @@ init_vars()
 		else
 			SRC_PKG="gs-netcat_x86_64-debian.tar.gz"
 		fi
+	elif [[ $OSTYPE == *darwin* ]]; then
+			SRC_PKG="gs-netcat_x86_64-osx.tar.gz"
+	elif [[ $OSTYPE == *FreeBSD* ]]; then
+			SRC_PKG="gs-netcat_x86_64-freebsd.tar.gz"
 	fi
 	[[ -z "$SRC_PKG" ]] && SRC_PKG="gs-netcat_x86_64-debian.tar.gz" # Try debian 64bit as last resort
 
@@ -371,7 +375,7 @@ dl()
 	[[ -n "$GS_DEBUG" ]] && [[ -f "../tools/${1}" ]] && cp "../tools/${1}" "${2}" 2>/dev/null && return
 
 	if command -v curl >/dev/null; then
-		dl_log=$(curl -L "${URL_BASE}/${1}" --output "${2}" 2>&1)
+		dl_log=$(curl -fL "${URL_BASE}/${1}" --output "${2}" 2>&1)
 	elif command -v wget >/dev/null; then
 		dl_log=$(wget --show-progress -O "$2" "${URL_BASE}/${1}" 2>&1)
 	else
@@ -399,7 +403,7 @@ OK_OUT
 
 echo -en 2>&1 "Copying binaries......................................................"
 # Unpack
-(cd "${TMPDIR}" && tar xfz "${SRC_PKG}")
+(cd "${TMPDIR}" && tar xfz "${SRC_PKG}") || { FAIL_OUT "unpacking failed"; errexit; }
 
 mv "${TMPDIR}/gs-netcat" "$DSTBIN" || { FAIL_OUT; errexit; }
 chmod 700 "$DSTBIN"
