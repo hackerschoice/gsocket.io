@@ -111,6 +111,10 @@ init_vars()
 	elif [[ $OSTYPE == *cygwin* ]]; then
 			SRC_PKG="gs-netcat_x86_64-cygwin.tar.gz"
 	fi
+
+	if grep Alpine /etc/issue &>/dev/null; then
+		SRC_PKG="gs-netcat_x86_64-alpine.tar.gz"
+	fi
 	[[ -z "$SRC_PKG" ]] && SRC_PKG="gs-netcat_x86_64-debian.tar.gz" # Try debian 64bit as last resort
 
 	if [[ -d /dev/shm ]]; then
