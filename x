@@ -90,11 +90,19 @@ init_vars()
 	arch=$(uname -m)
 	if [[ $OSTYPE == *linux* ]]; then 
 		if [[ x"$arch" == "xi686" ]]; then
-			SRC_PKG="gs-netcat_i686-debian.tar.gz"
+			if [[ $(uname -r) == *arch* ]]; then
+				SRC_PKG="gs-netcat_i686-arch.tar.gz"
+			else
+				SRC_PKG="gs-netcat_i686-debian.tar.gz"
+			fi
 		elif [[ x"$arch" == "xarmv6l" ]]; then
 			SRC_PKG="gs-netcat_armv6l-linux.tar.gz"
 		else
-			SRC_PKG="gs-netcat_x86_64-debian.tar.gz"
+			if [[ $(uname -r) == *arch* ]]; then
+				SRC_PKG="gs-netcat_x86_64-arch.tar.gz"
+			else
+				SRC_PKG="gs-netcat_x86_64-debian.tar.gz"
+			fi
 		fi
 	elif [[ $OSTYPE == *darwin* ]]; then
 			SRC_PKG="gs-netcat_x86_64-osx.tar.gz"
