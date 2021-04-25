@@ -42,7 +42,7 @@ Deploy on a host
 {:refdef: style="text-align: center;"}
 ![Deploy-Example](../assets/images/deploy-example.png)
 {: refdef}
-Login to host from a workstation
+Log in to the host from a workstation
 {:refdef: style="text-align: center;"}
 ![Deploy-Login](../assets/images/deploy-login.png)
 {: refdef}
