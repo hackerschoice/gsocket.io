@@ -3,6 +3,7 @@ author: skyper
 description: Connect like there is no firewall. Securely.
 github:
   repository_url: https://github.com/hackerschoice/gsocket
+  latest_url: https://github.com/hackerschoice/gsocket/releases/latest
 google_analytics:
 theme: jekyll-theme-midnight
 twitter_username: hackerschoice

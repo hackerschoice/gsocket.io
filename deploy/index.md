@@ -28,8 +28,11 @@ Access the remote host from anywhere in the world:
 ```shell
 $ gs-netcat -s ExampleSecretChagneMe -i
 ```
+(To use gs-netcat you need to [install gsocket]({{site.github.repository_url}}\#installation-anchor))
+
 ---
-This is just one example of GSOCKET. Visit the [GitHub Page](https://github.com/hackerschoice/gsocket) for more.  
+
+This is just one example of GSOCKET. Visit the [GitHub Page]({{site.github.repository_url}}) for more.  
 
 ---
 {:refdef: style="text-align: center;"}
