@@ -38,11 +38,11 @@ This is just one example of GSOCKET. Visit the [GitHub Page]({{site.github.repos
 {:refdef: style="text-align: center;"}
 Screenshots
 {: refdef}
-Install
+Deploy on a host
 {:refdef: style="text-align: center;"}
 ![Deploy-Example](../assets/images/deploy-example.png)
 {: refdef}
-Login
+Login to host from a workstation
 {:refdef: style="text-align: center;"}
 ![Deploy-Login](../assets/images/deploy-login.png)
 {: refdef}
