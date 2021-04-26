@@ -17,7 +17,7 @@ Some frequenty asked questions:
 	*Because we are good at it. Having us run the GSRN means that anyone can use gsocket instantly without the need to set up a server first. It's easy and pragmatic. It's a cloud-service.*
 
 2. What if THC vanishes?  
-	*We have been around for over 25 years. We have watched giants of the Internet rise and fail (MySpace, AltaVista, Netscape, Napster, ...) while we are still here - solid as fuck and shinning brightly - providing you with reliable tools and services.*
+	*We have been around for over 25 years. We have watched giants of the Internet rise and fail (MySpace, AltaVista, Netscape, Napster, ...) while we are still here - solid as fuck and shining brightly - providing you with reliable tools and services.*
 
 3. Why is THC doing this for free?  
 	*At the moment it's not a big cost. You are of course invited to donate (BTC 34mkCS3dDQyTweFc98pEoNUx2tjSbrLfYn - disclaimer: some donations will be spend on beer, cocaine and prostitutes).*
