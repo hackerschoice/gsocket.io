@@ -1,0 +1,36 @@
+---
+---
+
+@import "jekyll-theme-midnight";
+.panel-note
+{
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  background-color: #10171b;
+  color: gray;
+  background-image: url(/assets/images/saw_blade_warning.png);
+  background-position: 5px 5px;
+  background-repeat: no-repeat;
+  border: solid 1px #3498db;
+  border-radius: 6px;
+  overflow: hidden;
+  padding: 13px 20px 15px 65px;
+  padding-top: 5px;
+  min-height: 30px;
+}
+
+.panel-note.top-padding {
+  padding-top: 15px;
+}
+
+.panel-note2
+{
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  background-color: #10171b;
+  color: gray;
+  border: solid 1px #3498db;
+  border-radius: 6px;
+  overflow: hidden;
+  padding: 13px 20px 15px 15px;
+}
