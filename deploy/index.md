@@ -26,26 +26,44 @@ GS_UNDO=1 bash -c "$(wget -qO- gsocket.io/x)"
 
 Access the remote host from anywhere in the world:
 ```shell
-$ gs-netcat -s ExampleSecretChagneMe -i
+gs-netcat -s ExampleSecretChangeMe -i
 ```
-(To use gs-netcat you need to [install gsocket]({{site.github.repository_url}}\#installation-anchor))
 
----
+<p class="panel-note2" markdown="1">This is just one of many GSOCKET examples. More on [GitHub]({{site.github.repository_url}}).</p>
 
-This is just one example of GSOCKET. Visit the [GitHub Page]({{site.github.repository_url}}) for more.  
-
----
 {:refdef: style="text-align: center;"}
-Screenshots
+## Screenshots
 {: refdef}
 Deploy on a host
 {:refdef: style="text-align: center;"}
 ![Deploy-Example](../assets/images/deploy-example.png)
 {: refdef}
-Log in to the host from a workstation
+Log in to the host from your workstation
 {:refdef: style="text-align: center;"}
 ![Deploy-Login](../assets/images/deploy-login.png)
 {: refdef}
----
-Get Involved. We are looking for volunteers to work on the website and a logo and to discuss new ideas. [Join us on telegram](https://t.me/thcorg).
+
+{:refdef: style="text-align: center;"}
+## Tips & Tricks
+{: refdef}
+
+Deploy with a predefined secret:
+```shell
+X=ExampleSecretChangeMe bash -c "$(curl -fsSL gsocket.io/x)"
+```
+
+Deploy with *curl* and fallback to *wget*:
+```shell
+command -v curl >/dev/null && bash -c "$(curl -fsSL gsocket.io/x)" || bash -c "$(wget -qO- gsocket.io/x)"
+```
+
+Deploy with a predefined secret. Try *curl* and fallback to *wget*:
+```shell
+X=ExampleSecretChangeMe && (command -v curl >/dev/null && bash -c "$(curl -fsSL gsocket.io/x)" || bash -c "$(wget -qO- gsocket.io/x)")
+```
+  
+
+<p class="panel-note" markdown="1">Get Involved. We are looking for volunteers to work on the website and a logo and to discuss new ideas. [Join us on telegram](https://t.me/thcorg).</p>
+
+
 
