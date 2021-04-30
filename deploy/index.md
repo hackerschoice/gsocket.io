@@ -4,7 +4,7 @@ layout: default
 
 Deploy a reverse login shell with a *single command* (fully automated) - and access the shell remotely - encrypted - and via TOR if you like. 
 
-> _This must be the quickest way to backdoor a system_
+> _This must be the quickest way to access a system_
 >                                                 -- anonymous
 
 Use either one of these two commands to _deploy_:
