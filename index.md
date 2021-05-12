@@ -34,4 +34,3 @@ Get Involved. We are looking for volunteers to work on the website and a logo an
 ![OVPN Logo](assets/images/openvpn-logo.png){:height="60%" width="60%"}  
 ***and many more...***  
 {: refdef}
-
