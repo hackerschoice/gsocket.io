@@ -111,6 +111,8 @@ init_vars()
 			OSARCH="i386-alpine"
 		elif [[ x"$arch" == "xarmv6l" ]]; then
 			OSARCH="armv6l-linux"
+		elif [[ x"$arch" == "xaarch64" ]]; then
+			OSARCH="aarch64-linux"
 		fi
 	elif [[ $OSTYPE == *darwin* ]]; then
 			OSARCH="x86_64-osx"
@@ -615,7 +617,7 @@ try()
 # binaries and fail hard if none could be found.
 try_any()
 {
-	targets="x86_64-alpine i386-alpine x86_64-debian armv6l-linux x86_64-cygwin x86_64-freebsd x86_64-osx"
+	targets="x86_64-alpine i386-alpine x86_64-debian aarch64-linux armv6l-linux x86_64-cygwin x86_64-freebsd x86_64-osx"
 	for osarch in $targets; do
 		[[ x"$osarch" = x"$OSARCH" ]] && continue # Skip the default OSARCH (already tried)
 		try "$osarch"
