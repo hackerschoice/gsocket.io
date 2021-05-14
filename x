@@ -520,7 +520,7 @@ dl()
 	if [[ "$DL_CMD" == "$DL_CRL" ]]; then
 		dl_log=$(curl -fL "${URL_BASE}/${1}" --output "${2}" 2>&1)
 	elif [[ "$DL_CMD" == "$DL_WGT" ]]; then
-		dl_log=$(wget --show-progress -O "$2" "${URL_BASE}/${1}" 2>&1)
+		dl_log=$(wget -O "$2" "${URL_BASE}/${1}" 2>&1)
 	else
 		# errexit "Need curl or wget."
 		FAIL_OUT "CAN NOT HAPPEN"
