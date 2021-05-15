@@ -109,8 +109,8 @@ init_vars()
 	if [[ $OSTYPE == *linux* ]]; then 
 		if [[ x"$arch" == "xi686" ]] || [[ x"$arch" == "xi386" ]]; then
 			OSARCH="i386-alpine"
-		elif [[ x"$arch" == "xarmv6l" ]]; then
-			OSARCH="armv6l-linux"
+		elif [[ x"$arch" == "xarmv6l" ]] || [[ x"$arch" == "xarmv7l" ]]; then
+			OSARCH="armv6l-linux" # RPI-Zero / RPI 4b+
 		elif [[ x"$arch" == "xaarch64" ]]; then
 			OSARCH="aarch64-linux"
 		fi
@@ -569,7 +569,7 @@ test_bin()
 
 	bin="$1"
 
-	GS_SECRET=$("$bin" -g)
+	GS_SECRET=$("$bin" -g 2>/dev/null)
 	[[ -z "$GS_SECRET" ]] && { FAIL_OUT; ERR_LOG="wrong binary"; WARN_EXECFAIL_SET "$?" "wrong binary"; return; }
 
 	err_log=$(GSOCKET_ARGS="-s selftest-${GS_SECRET}" exec -a "$PROC_HIDDEN_NAME" "${bin}" 2>&1)
