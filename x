@@ -116,7 +116,8 @@ init_vars()
 		fi
 	elif [[ $OSTYPE == *darwin* ]]; then
 		if [[ x"$arch" == "xarm64" ]]; then
-			OSARCH="arm64-osx" # M1
+			OSARCH="x86_64-osx" # M1
+			#OSARCH="arm64-osx" # M1
 		else
 			OSARCH="x86_64-osx"
 		fi
