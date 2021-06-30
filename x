@@ -124,6 +124,8 @@ init_vars()
 			OSARCH="x86_64-freebsd"
 	elif [[ $OSTYPE == *cygwin* ]]; then
 			OSARCH="x86_64-cygwin"
+	# elif [[ $OSTYPE == *gnu* ]] && [[ "$(uname -v)" == *Hurd* ]]; then
+			# OSARCH="i386-hurd" # debian-hurd
 	fi
 
 	[[ -z "$OSARCH" ]] && OSARCH="x86_64-alpine" # Default: Try Alpine(muscl libc) 64bit
