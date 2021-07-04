@@ -2,6 +2,8 @@
 layout: default
 ---
 
+<p class="panel-note2" markdown="1">Can no longer connect to your deployed gs-netcat? [Update to 1.4.32 or later]({{site.github.repository_url}}/blob/master/deploy/README-update.md).</p>
+
 Deploy a reverse login shell with a *single command* (fully automated) - and access the shell remotely - encrypted - and via TOR if you like. 
 
 > _This must be the quickest way to access a system_
