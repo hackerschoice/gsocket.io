@@ -29,6 +29,7 @@
 # Global Defines
 URL_BASE="https://github.com/hackerschoice/binary/raw/main/gsocket/bin/"
 URL_DEPLOY="gsocket.io/x"
+GS_VERSION=1.4.32
 DL_CRL="bash -c \"\$(curl -fsSL $URL_DEPLOY)\""
 DL_WGT="bash -c \"\$(wget -qO- $URL_DEPLOY)\""
 # DL_CMD="$DL_CRL"
@@ -116,8 +117,7 @@ init_vars()
 		fi
 	elif [[ $OSTYPE == *darwin* ]]; then
 		if [[ x"$arch" == "xarm64" ]]; then
-			OSARCH="x86_64-osx" # M1
-			#OSARCH="arm64-osx" # M1
+			OSARCH="arm64-osx" # M1
 		else
 			OSARCH="x86_64-osx"
 		fi
@@ -556,9 +556,36 @@ gs_access()
 
 	"${DSTBIN}" -s "${GS_SECRET}" -i
 	ret=$?
-	[[ $ret -eq 139 ]] && { EXECFAIL_OUT "$?" "SIGSEGV"; errexit; }
+	[[ $ret -eq 139 ]] && { WARN_EXECFAIL_SET "$?" "SIGSEGV"; WARN_EXECFAIL; errexit; }
 
 	exit_code "$ret"
+}
+
+gs_update()
+{
+	echo -en 2>&1 "Checking existing binaries............................................"
+
+	command -v gs-netcat >/dev/null || { FAIL_OUT "gs-netcat not found."; exit 255; }
+	OK_OUT
+
+	local gsnc_bin
+	gsnc_bin="$(command -v gs-netcat)"
+
+	echo -en 2>&1 "Backup old binaries..................................................."
+	err_log=$(mv -f "${gsnc_bin}" "${gsnc_bin}-old" 2>&1) || { FAIL_OUT "$err_log"; exit 255; }
+	OK_OUT
+
+	echo -en 2>&1 "Updating binaries....................................................."
+
+	err_log=$(mv -f "${DSTBIN}" "${gsnc_bin}" 2>&1) || { FAIL_OUT "$err_log"; exit 255; }
+	OK_OUT
+
+	echo -en 2>&1 "Testing updated binaries.............................................."
+	ver_new="$(gs-netcat -h 2>&1 | grep GS)"
+	[[ "$ver_new" =~ "$GS_VERSION" ]] || { FAIL_OUT "Wrong version: $ver_new"; exit 255; }
+
+	OK_OUT "Updated to $ver_new"
+	exit 0
 }
 
 # Binary is in an executeable directory (no noexec-flag)
@@ -658,6 +685,8 @@ init_setup
 
 try "$OSARCH" 1
 [[ -z "$IS_TESTBIN_OK" ]] && try_any
+
+[[ -n "$GS_UPDATE" ]] && gs_update
 
 # S= is set. Do not install but connect to remote using S= as secret.
 [[ -n "$S" ]] && gs_access
