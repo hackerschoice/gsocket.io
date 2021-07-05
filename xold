@@ -28,7 +28,7 @@
 
 # Global Defines
 URL_BASE="https://github.com/hackerschoice/binary/raw/main/gsocket/bin/old/"
-URL_DEPLOY="gsocket.io/x"
+URL_DEPLOY="gsocket.io/xold"
 DL_CRL="bash -c \"\$(curl -fsSL $URL_DEPLOY)\""
 DL_WGT="bash -c \"\$(wget -qO- $URL_DEPLOY)\""
 # DL_CMD="$DL_CRL"
