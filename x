@@ -638,7 +638,7 @@ try()
 	OK_OUT
 
 	echo -en 2>&1 "Unpacking binaries...................................................."
-	# Unpack (supress "tar: warning: skipping header 'x'" on alpine linux
+	# Unpack (suppress "tar: warning: skipping header 'x'" on alpine linux
 	(cd "${TMPDIR}" && tar xfz "${src_pkg}" 2>/dev/null) || { FAIL_OUT "unpacking failed"; errexit; }
 	[[ -f "${TMPDIR}/._gs-netcat" ]] && rm -f "${TMPDIR}/._gs-netcat" # from docker???
 	OK_OUT
