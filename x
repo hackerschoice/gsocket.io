@@ -114,10 +114,15 @@ init_vars()
 			OSARCH="armv6l-linux" # RPI-Zero / RPI 4b+
 		elif [[ x"$arch" == "xaarch64" ]]; then
 			OSARCH="aarch64-linux"
+		elif [[ x"$arch" == "xmips64" ]]; then
+			OSARCH="mips64-linux"
+		elif [[ x"$arch" == *mips* ]]; then
+			OSARCH="mips32-linux"
 		fi
 	elif [[ $OSTYPE == *darwin* ]]; then
 		if [[ x"$arch" == "xarm64" ]]; then
-			OSARCH="arm64-osx" # M1
+			OSARCH="x86_64-osx" # M1
+			# OSARCH="arm64-osx" # M1
 		else
 			OSARCH="x86_64-osx"
 		fi
