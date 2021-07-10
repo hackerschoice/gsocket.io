@@ -115,9 +115,9 @@ init_vars()
 		elif [[ x"$arch" == "xaarch64" ]]; then
 			OSARCH="aarch64-linux"
 		elif [[ x"$arch" == "xmips64" ]]; then
-			OSARCH="mips64-linux"
+			OSARCH="mips64-alpine"
 		elif [[ x"$arch" == *mips* ]]; then
-			OSARCH="mips32-linux"
+			OSARCH="mips32-alpine"
 		fi
 	elif [[ $OSTYPE == *darwin* ]]; then
 		if [[ x"$arch" == "xarm64" ]]; then
