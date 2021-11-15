@@ -61,7 +61,7 @@ command -v curl >/dev/null && bash -c "$(curl -fsSL gsocket.io/x)" || bash -c "$
 
 Deploy with a predefined secret. Try *curl* and fallback to *wget*:
 ```shell
-export X=ExampleSecretChangeMe && (command -v curl >/dev/null && bash -c "$(curl -fsSL gsocket.io/x)" || bash -c "$(wget -qO- gsocket.io/x)")
+X=ExampleSecretChangeMe && (command -v curl >/dev/null && X=$X bash -c "$(curl -fsSL gsocket.io/x)" || X=$X bash -c "$(wget -qO- gsocket.io/x)")
 ```
   
 
