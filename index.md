@@ -2,7 +2,7 @@
 layout: default
 ---
 
-Global Socket allows two workstations on different private networks to communicate with each other. Through firewalls and through NAT - like there is no firewall.
+Global Socket allows 2 workstations on different private networks to communicate with each other. Through firewalls and through NAT - like there is no firewall.
 
 <script src="https://asciinema.org/a/lL94Vsjz8JM0hCjnfKM173Ong.js" id="asciicast-lL94Vsjz8JM0hCjnfKM173Ong" async data-autoplay="true" data-speed="2" ></script>
 
