@@ -13,9 +13,8 @@ Use either one of these two commands to _deploy_:
 ```shell
 bash -c "$(curl -fsSL gsocket.io/x)"
 ```
-
 ```shell
-bash -c "$(wget -qO- gsocket.io/x)"
+bash -c "$(wget --no-verbose -O- gsocket.io/x)"
 ```
 
 Use either one of these two commands to _uninstall_:
@@ -26,9 +25,12 @@ GS_UNDO=1 bash -c "$(curl -fsSL gsocket.io/x)"
 GS_UNDO=1 bash -c "$(wget -qO- gsocket.io/x)"
 ```
 
-Access the remote host from anywhere in the world:
+Use either command to _access_ the remote host:
 ```shell
-gs-netcat -s ExampleSecretChangeMe -i
+S="ExampleSecretChangeMe" bash -c "$(curl -fsSL gsocket.io/x)"
+```
+```shell
+S="ExampleSecretChangeMe" bash -c "$(wget -qO- gsocket.io/x)"
 ```
 
 <p class="panel-note2" markdown="1">This is just one of many GSOCKET examples. More on [GitHub]({{site.github.repository_url}}).</p>
@@ -48,6 +50,14 @@ Log in to the host from your workstation
 {:refdef: style="text-align: center;"}
 ## Tips & Tricks
 {: refdef}
+
+Ignore SSL / Certificate warnings:
+```shell
+bash -c "$(curl -fsSLk gsocket.io/x)"
+```
+```shell
+bash -c "$(wget --no-check-certificate -qO- gsocket.io/x)"
+```
 
 Deploy with a predefined secret:
 ```shell
