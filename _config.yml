@@ -5,7 +5,6 @@ github:
   repository_url: https://github.com/hackerschoice/gsocket
   latest_url: https://github.com/hackerschoice/gsocket/releases/latest
 show_downloads: false
-github: [metadata]
 google_analytics:
 remote_theme: pages-themes/midnight@v0.2.0
 plugins:
