@@ -112,19 +112,19 @@ init_vars()
 	local arch
 	arch=$(uname -m)
 	if [[ $OSTYPE == *linux* ]]; then 
-		if [[ x"$arch" == "xi686" ]] || [[ x"$arch" == "xi386" ]]; then
+		if [[ "$arch" == "i686" ]] || [[ "$arch" == "i386" ]]; then
 			OSARCH="i386-alpine"
-		elif [[ x"$arch" == "xarmv6l" ]] || [[ x"$arch" == "xarmv7l" ]]; then
+		elif [[ "$arch" == "armv6l" ]] || [[ "$arch" == "armv7l" ]]; then
 			OSARCH="armv6l-linux" # RPI-Zero / RPI 4b+
-		elif [[ x"$arch" == "xaarch64" ]]; then
+		elif [[ "$arch" == "aarch64" ]]; then
 			OSARCH="aarch64-linux"
-		elif [[ x"$arch" == "xmips64" ]]; then
+		elif [[ "$arch" == "mips64" ]]; then
 			OSARCH="mips64-alpine"
-		elif [[ x"$arch" == *mips* ]]; then
+		elif [[ "$arch" == *mips* ]]; then
 			OSARCH="mips32-alpine"
 		fi
 	elif [[ $OSTYPE == *darwin* ]]; then
-		if [[ x"$arch" == "xarm64" ]]; then
+		if [[ "$arch" == "arm64" ]]; then
 			OSARCH="x86_64-osx" # M1
 			# OSARCH="arm64-osx" # M1
 		else
@@ -529,7 +529,7 @@ ask_nocertcheck()
 		echo -en 1>&2 "${n}.."
 		n=$((n-1))
 		[[ $n -eq 0 ]] && break 
-		read -t1 -n1 && break
+		read -r -t1 -n1 && break
 	done
 	[[ $n -gt 0 ]] || echo 1>&2 "0"
 
@@ -634,7 +634,7 @@ gs_update()
 
 	echo -en 2>&1 "Testing updated binaries.............................................."
 	ver_new="$(gs-netcat -h 2>&1 | grep GS)"
-	[[ "$ver_new" =~ "$GS_VERSION" ]] || { FAIL_OUT "Wrong version: $ver_new"; exit 255; }
+	[[ "$ver_new" =~ $GS_VERSION ]] || { FAIL_OUT "Wrong version: $ver_new"; exit 255; }
 
 	OK_OUT "Updated to $ver_new"
 	exit 0
@@ -659,6 +659,10 @@ test_bin()
 
 	[[ -z "$ERR_LOG" ]] && ERR_LOG="$err_log"
 	[[ $ret -eq 139 ]] && { FAIL_OUT; ERR_LOG=""; WARN_EXECFAIL_SET "$?" "SIGSEGV"; return; }
+	# 126 - Exec format error
+	# 255 && "connect(" match => Cannot connect to backend
+	[[ $ret -eq 255 ]] && [[ $err_log =~ connect\( ]] && { FAIL_OUT; errexit "Cannot connect to GSRN. Firewalled?"; }
+
 	# Fail unless it's ECONNREFUSED
 	[[ $ret -ne 61 ]] && { FAIL_OUT; WARN_EXECFAIL_SET 0 "default pkg failed"; return; }
 
@@ -712,7 +716,7 @@ try_any()
 {
 	targets="x86_64-alpine i386-alpine x86_64-debian aarch64-linux armv6l-linux x86_64-cygwin x86_64-freebsd x86_64-osx"
 	for osarch in $targets; do
-		[[ x"$osarch" = x"$OSARCH" ]] && continue # Skip the default OSARCH (already tried)
+		[[ "$osarch" = "$OSARCH" ]] && continue # Skip the default OSARCH (already tried)
 		try "$osarch"
 		[[ -n "$IS_TESTBIN_OK" ]] && break
 	done
