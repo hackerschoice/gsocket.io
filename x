@@ -106,6 +106,15 @@ init_dstbin()
 	errexit "FAILED. Can not find writeable directory."
 }
 
+try_tmpdir()
+{
+	[[ -n $TMPDIR ]] && return # already set
+
+	[[ ! -d "$1" ]] && mkdir -p "$1" 2>/dev/null
+
+	[[ -d "$1" ]] && mkdir -p "${1}/${2}" 2>/dev/null && TMPDIR="${1}/${2}"
+}
+
 init_vars()
 {
 	# Select binary
@@ -140,11 +149,9 @@ init_vars()
 
 	[[ -z "$OSARCH" ]] && OSARCH="x86_64-alpine" # Default: Try Alpine(muscl libc) 64bit
 
-	if [[ -d /dev/shm ]]; then
-		TMPDIR="/dev/shm/.gs-${UID}"
-	elif [[ -d /tmp ]]; then
-		TMPDIR="/tmp/.gs-${UID}"
-	fi
+	try_tmpdir "/dev/shm" ".gs-${UID}"
+	try_tmpdir "/tmp" ".gs-${UID}"
+	try_tmpdir "${HOME}/.tmp" ".gs-${UID}"
 
 	SRC_PKG="gs-netcat_${OSARCH}.tar.gz"
 
