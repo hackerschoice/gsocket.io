@@ -74,6 +74,13 @@ Deploy with a predefined secret. Try *curl* and fallback to *wget*:
 X=ExampleSecretChangeMe && (command -v curl >/dev/null && X=$X bash -c "$(curl -fsSL gsocket.io/x)" || X=$X bash -c "$(wget -qO- gsocket.io/x)")
 ```
   
+Deploy from self-extracting shell-script [deploy-all.sh](https://github.com/hackerschoice/binary/raw/main/gsocket/bin/deploy-all.sh) without fetching any packages:
+```
+wget https://github.com/hackerschoice/binary/raw/main/gsocket/bin/deploy-all.sh
+chmod 755 deploy-all.sh
+./deploy-all.sh
+# Use "GS_UNDO=1 ./deploy-all.sh" to uninstall
+```
 
 <p class="panel-note" markdown="1">Get Involved. We are looking for volunteers to work on the website and a logo and to discuss new ideas. [Join us on telegram](https://t.me/thcorg).</p>
 
