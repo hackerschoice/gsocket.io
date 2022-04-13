@@ -77,8 +77,7 @@ X=ExampleSecretChangeMe && (command -v curl >/dev/null && X=$X bash -c "$(curl -
 Deploy from self-extracting shell-script [deploy-all.sh](https://github.com/hackerschoice/binary/raw/main/gsocket/bin/deploy-all.sh) without fetching any packages and using good old plain HTTP:
 ```
 wget --no-hsts http://nossl.segfault.net/deploy-all.sh && \
-chmod 755 deploy-all.sh && \
-./deploy-all.sh
+bash ./deploy-all.sh
 ```
 
 Useful environment variables:  
