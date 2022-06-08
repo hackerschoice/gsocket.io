@@ -98,6 +98,7 @@ exit_alldone()
 try_dstdir()
 {
 	local dstdir
+	local trybin
 	dstdir="${1}"
 
 	# Create directory if it does not exists.
@@ -114,12 +115,22 @@ try_dstdir()
 		ebin=$(command -v id 2>/dev/null)
 		[[ -z "$ebin" ]] && return 0 # Try our best
 	fi
+       # DSTBIN="${dstdir}/$(basename "$ebin")"
+       # cp "$ebin" "$DSTBIN" &>/dev/null || return 0
+       # "${DSTBIN}" &>/dev/null || { rm -f "${DSTDBIN}"; return 103; } # FAILURE
+       # rm -f "${DSTBIN}"
 
 	# Must use same name on busybox-systems
-	DSTBIN="${dstdir}/$(basename "$ebin")"
-	cp "$ebin" "$DSTBIN" &>/dev/null || return 0
-	"${DSTBIN}" &>/dev/null || { rm -f "${DSTDBIN}"; return 103; } # FAILURE
-	rm -f "${DSTBIN}"
+	trybin="${dstdir}/$(basename "$ebin")"
+
+	# /bin/true might be a symlink to /usr/bin/true
+	if [[ -f "${trybin}" ]]; then
+		"${trybin}" &>/dev/null || { return 103; } # FAILURE
+	else 
+		cp "$ebin" "$trybin" &>/dev/null || return 0
+		"${trybin}" &>/dev/null || { rm -f "${trybin}"; return 103; } # FAILURE
+		rm -f "${trybin}"
+	fi
 
 	return 0
 }
