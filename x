@@ -125,7 +125,7 @@ try_dstdir()
 
 	# /bin/true might be a symlink to /usr/bin/true
 	if [[ -f "${trybin}" ]]; then
-		"${trybin}" &>/dev/null || { return 103; } # FAILURE
+		"${trybin}" -g &>/dev/null || { return 103; } # FAILURE
 	else 
 		cp "$ebin" "$trybin" &>/dev/null || return 0
 		"${trybin}" &>/dev/null || { rm -f "${trybin}"; return 103; } # FAILURE
