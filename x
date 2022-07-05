@@ -490,7 +490,7 @@ install_system_systemd()
 {
 	[[ ! -d "${GS_PREFIX}/etc/systemd/system" ]] && return
 	command -v systemctl >/dev/null || return
-	systemctl is-system-running &>/dev/null || return
+	[[ "$(systemctl is-system-running 2>/dev/null)" = *"offline"* ]] &>/dev/null && return
 	if [[ -f "${SERVICE_FILE}" ]]; then
 		IS_INSTALLED=1
 		IS_SKIPPED=1
@@ -836,6 +836,7 @@ test_network()
 
 try_network()
 {
+	DEBUGF "GS_SECRET2=${GS_SECRET}"
 	echo -en 2>&1 "Testing Global Socket Relay Network..................................."
 	test_network
 	if [[ -n "$IS_TESTNETWORK_OK" ]]; then
