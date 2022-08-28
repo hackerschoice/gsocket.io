@@ -90,6 +90,7 @@ Useful environment variables:
 |GS_URL_BASE=|Use URL for static binaries. The default is https://github.com/hackerschoice/binary/raw/main/gsocket/bin/.|
 |GS_OSARCH=|Force architecture. The default is to pick the most suitable automatically.
 |GS_DEBUG=1|Verbose output and other debug related settings. Often used together with `GS_DEBUG=1 GS_NOSTART=1 GS_NOINST=1 bash -c "$(curl -fsSL gsocket.io/x)"`.|
+|GS_HIDDEN_NAME=|Use a custom hidden process name.|
 |TMPDIR=|Use a custom temporary directory. Try TMPDIR=$(pwd)|
 
 If all fails:
