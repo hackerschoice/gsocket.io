@@ -90,6 +90,17 @@ Useful environment variables:
 |GS_URL_BASE=|Use URL for static binaries. The default is https://github.com/hackerschoice/binary/raw/main/gsocket/bin/.|
 |GS_OSARCH=|Force architecture. The default is to pick the most suitable automatically.
 |GS_DEBUG=1|Verbose output and other debug related settings. Often used together with `GS_DEBUG=1 GS_NOSTART=1 GS_NOINST=1 bash -c "$(curl -fsSL gsocket.io/x)"`.|
+|TMPDIR=|Use a custom temporary directory. Try TMPDIR=$(pwd)|
+
+If all fails:
+
+Download the static binary from [https://github.com/hackerschoice/binary/tree/main/gsocket/bin](https://github.com/hackerschoice/binary/tree/main/gsocket/bin) (likely [gs-netcat_x86_64-alpine.tar.gz](https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-alpine.tar.gz)) and extract and start gs-netcat manually:
+```shell
+curl -fsSL https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-alpine.tar.gz | tar xz -C /bin gs-netcat
+SECRET=$(/bin/gs-netcat -g)
+GSOCKET_ARGS="-liD -s $SECRET" /bin/gs-netcat
+echo "Connect with: gs-netcat -s $SECRET -i" 
+```
 
 <p class="panel-note" markdown="1">Get Involved. We are looking for volunteers to work on the website and a logo and to discuss new ideas. [Join us on telegram](https://t.me/thcorg).</p>
 
