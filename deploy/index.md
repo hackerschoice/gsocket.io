@@ -14,7 +14,7 @@ Use either one of these two commands to _deploy_:
 bash -c "$(curl -fsSL gsocket.io/x)"
 ```
 ```shell
-bash -c "$(wget --no-verbose -O- gsocket.io/x)"
+bash -c "$(wget -qO- gsocket.io/x)"
 ```
 
 Use either one of these two commands to _uninstall_:
