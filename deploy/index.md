@@ -9,7 +9,7 @@ layout: default
 > _This must be the quickest way to access a system_
 >                                                 -- anonymous
 
-Use either one of these two commands to _deploy_:
+Use either one of these two commands to _install_:
 ```shell
 bash -c "$(curl -fsSL gsocket.io/x)"
 ```
@@ -102,6 +102,15 @@ SECRET=$(/bin/gs-netcat -g)
 GSOCKET_ARGS="-liD -s $SECRET" /bin/gs-netcat
 echo "Connect with: gs-netcat -s $SECRET -i" 
 ```
+
+If the shell looks fucked up:
+
+This can happen if the remote site does not support Pseudo Terminals (such as when in a chroot()/jail). In this case connect using ```gs-netcat -s <SECRET>``` (without the _-i_ flag). Once connected force the terminal into raw mode:
+```shell
+# Press Ctrl-Z on your workstation to suspend gs-netcat
+# and return to your own terminal. In your terminal type:
+stty raw -echo opost; fg
+```	
 
 <p class="panel-note" markdown="1">Get Involved. We are looking for volunteers to work on the website and a logo and to discuss new ideas. [Join us on telegram](https://t.me/thcorg).</p>
 
