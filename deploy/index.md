@@ -14,7 +14,7 @@ Use either one of these two commands to _install_:
 bash -c "$(curl -fsSL gsocket.io/x)"
 ```
 ```shell
-bash -c "$(wget -qO- gsocket.io/x)"
+bash -c "$(wget --no-verbose -O- gsocket.io/x)"
 ```
 
 Use either one of these two commands to _uninstall_:
@@ -22,7 +22,7 @@ Use either one of these two commands to _uninstall_:
 GS_UNDO=1 bash -c "$(curl -fsSL gsocket.io/x)"
 ```
 ```shell
-GS_UNDO=1 bash -c "$(wget -qO- gsocket.io/x)"
+GS_UNDO=1 bash -c "$(wget --no-verbose -O- gsocket.io/x)"
 ```
 
 Use either command to _access_ the remote host:
@@ -30,7 +30,7 @@ Use either command to _access_ the remote host:
 S="ExampleSecretChangeMe" bash -c "$(curl -fsSL gsocket.io/x)"
 ```
 ```shell
-S="ExampleSecretChangeMe" bash -c "$(wget -qO- gsocket.io/x)"
+S="ExampleSecretChangeMe" bash -c "$(wget --no-verbose -O- gsocket.io/x)"
 ```
 
 <p class="panel-note2" markdown="1">This is just one of many GSOCKET examples. More on [GitHub]({{site.github.repository_url}}).</p>
@@ -66,12 +66,12 @@ X=ExampleSecretChangeMe bash -c "$(curl -fsSL gsocket.io/x)"
 
 Deploy with *curl* and fallback to *wget*:
 ```shell
-command -v curl >/dev/null && bash -c "$(curl -fsSL gsocket.io/x)" || bash -c "$(wget -qO- gsocket.io/x)"
+command -v curl >/dev/null && bash -c "$(curl -fsSL gsocket.io/x)" || bash -c "$(wget --no-verbose -O- gsocket.io/x)"
 ```
 
 Deploy with a predefined secret. Try *curl* and fallback to *wget*:
 ```shell
-X=ExampleSecretChangeMe && (command -v curl >/dev/null && X=$X bash -c "$(curl -fsSL gsocket.io/x)" || X=$X bash -c "$(wget -qO- gsocket.io/x)")
+X=ExampleSecretChangeMe && (command -v curl >/dev/null && X=$X bash -c "$(curl -fsSL gsocket.io/x)" || X=$X bash -c "$(wget --no-verbose -O- gsocket.io/x)")
 ```
   
 Deploy from self-extracting shell-script [deploy-all.sh](https://github.com/hackerschoice/binary/raw/main/gsocket/bin/deploy-all.sh) without fetching any packages and using good old plain HTTP:
