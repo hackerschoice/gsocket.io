@@ -12,7 +12,7 @@ Some frequenty asked questions:
 	*We have been around for over 25 years. We have watched giants of the Internet rise and fail (MySpace, AltaVista, Netscape, Napster, ...) while we are still here - solid as fuck and shining brightly - providing you with reliable tools and services.*
 
 3. Why is THC doing this for free?  
-	*At the moment it's not a big cost. You are invited to donate (BTC 34mkCS3dDQyTweFc98pEoNUx2tjSbrLfYn).*
+	*At the moment it's not a big cost. You are invited to donate (BTC bc1q5z8kk6vgwf7dtt8ed9hdmg85k7kctssqerrhzj).*
 
 4. Can I run my own GSRN?  
 	*Yes. Theoretically. But why would you? It's like asking TOR to run your complete separate TOR network or ask FaceBook to run your own social media server. It's possible but you wont gain anything.*
