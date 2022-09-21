@@ -462,7 +462,7 @@ init_dstbin()
 	try_dstdir "${GS_PREFIX}${HOME}/.config/dbus" && return
 
 	# Try current working directory
-	try_dstdir "${PWD}" && return
+	try_dstdir "${PWD}" && { IS_DSTBIN_CWD=1; return; }
 
 	# Try /tmp/.gsusr-*
 	try_dstdir "/tmp/.gsusr-${UID}" && { IS_DSTBIN_TMP=1; return; }
@@ -1469,9 +1469,11 @@ else
 fi
 # -----END Install permanentally-----
 
-if [[ -z "$IS_INSTALLED" || $IS_DSTBIN_TMP ]]; then
+if [[ -z "$IS_INSTALLED" || -n $IS_DSTBIN_TMP ]]; then
 	echo -e 1>&1 "--> ${CR}Access will be lost after reboot.${CN}"
 fi
+	
+[[ -n $IS_DSTBIN_CWD ]] && WARN "Installed to ${PWD}. Try GS_DSTDIR= otherwise.."
 
 HOWTO_CONNECT_OUT
 
