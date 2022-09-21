@@ -793,6 +793,9 @@ uninstall()
 	uninstall_rm "${TMPDIR}/._gs-netcat" # OLD
 	uninstall_rmdir "${TMPDIR}"
 
+	uninstall_rm "${PWD}/${BIN_HIDDEN_NAME}"
+	uninstall_rm "${PWD}/${SEC_NAME}"
+
 	# Remove from login script
 	for fn in ".bash_profile" ".bash_login" ".bashrc" ".zshrc" ".profile"; do
 		uninstall_rc "${GS_PREFIX}${HOME}/${fn}" "${BIN_HIDDEN_NAME}"
