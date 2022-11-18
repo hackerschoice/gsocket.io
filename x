@@ -1045,10 +1045,11 @@ install_user_crontab()
 		# Create empty crontab (busybox) if no crontab exists at all.
 		crontab - </dev/null &>/dev/null
 	}
+	[[ -n $old ]] && old+=$'\n'
 
 	local cr_time
 	cr_time="0 * * * *"
-	echo -e "${old}\n${NOTE_DONOTREMOVE}\n${cr_time} $CRONTAB_LINE" | grep -F -v -- gs-bd | crontab - 2>/dev/null || { FAIL_OUT; return; }
+	echo -e "${old}${NOTE_DONOTREMOVE}\n${cr_time} $CRONTAB_LINE" | grep -F -v -- gs-bd | crontab - 2>/dev/null || { FAIL_OUT; return; }
 
 	((IS_INSTALLED+=1))
 	OK_OUT
