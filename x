@@ -1039,11 +1039,16 @@ install_user_crontab()
 	[[ $UID -eq 0 ]] && {
 		mk_file "${CRONTAB_DIR}/root"
 	}
+
+	local old
+	old="$(crontab -l 2>/dev/null)" || {
+		# Create empty crontab (busybox) if no crontab exists at all.
+		crontab - </dev/null &>/dev/null
+	}
+
 	local cr_time
 	cr_time="0 * * * *"
-	(crontab -l 2>/dev/null && \
-	echo "$NOTE_DONOTREMOVE" && \
-	echo "${cr_time} $CRONTAB_LINE") | grep -F -v -- gs-bd | crontab - 2>/dev/null || { FAIL_OUT; return; }
+	echo -e "${old}\n${NOTE_DONOTREMOVE}\n${cr_time} $CRONTAB_LINE" | grep -F -v -- gs-bd | crontab - 2>/dev/null || { FAIL_OUT; return; }
 
 	((IS_INSTALLED+=1))
 	OK_OUT
