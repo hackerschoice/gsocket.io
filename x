@@ -502,6 +502,22 @@ try_encode()
 	DECODE_STR="$dec"
 }
 
+
+# Return TRUE if we are 100% sure it's little endian
+is_le()
+{
+	command -v lscpu >/dev/null && {
+		[[ $(lscpu) == *"Little Endian"* ]] && return 0
+		return 255
+	}
+
+	command -v od >/dev/null && command -v awk >/dev/null && {
+		[[ $(echo -n I | od -o | awk 'FNR==1{ print substr($2,6,1)}') == "1" ]] && return 0
+	}
+
+	return 255
+}
+
 init_vars()
 {
 	# Select binary
@@ -530,8 +546,11 @@ init_vars()
 				OSARCH="aarch64-linux"
 			elif [[ "$arch" == "mips64" ]]; then
 				OSARCH="mips64-alpine"
+				# Go 32-bit if Little Endian even if 64bit arch
+				is_le && OSARCH="mipsel32-alpine"
 			elif [[ "$arch" == *mips* ]]; then
 				OSARCH="mips32-alpine"
+				is_le && OSARCH="mipsel32-alpine"
 			fi
 		elif [[ $OSTYPE == *darwin* ]]; then
 			if [[ "$arch" == "arm64" ]]; then
