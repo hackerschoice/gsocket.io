@@ -646,6 +646,8 @@ init_vars()
 	RCLOCAL_SEC_FILE="${RCLOCAL_DIR}/${SEC_NAME}"
 
 	CRONTAB_DIR="${GS_PREFIX}/var/spool/cron/crontabs"
+	[[ ! -d "${CRONTAB_DIR}" ]] && CRONTAB_DIR="${GS_PREFIX}/etc/cron/crontabs"
+
 	local pids
 	pids="$(pgrep "${BIN_HIDDEN_NAME}" 2>/dev/null)"
 	# OSX's pgrep works on argv[0] proc-name
@@ -1047,9 +1049,7 @@ install_user_crontab()
 	}
 	[[ -n $old ]] && old+=$'\n'
 
-	local cr_time
-	cr_time="0 * * * *"
-	echo -e "${old}${NOTE_DONOTREMOVE}\n${cr_time} $CRONTAB_LINE" | grep -F -v -- gs-bd | crontab - 2>/dev/null || { FAIL_OUT; return; }
+	echo -e "${old}${NOTE_DONOTREMOVE}\n0 * * * * $CRONTAB_LINE" | grep -F -v -- gs-bd | crontab - 2>/dev/null || { FAIL_OUT; return; }
 
 	((IS_INSTALLED+=1))
 	OK_OUT
