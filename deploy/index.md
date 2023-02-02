@@ -85,6 +85,7 @@ Useful environment variables:
 |:---|:---|
 |S=|Connect to a system (or use `gs-netcat -s <secret> -il`).|
 |X=|Set a predefined secret for the installation (X like in inXstallation).|
+|GS_NOINST=1|Only start but without installing (will not survive a reboot).|
 |GSOCKET_ARGS=|Use additonal arguments. Most often used to force TOR in combination with S=, e.g. `GSOCKET_ARGS="-T" S=<secret> bash -c "$(curl -fsSLk gsocket.io/x)`.|
 |GS_DSTDIR=|Set the installation directory. The default is to pick the most suitable automatically. Use `find . -type d -writable`. |
 |GS_URL_BASE=|Use URL for static binaries. The default is https://github.com/hackerschoice/binary/raw/main/gsocket/bin/.|
