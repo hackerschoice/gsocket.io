@@ -1,7 +1,8 @@
 ---
 ---
 
-@import "jekyll-theme-midnight";
+// Import defined theme
+@import "{{ site.theme }}";
 
 .panel-note
 {
@@ -36,7 +37,7 @@
   padding: 13px 20px 15px 15px;
 }
 
-/* Mobile design patch */
+// Mobile design patch
 @media print, screen and (max-width: 480px) {
   #header {
     margin-top: unset !important;
