@@ -108,24 +108,26 @@ echo "Connect with: gs-netcat -s $SECRET -i"
 ## Advanced Tips & Tricks
 {: refdef}
 
-Remembering many secrets from many deployments is cumbersome. It is easier to just remember one MASTER-SEED and then the hostname for each deployment. The following script generates a secure SECRET based on a MASTER-SEED and the target's hostname.
+Remembering many secrets from many deployments is cumbersome. It is easier to remember just one MASTER-SEED and derive the SECRET from the target's hostname. The following script generates a secure SECRET based on a single MASTER-SEED and the target's hostname.
 ```sh
-# cut & paste this into your shell on your workstation
+# cut & paste this into your shell on your workstation or add to ~/.bashrc
 gssec()
 {
     str="$(echo "${GS_SEED:?}$1" | sha512sum | base64 | tr -d -c a-z0-9)"
-    str=${str:0:22}
+    str="${str:0:22}"
     echo "DEPLOY: X=${str}"' bash -c "$(curl -fsSL gsocket.io/x)"'
     echo "ACCESS: S=${str}"' bash -c "$(curl -fsSL gsocket.io/x)"'
     echo "ACCESS: gs-netcat -s ${str} -i"
 }
 # Pick a STRONG master seed:
-export GS_SEED=MySuperStrongMasterSeed
+[[ -z $GS_SEED ]] && export GS_SEED=MySuperStrongMasterSeed
 ```
 
-```console
-# Generate SECRETS for alice.com
+```sh
+# Generate a SECRET based on the SEED and 'alice.com'
 $ gssec alice.com # You only need to know "alice.com" to connect.
+
+# Output from above's command:
 DEPLOY: X=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL gsocket.io/x)"
 ACCESS: S=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL gsocket.io/x)"
 ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
