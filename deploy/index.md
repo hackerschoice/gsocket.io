@@ -120,7 +120,7 @@ gssec()
     echo "ACCESS: gs-netcat -s ${str} -i"
 }
 # Pick a STRONG master seed:
-[[ -z $GS_SEED ]] && export GS_SEED=MySuperStrongMasterSeed
+[[ -z $GS_SEED ]] && GS_SEED=MySuperStrongMasterSeed
 ```
 
 ```sh
