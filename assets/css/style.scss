@@ -1,6 +1,7 @@
 ---
 ---
 
+// Import defined theme
 @import "jekyll-theme-midnight";
 
 .panel-note
@@ -34,4 +35,15 @@
   border-radius: 6px;
   overflow: hidden;
   padding: 13px 20px 15px 15px;
+}
+
+// Mobile design patch
+@media print, screen and (max-width: 480px) {
+  #header {
+    margin-top: unset !important;
+  }
+
+  nav {
+    display: block !important;
+  }
 }
