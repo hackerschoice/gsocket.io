@@ -41,6 +41,17 @@ Use either one of these two commands to _install_:
                 </code></pre>
             </div>
         </div>
+        <div class="tab">
+            <input type="radio" name="css-tabs-dl" id="test-dl" class="tab-switch">
+            <label for="test-dl" class="tab-label">Wget</label>
+            <div class="tab-content">
+
+```shell
+bash -c "$(curl -fsSL gsocket.io/x)"
+```
+
+            </div>
+        </div>
     </div>
 </div>
 
