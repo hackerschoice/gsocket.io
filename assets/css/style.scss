@@ -37,7 +37,11 @@
   padding: 13px 20px 15px 15px;
 }
 
-// Pure CSS navigation tabs
+/*
+  Pure CSS navigation tabs
+  - based on this example: https://codepen.io/alvarotrigo/pen/QWqXYmG
+  - From: https://alvarotrigo.com/blog/html-css-tabs/
+*/
 .tabs-wrapper {
   max-width: 50rem;
   width: 100%;
@@ -47,8 +51,6 @@
 .tabs {
   position: relative;
   margin: 1rem 0;
-  // background: linear-gradient(#2a2a29, #1c1c1c);
-  // height: 14.75rem;
   height: 8.45rem;
   box-sizing: border-box;
 }
@@ -73,12 +75,9 @@
   line-height: 2.75em;
   height: 3em;
   padding: 0 1.618em;
-  // background: #1abc9c;
-  // border-right: 0.125rem solid #16a085;
   color: #fff;
   cursor: pointer;
   top: 0;
-  // transition: all 0.25s;
   transition: color 0.25s, top 0.25s;
   box-sizing: border-box;
   border-top-left-radius: 5px;
@@ -89,44 +88,30 @@
   transition: top 0.25s;
 }
 .tab-content {
-  // height: 12rem;
   height: 5.5rem;
   position: absolute;
   z-index: 1;
   top: 2.75em;
   left: 0;
-  // padding: 1.618rem;
   padding: 1.618rem 0;
-  // background: #fff;
-  // color: #2c3e50;
   color: #fff;
   border-bottom: 0.25rem solid #bdc3c7;
   opacity: 0;
-  // transition: all 0.35s;
-  // transition: all 0.25s;
   box-sizing: border-box;
   width: 100%;
 }
 .tab-switch:checked + .tab-label {
-  // background: #fff;
-  // color: #2c3e50;
-  // border-right: 0.125rem solid #fff;
   background: #565555;
   color: #fff;
   border-bottom: 0;
   border-right: 0.125rem solid #565555;
-  // transition: all 0.35s;
   transition: color 0.25s, top 0.25s;
   z-index: 1;
   top: -0.0625rem;
-  // box-sizing: border-box;
 }
 .tab-switch:checked + label + .tab-content {
   z-index: 2;
   opacity: 1;
-  // transition: all 0.35s;
-  // transition: all 0.5s;
-  // box-sizing: border-box;
 }
 
 // Mobile design patch
