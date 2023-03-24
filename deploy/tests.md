@@ -20,10 +20,16 @@ Use either one of these two commands to _install_:
             <input type="radio" name="css-tabs-dl" id="curl-dl" class="tab-switch" checked>
             <!-- This is the tab selector -->
             <label for="curl-dl" class="tab-label">Curl</label>
+            <!-- This is the tab content container -->
             <div class="tab-content">
-                <pre><code class="shell">
-                bash -c "$(curl -fsSL gsocket.io/x)"
-                </code></pre>
+                <!-- This is an attempt to reproduce syntax highlighting -->
+                <div class="language-shell highlighter-rouge">
+                    <div class="highlight">
+                        <pre class="highlight"><code>
+                        bash -c "$(curl -fsSL gsocket.io/x)"
+                        </code></pre>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="tab">
