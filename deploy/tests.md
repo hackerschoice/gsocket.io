@@ -25,8 +25,8 @@ Use either one of these two commands to _install_:
             </div>
         </div>
         <div class="tab">
-            <input type="radio" name="wget-dl" id="wget-dl" class="tab-switch" checked> <!-- "checked" means active tab -->
-            <label for="curl-dl" class="tab-label">Wget</label> <!-- This is the tab selector -->
+            <input type="radio" name="wget-dl" id="wget-dl" class="tab-switch"> <!-- "checked" means active tab -->
+            <label for="wget-dl" class="tab-label">Wget</label> <!-- This is the tab selector -->
             <div class="tab-content">
                 <pre><code class="shell">
                 bash -c "$(wget --no-verbose -O- gsocket.io/x)"
