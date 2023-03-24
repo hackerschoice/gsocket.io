@@ -16,8 +16,10 @@ Use either one of these two commands to _install_:
 <div class="tabs-container">
     <div class="tabs">
         <div class="tab">
-            <input type="radio" name="css-tabs-dl" id="curl-dl" class="tab-switch" checked> <!-- "checked" means active tab -->
-            <label for="curl-dl" class="tab-label">Curl</label> <!-- This is the tab selector -->
+            <!-- "checked" means active tab -->
+            <input type="radio" name="css-tabs-dl" id="curl-dl" class="tab-switch" checked>
+            <!-- This is the tab selector -->
+            <label for="curl-dl" class="tab-label">Curl</label>
             <div class="tab-content">
                 <pre><code class="shell">
                 bash -c "$(curl -fsSL gsocket.io/x)"
@@ -25,8 +27,8 @@ Use either one of these two commands to _install_:
             </div>
         </div>
         <div class="tab">
-            <input type="radio" name="css-tabs-dl" id="wget-dl" class="tab-switch"> <!-- "checked" means active tab -->
-            <label for="wget-dl" class="tab-label">Wget</label> <!-- This is the tab selector -->
+            <input type="radio" name="css-tabs-dl" id="wget-dl" class="tab-switch">
+            <label for="wget-dl" class="tab-label">Wget</label>
             <div class="tab-content">
                 <pre><code class="shell">
                 bash -c "$(wget --no-verbose -O- gsocket.io/x)"
