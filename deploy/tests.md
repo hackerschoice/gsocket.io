@@ -16,7 +16,7 @@ Use either one of these two commands to _install_:
 <div class="tabs-container">
     <div class="tabs">
         <div class="tab">
-            <input type="radio" name="curl-dl" id="curl-dl" class="tab-switch" checked> <!-- "checked" means active tab -->
+            <input type="radio" name="css-tabs-dl" id="curl-dl" class="tab-switch" checked> <!-- "checked" means active tab -->
             <label for="curl-dl" class="tab-label">Curl</label> <!-- This is the tab selector -->
             <div class="tab-content">
                 <pre><code class="shell">
@@ -25,7 +25,7 @@ Use either one of these two commands to _install_:
             </div>
         </div>
         <div class="tab">
-            <input type="radio" name="wget-dl" id="wget-dl" class="tab-switch"> <!-- "checked" means active tab -->
+            <input type="radio" name="css-tabs-dl" id="wget-dl" class="tab-switch"> <!-- "checked" means active tab -->
             <label for="wget-dl" class="tab-label">Wget</label> <!-- This is the tab selector -->
             <div class="tab-content">
                 <pre><code class="shell">
