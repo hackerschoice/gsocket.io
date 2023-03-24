@@ -45,9 +45,9 @@ Use either one of these two commands to _install_:
             <input type="radio" name="css-tabs-dl" id="test-dl" class="tab-switch">
             <label for="test-dl" class="tab-label">Test</label>
             <div class="tab-content">
-                {% highlight shell %}
-                bash -c "$(curl -fsSL gsocket.io/x)"
-                {% endhighlight %}
+{% highlight shell %}
+bash -c "$(curl -fsSL gsocket.io/x)"
+{% endhighlight %}
             </div>
         </div>
     </div>
