@@ -42,12 +42,14 @@
   max-width: 50rem;
   width: 100%;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 .tabs {
   position: relative;
   margin: 3rem 0;
   background: #1abc9c;
   height: 14.75rem;
+  box-sizing: border-box;
 }
 .tabs::before,
 .tabs::after {
@@ -59,6 +61,7 @@
 }
 .tab {
   float: left;
+  box-sizing: border-box;
 }
 .tab-switch {
   display: none;
@@ -75,6 +78,7 @@
   cursor: pointer;
   top: 0;
   transition: all 0.25s;
+  box-sizing: border-box;
 }
 .tab-label:hover {
   top: -0.25rem;
@@ -92,6 +96,7 @@
   border-bottom: 0.25rem solid #bdc3c7;
   opacity: 0;
   transition: all 0.35s;
+  box-sizing: border-box;
 }
 .tab-switch:checked + .tab-label {
   background: #fff;
@@ -101,11 +106,13 @@
   transition: all 0.35s;
   z-index: 1;
   top: -0.0625rem;
+  box-sizing: border-box;
 }
 .tab-switch:checked + label + .tab-content {
   z-index: 2;
   opacity: 1;
   transition: all 0.35s;
+  box-sizing: border-box;
 }
 
 // Mobile design patch
