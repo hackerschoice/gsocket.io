@@ -13,7 +13,7 @@ layout: default
 
 Use either one of these two commands to _install_:
 
-<div class="wrapper">
+<div class="tabs-container">
     <div class="tabs">
         <div class="tab">
             <input type="radio" name="curl-dl" id="curl-dl" class="tab-switch" checked> <!-- "checked" means active tab -->
