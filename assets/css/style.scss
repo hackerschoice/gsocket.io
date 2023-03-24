@@ -119,14 +119,14 @@
   transition: color 0.5s, top 0.5s;
   z-index: 1;
   top: -0.0625rem;
-  box-sizing: border-box;
+  // box-sizing: border-box;
 }
 .tab-switch:checked + label + .tab-content {
   z-index: 2;
   opacity: 1;
   // transition: all 0.35s;
   transition: all 0.5s;
-  box-sizing: border-box;
+  // box-sizing: border-box;
 }
 
 // Mobile design patch
