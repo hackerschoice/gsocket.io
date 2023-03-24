@@ -78,7 +78,8 @@
   color: #fff;
   cursor: pointer;
   top: 0;
-  transition: all 0.25s;
+  // transition: all 0.25s;
+  transition: color 0.5s, top 0.5s;
   box-sizing: border-box;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
@@ -97,10 +98,12 @@
   // padding: 1.618rem;
   padding: 1.618rem 0;
   // background: #fff;
-  color: #2c3e50;
+  // color: #2c3e50;
+  color: #fff;
   border-bottom: 0.25rem solid #bdc3c7;
   opacity: 0;
-  transition: all 0.35s;
+  // transition: all 0.35s;
+  transition: all 0.5s;
   box-sizing: border-box;
   width: 100%;
 }
@@ -112,7 +115,8 @@
   color: #fff;
   border-bottom: 0;
   border-right: 0.125rem solid #565555;
-  transition: all 0.35s;
+  // transition: all 0.35s;
+  transition: color 0.5s, top 0.5s;
   z-index: 1;
   top: -0.0625rem;
   box-sizing: border-box;
@@ -120,7 +124,8 @@
 .tab-switch:checked + label + .tab-content {
   z-index: 2;
   opacity: 1;
-  transition: all 0.35s;
+  // transition: all 0.35s;
+  transition: all 0.5s;
   box-sizing: border-box;
 }
 
