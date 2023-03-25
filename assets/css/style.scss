@@ -115,6 +115,9 @@
   z-index: 2;
   opacity: 1;
 }
+.tab-content figure.highlight {
+  margin-left: -1.3em;
+}
 
 // Mobile design patch
 @media print, screen and (max-width: 480px) {
