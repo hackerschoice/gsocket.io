@@ -17,7 +17,7 @@ Use either one of these two commands to _install_:
         <!-- This is the first tab -->
         <div class="tab">
             <!-- "checked" means active tab -->
-            <input type="radio" name="css-tabs" id="curl-install" class="tab-switch" checked>
+            <input type="radio" name="css-tabs-install" id="curl-install" class="tab-switch" checked>
             <!-- This is the tab selector -->
             <label for="curl-install" class="tab-label">Curl</label>
             <!-- This is the tab content container -->
@@ -35,7 +35,7 @@ bash -c "$(curl -fsSL gsocket.io/x)"
         </div>
         <!-- This is the second tab -->
         <div class="tab">
-            <input type="radio" name="css-tabs" id="wget-install" class="tab-switch">
+            <input type="radio" name="css-tabs-install" id="wget-install" class="tab-switch">
             <label for="wget-install" class="tab-label">Wget</label>
             <div class="tab-content">
 {% highlight shell %}
@@ -51,7 +51,7 @@ Use either one of these two commands to _uninstall_:
 <div class="tabs-wrapper">
     <div class="tabs">
         <div class="tab">
-            <input type="radio" name="css-tabs" id="curl-uninstall" class="tab-switch">
+            <input type="radio" name="css-tabs-uninstall" id="curl-uninstall" class="tab-switch" checked>
             <label for="curl-uninstall" class="tab-label">Curl</label>
             <div class="tab-content">
 {% highlight shell %}
@@ -60,7 +60,7 @@ GS_UNDO=1 bash -c "$(curl -fsSL gsocket.io/x)"
             </div>
         </div>
         <div class="tab">
-            <input type="radio" name="css-tabs" id="wget-uninstall" class="tab-switch">
+            <input type="radio" name="css-tabs-uninstall" id="wget-uninstall" class="tab-switch">
             <label for="wget-uninstall" class="tab-label">Wget</label>
             <div class="tab-content">
 {% highlight shell %}
@@ -76,7 +76,7 @@ Use either command to _access_ the remote host:
 <div class="tabs-wrapper">
     <div class="tabs">
         <div class="tab">
-            <input type="radio" name="css-tabs" id="curl-access" class="tab-switch">
+            <input type="radio" name="css-tabs-access" id="curl-access" class="tab-switch" checked>
             <label for="curl-access" class="tab-label">Curl</label>
             <div class="tab-content">
 {% highlight shell %}
@@ -85,7 +85,7 @@ S="ExampleSecretChangeMe" bash -c "$(curl -fsSL gsocket.io/x)"
             </div>
         </div>
         <div class="tab">
-            <input type="radio" name="css-tabs" id="wget-access" class="tab-switch">
+            <input type="radio" name="css-tabs-access" id="wget-access" class="tab-switch">
             <label for="wget-access" class="tab-label">Wget</label>
             <div class="tab-content">
 {% highlight shell %}
@@ -119,7 +119,7 @@ Ignore SSL / Certificate warnings:
 <div class="tabs-wrapper">
     <div class="tabs">
         <div class="tab">
-            <input type="radio" name="css-tabs" id="curl-ignore" class="tab-switch">
+            <input type="radio" name="css-tabs-ignore" id="curl-ignore" class="tab-switch" checked>
             <label for="curl-ignore" class="tab-label">Curl</label>
             <div class="tab-content">
 {% highlight shell %}
@@ -128,7 +128,7 @@ bash -c "$(curl -fsSLk gsocket.io/x)"
             </div>
         </div>
         <div class="tab">
-            <input type="radio" name="css-tabs" id="wget-ignore" class="tab-switch">
+            <input type="radio" name="css-tabs-ignore" id="wget-ignore" class="tab-switch">
             <label for="wget-ignore" class="tab-label">Wget</label>
             <div class="tab-content">
 {% highlight shell %}
