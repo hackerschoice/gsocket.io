@@ -8,7 +8,7 @@ layout: default
 
 > _This must be the quickest way to access a system_ -- anonymous
 
-Use either one of these two commands to _install_:
+Use either one of these two commands to _install_, _uninstall_, _access_:
 
 <!-- This is obviously the tabs wrapper -->
 <div class="tabs-wrapper">
@@ -28,8 +28,13 @@ You must respect this weird placement to avoid extra rendered space
 See here for more details:
 https://jekyllrb.com/docs/liquid/tags/#code-snippet-highlighting
 -->
-{% highlight shell %}
+{% highlight bash %}
+# Install
 bash -c "$(curl -fsSL gsocket.io/x)"
+# Uninstall
+GS_UNDO=1 bash -c "$(curl -fsSL gsocket.io/x)"
+# Access
+S="ExampleSecretChangeMe" bash -c "$(curl -fsSL gsocket.io/x)"
 {% endhighlight %}
             </div>
         </div>
@@ -38,15 +43,20 @@ bash -c "$(curl -fsSL gsocket.io/x)"
             <input type="radio" name="css-tabs-install" id="wget-install" class="tab-switch">
             <label for="wget-install" class="tab-label">Wget</label>
             <div class="tab-content">
-{% highlight shell %}
+{% highlight bash %}
+# Install
 bash -c "$(wget --no-verbose -O- gsocket.io/x)"
+# Uninstall
+GS_UNDO=1 bash -c "$(wget --no-verbose -O- gsocket.io/x)"
+# Access
+S="ExampleSecretChangeMe" bash -c "$(wget --no-verbose -O- gsocket.io/x)"
 {% endhighlight %}
             </div>
         </div>
     </div>
 </div>
 
-Use either one of these two commands to _uninstall_:
+<!-- Use either one of these two commands to _uninstall_:
 
 <div class="tabs-wrapper">
     <div class="tabs">
@@ -69,9 +79,9 @@ GS_UNDO=1 bash -c "$(wget --no-verbose -O- gsocket.io/x)"
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
-Use either command to _access_ the remote host:
+<!-- Use either command to _access_ the remote host:
 
 <div class="tabs-wrapper">
     <div class="tabs">
@@ -94,7 +104,7 @@ S="ExampleSecretChangeMe" bash -c "$(wget --no-verbose -O- gsocket.io/x)"
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <p class="panel-note2" markdown="1">This is just one of many GSOCKET examples. More on [GitHub]({{site.github.repository_url}}).</p>
 
