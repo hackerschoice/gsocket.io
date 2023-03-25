@@ -51,7 +51,7 @@ Use either one of these two commands to _uninstall_:
 <div class="tabs-wrapper">
     <div class="tabs">
         <div class="tab">
-            <input type="radio" name="css-tabs" id="curl-uninstall" class="tab-switch" checked>
+            <input type="radio" name="css-tabs" id="curl-uninstall" class="tab-switch">
             <label for="curl-uninstall" class="tab-label">Curl</label>
             <div class="tab-content">
 {% highlight shell %}
@@ -76,7 +76,7 @@ Use either command to _access_ the remote host:
 <div class="tabs-wrapper">
     <div class="tabs">
         <div class="tab">
-            <input type="radio" name="css-tabs" id="curl-access" class="tab-switch" checked>
+            <input type="radio" name="css-tabs" id="curl-access" class="tab-switch">
             <label for="curl-access" class="tab-label">Curl</label>
             <div class="tab-content">
 {% highlight shell %}
@@ -119,7 +119,7 @@ Ignore SSL / Certificate warnings:
 <div class="tabs-wrapper">
     <div class="tabs">
         <div class="tab">
-            <input type="radio" name="css-tabs" id="curl-ignore" class="tab-switch" checked>
+            <input type="radio" name="css-tabs" id="curl-ignore" class="tab-switch">
             <label for="curl-ignore" class="tab-label">Curl</label>
             <div class="tab-content">
 {% highlight shell %}
