@@ -17,9 +17,9 @@ Use either one of these two commands to _install_, _uninstall_, and _access_:
         <!-- This is the first tab -->
         <div class="tab">
             <!-- "checked" means active tab -->
-            <input type="radio" name="css-tabs-install" id="curl-install" class="tab-switch" checked>
+            <input type="radio" name="css-tabs-init" id="curl-init" class="tab-switch" checked>
             <!-- This is the tab selector -->
-            <label for="curl-install" class="tab-label">Curl</label>
+            <label for="curl-init" class="tab-label">Curl</label>
             <!-- This is the tab content container -->
             <div class="tab-content">
                 <ul>
@@ -49,8 +49,8 @@ S="ExampleSecretChangeMe" bash -c "$(curl -fsSL gsocket.io/x)"
         </div>
         <!-- This is the second tab -->
         <div class="tab">
-            <input type="radio" name="css-tabs-install" id="wget-install" class="tab-switch">
-            <label for="wget-install" class="tab-label">Wget</label>
+            <input type="radio" name="css-tabs-init" id="wget-init" class="tab-switch">
+            <label for="wget-init" class="tab-label">Wget</label>
             <div class="tab-content">
                 <ul>
                     <li><p><strong>Install</strong></p>
@@ -174,8 +174,8 @@ Log in to the host from your workstation
 <div class="tabs-wrapper">
     <div class="tabs">
         <div class="tab">
-            <input type="radio" name="css-tabs-ignore" id="curl-ignore" class="tab-switch" checked>
-            <label for="curl-ignore" class="tab-label">Curl</label>
+            <input type="radio" name="css-tabs-tricks" id="curl-tricks" class="tab-switch" checked>
+            <label for="curl-tricks" class="tab-label">Curl</label>
             <div class="tab-content">
                 <ul>
                     <li><p><strong>Ignore SSL / Certificate warnings</strong></p>
@@ -198,8 +198,8 @@ bash ./deploy-all.sh
             </div>
         </div>
         <div class="tab">
-            <input type="radio" name="css-tabs-ignore" id="wget-ignore" class="tab-switch">
-            <label for="wget-ignore" class="tab-label">Wget</label>
+            <input type="radio" name="css-tabs-tricks" id="wget-tricks" class="tab-switch">
+            <label for="wget-tricks" class="tab-label">Wget</label>
             <div class="tab-content">
                 <ul>
                     <li><p><strong>Ignore SSL / Certificate warnings</strong></p>
