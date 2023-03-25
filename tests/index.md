@@ -23,8 +23,7 @@ Use either one of these two commands to _install_, _uninstall_, _access_:
             <!-- This is the tab content container -->
             <div class="tab-content">
                 <ul>
-                    <li><strong>Install</strong></li>
-                </ul>
+                    <li><p><strong>Install</strong></p>
 <!--
 This is how to reproduce the syntax highlighting with "rouge"
 You must respect this weird placement to avoid extra rendered space
@@ -34,18 +33,18 @@ https://jekyllrb.com/docs/liquid/tags/#code-snippet-highlighting
 {% highlight shell %}
 bash -c "$(curl -fsSL gsocket.io/x)"
 {% endhighlight %}
-                <ul>
-                    <li><strong>Uninstall</strong></li>
-                </ul>
+                    </li>
+                    <li><p><strong>Uninstall</strong></p>
 {% highlight shell %}
 GS_UNDO=1 bash -c "$(curl -fsSL gsocket.io/x)"
 {% endhighlight %}
-                <ul>
-                    <li><strong>Access</strong></li>
-                </ul>
+                    </li>
+                    <li><p><strong>Access</strong></p>
 {% highlight shell %}
 S="ExampleSecretChangeMe" bash -c "$(curl -fsSL gsocket.io/x)"
 {% endhighlight %}
+                    </li>
+                </ul>
             </div>
         </div>
         <!-- This is the second tab -->
@@ -54,23 +53,26 @@ S="ExampleSecretChangeMe" bash -c "$(curl -fsSL gsocket.io/x)"
             <label for="wget-install" class="tab-label">Wget</label>
             <div class="tab-content">
                 <ul>
-                    <li><strong>Install</strong></li>
-                </ul>
+                    <li><p><strong>Install</strong></p>
 {% highlight shell %}
 bash -c "$(wget --no-verbose -O- gsocket.io/x)"
 {% endhighlight %}
-                <ul>
-                    <li><strong>Uninstall</strong></li>
+                    </li>
                 </ul>
+                <ul>
+                    <li><p><strong>Uninstall</strong></p>
 {% highlight shell %}
 GS_UNDO=1 bash -c "$(wget --no-verbose -O- gsocket.io/x)"
 {% endhighlight %}
-                <ul>
-                    <li><strong>Access</strong></li>
+                    </li>
                 </ul>
+                <ul>
+                    <li><p><strong>Access</strong></p>
 {% highlight shell %}
 S="ExampleSecretChangeMe" bash -c "$(wget --no-verbose -O- gsocket.io/x)"
 {% endhighlight %}
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
