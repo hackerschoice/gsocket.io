@@ -8,26 +8,14 @@ layout: default
 
 Use either one of these two commands to _install_, _uninstall_, and _access_:
 
-<!-- This is obviously the tabs wrapper -->
 <div class="tabs-wrapper">
-    <!-- And here the tabs container -->
     <div class="tabs">
-        <!-- This is the first tab -->
         <div class="tab">
-            <!-- "checked" means active tab -->
             <input type="radio" name="css-tabs-init" id="curl-init" class="tab-switch" checked>
-            <!-- This is the tab selector -->
             <label for="curl-init" class="tab-label">Curl</label>
-            <!-- This is the tab content container -->
             <div class="tab-content">
                 <ul>
                     <li><p><strong>Install</strong></p>
-<!--
-This is how to reproduce the syntax highlighting with "rouge"
-You must respect this weird placement to avoid extra rendered space
-See here for more details:
-https://jekyllrb.com/docs/liquid/tags/#code-snippet-highlighting
--->
 {% highlight shell %}
 bash -c "$(curl -fsSL gsocket.io/x)"
 {% endhighlight %}
@@ -45,7 +33,6 @@ S="ExampleSecretChangeMe" bash -c "$(curl -fsSL gsocket.io/x)"
                 </ul>
             </div>
         </div>
-        <!-- This is the second tab -->
         <div class="tab">
             <input type="radio" name="css-tabs-init" id="wget-init" class="tab-switch">
             <label for="wget-init" class="tab-label">Wget</label>
