@@ -115,6 +115,12 @@
   z-index: 2;
   opacity: 1;
 }
+
+// Minor tabs adjustments
+.tab-content ul {
+  margin: 0;
+  padding: 0 0 0 20px;
+}
 .tab-content figure.highlight {
   margin-left: -1.3em;
 }
