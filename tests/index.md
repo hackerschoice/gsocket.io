@@ -295,11 +295,11 @@ If all fails:
 Download the static binary from [https://github.com/hackerschoice/binary/tree/main/gsocket/bin](https://github.com/hackerschoice/binary/tree/main/gsocket/bin) (likely [gs-netcat_x86_64-alpine.tar.gz](https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-alpine.tar.gz)) and extract and start gs-netcat manually:
 
 <div class="tabs-wrapper">
-    <div class="tabs" style="height: 25.45rem;">
+    <div class="tabs" style="height: 12.45rem;">
         <div class="tab">
             <input type="radio" name="css-tabs-manual" id="curl-manual" class="tab-switch" checked>
             <label for="curl-manual" class="tab-label">Curl</label>
-            <div class="tab-content">
+            <div class="tab-content" style="height: 10.5rem; padding-left: 1.2em;">
 {% highlight shell %}
 curl -fsSL https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-alpine.tar.gz | tar xz -C /bin gs-netcat
 SECRET=$(/bin/gs-netcat -g)
@@ -311,7 +311,7 @@ echo "Connect with: gs-netcat -s $SECRET -i"
         <div class="tab">
             <input type="radio" name="css-tabs-manual" id="wget-manual" class="tab-switch">
             <label for="wget-manual" class="tab-label">Wget</label>
-            <div class="tab-content">
+            <div class="tab-content" style="height: 10.5rem; padding-left: 1.2em;">
 {% highlight shell %}
 wget --no-check-certificate -qO- https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-alpine.tar.gz | tar xz -C /bin gs-netcat
 SECRET=$(/bin/gs-netcat -g)
@@ -337,12 +337,11 @@ echo "Connect with: gs-netcat -s $SECRET -i"
 Remembering many secrets from many deployments is cumbersome. It is easier to remember just one MASTER-SEED and derive the SECRET from the target's hostname. The following script generates a secure SECRET based on a single MASTER-SEED and the target's hostname.
 
 <div class="tabs-wrapper">
-    <div class="tabs" style="height: 25.45rem;">
+    <div class="tabs" style="height: 33.45rem;">
         <div class="tab">
             <input type="radio" name="css-tabs-advanced" id="curl-advanced" class="tab-switch" checked>
             <label for="curl-advanced" class="tab-label">Curl</label>
-            <div class="tab-content" style="height: 23.5rem;">
-<p>
+            <div class="tab-content" style="height: 31.5rem; padding-left: 1.2em;">
 {% highlight sh %}
 # cut & paste this into your shell on your workstation or add to ~/.bashrc
 gssec()
@@ -357,8 +356,6 @@ gssec()
 # Pick a STRONG master seed:
 [[ -z $GS_SEED ]] && GS_SEED=MySuperStrongMasterSeed
 {% endhighlight %}
-</p>
-<p>
 {% highlight sh %}
 # Generate a SECRET based on the SEED and 'alice.com'
 $ gssec alice.com # You only need to know "alice.com" to connect.
@@ -368,13 +365,12 @@ DEPLOY: X=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL gsocket.io/x)"
 ACCESS: S=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL gsocket.io/x)"
 ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 {% endhighlight %}
-</p>
             </div>
         </div>
         <div class="tab">
             <input type="radio" name="css-tabs-advanced" id="wget-advanced" class="tab-switch">
             <label for="wget-advanced" class="tab-label">Wget</label>
-            <div class="tab-content" style="height: 23.5rem;">
+            <div class="tab-content" style="height: 31.5rem; padding-left: 1.2em;">
 <p>
 {% highlight sh %}
 # cut & paste this into your shell on your workstation or add to ~/.bashrc
