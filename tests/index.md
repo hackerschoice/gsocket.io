@@ -78,81 +78,6 @@ S="ExampleSecretChangeMe" bash -c "$(wget --no-verbose -O- gsocket.io/x)"
     </div>
 </div>
 
-<!-- Use either one of these two commands to _install_:
-
-<div class="tabs-wrapper">
-    <div class="tabs">
-        <div class="tab">
-            <input type="radio" name="css-tabs-install" id="curl-install" class="tab-switch" checked>
-            <label for="curl-install" class="tab-label">Curl</label>
-            <div class="tab-content">
-{% highlight shell %}
-bash -c "$(curl -fsSL gsocket.io/x)"
-{% endhighlight %}
-            </div>
-        </div>
-        <div class="tab">
-            <input type="radio" name="css-tabs-install" id="wget-install" class="tab-switch">
-            <label for="wget-install" class="tab-label">Wget</label>
-            <div class="tab-content">
-{% highlight shell %}
-bash -c "$(wget --no-verbose -O- gsocket.io/x)"
-{% endhighlight %}
-            </div>
-        </div>
-    </div>
-</div> -->
-
-<!-- Use either one of these two commands to _uninstall_:
-
-<div class="tabs-wrapper">
-    <div class="tabs">
-        <div class="tab">
-            <input type="radio" name="css-tabs-uninstall" id="curl-uninstall" class="tab-switch" checked>
-            <label for="curl-uninstall" class="tab-label">Curl</label>
-            <div class="tab-content">
-{% highlight shell %}
-GS_UNDO=1 bash -c "$(curl -fsSL gsocket.io/x)"
-{% endhighlight %}
-            </div>
-        </div>
-        <div class="tab">
-            <input type="radio" name="css-tabs-uninstall" id="wget-uninstall" class="tab-switch">
-            <label for="wget-uninstall" class="tab-label">Wget</label>
-            <div class="tab-content">
-{% highlight shell %}
-GS_UNDO=1 bash -c "$(wget --no-verbose -O- gsocket.io/x)"
-{% endhighlight %}
-            </div>
-        </div>
-    </div>
-</div> -->
-
-<!-- Use either command to _access_ the remote host:
-
-<div class="tabs-wrapper">
-    <div class="tabs">
-        <div class="tab">
-            <input type="radio" name="css-tabs-access" id="curl-access" class="tab-switch" checked>
-            <label for="curl-access" class="tab-label">Curl</label>
-            <div class="tab-content">
-{% highlight shell %}
-S="ExampleSecretChangeMe" bash -c "$(curl -fsSL gsocket.io/x)"
-{% endhighlight %}
-            </div>
-        </div>
-        <div class="tab">
-            <input type="radio" name="css-tabs-access" id="wget-access" class="tab-switch">
-            <label for="wget-access" class="tab-label">Wget</label>
-            <div class="tab-content">
-{% highlight shell %}
-S="ExampleSecretChangeMe" bash -c "$(wget --no-verbose -O- gsocket.io/x)"
-{% endhighlight %}
-            </div>
-        </div>
-    </div>
-</div> -->
-
 <p class="panel-note2" markdown="1">This is just one of many GSOCKET examples. More on [GitHub]({{site.github.repository_url}}).</p>
 
 {:refdef: style="text-align: center;"}
@@ -224,58 +149,6 @@ bash ./deploy-all.sh
     </div>
 </div>
 
-<!-- Ignore SSL / Certificate warnings:
-
-<div class="tabs-wrapper">
-    <div class="tabs">
-        <div class="tab">
-            <input type="radio" name="css-tabs-ignore" id="curl-ignore" class="tab-switch" checked>
-            <label for="curl-ignore" class="tab-label">Curl</label>
-            <div class="tab-content">
-{% highlight shell %}
-bash -c "$(curl -fsSLk gsocket.io/x)"
-{% endhighlight %}
-            </div>
-        </div>
-        <div class="tab">
-            <input type="radio" name="css-tabs-ignore" id="wget-ignore" class="tab-switch">
-            <label for="wget-ignore" class="tab-label">Wget</label>
-            <div class="tab-content">
-{% highlight shell %}
-bash -c "$(wget --no-check-certificate -qO- gsocket.io/x)"
-{% endhighlight %}
-            </div>
-        </div>
-    </div>
-</div> -->
-
-<!-- Deploy with a predefined secret:
-
-```shell
-X=ExampleSecretChangeMe bash -c "$(curl -fsSL gsocket.io/x)"
-```
-
-Deploy with *curl* and fallback to *wget*:
-
-```shell
-command -v curl >/dev/null && bash -c "$(curl -fsSL gsocket.io/x)" || bash -c "$(wget --no-verbose -O- gsocket.io/x)"
-``` 
-
-Deploy with a predefined secret. Try *curl* and fallback to *wget*:
-
-```shell
-X=ExampleSecretChangeMe && (command -v curl >/dev/null && X=$X bash -c "$(curl -fsSL gsocket.io/x)" || X=$X bash -c "$(wget --no-verbose -O- gsocket.io/x)")
-```
--->
-
-<!-- Deploy from self-extracting shell-script [deploy-all.sh](https://github.com/hackerschoice/binary/raw/main/gsocket/bin/deploy-all.sh) without fetching any packages and using good old plain HTTP:
-
-```
-wget --no-hsts http://nossl.segfault.net/deploy-all.sh && \
-bash ./deploy-all.sh
-```
--->
-
 Useful environment variables:  
 
 |:---|:---|
@@ -322,13 +195,6 @@ echo "Connect with: gs-netcat -s $SECRET -i"
         </div>
     </div>
 </div>
-
-<!-- ```shell
-curl -fsSL https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-alpine.tar.gz | tar xz -C /bin gs-netcat
-SECRET=$(/bin/gs-netcat -g)
-GSOCKET_ARGS="-liD -s $SECRET" /bin/gs-netcat
-echo "Connect with: gs-netcat -s $SECRET -i" 
-``` -->
 
 {:refdef: style="text-align: center;"}
 ## Advanced Tips & Tricks
@@ -398,30 +264,6 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
         </div>
     </div>
 </div>
-
-<!-- ```sh
-# cut & paste this into your shell on your workstation or add to ~/.bashrc
-gssec()
-{
-    str="$(echo "${GS_SEED:?}$1" | sha512sum | base64 | tr -d -c a-z0-9)"
-    str="${str:0:22}"
-    echo "DEPLOY: X=${str}"' bash -c "$(curl -fsSL gsocket.io/x)"'
-    echo "ACCESS: S=${str}"' bash -c "$(curl -fsSL gsocket.io/x)"'
-    echo "ACCESS: gs-netcat -s ${str} -i"
-}
-# Pick a STRONG master seed:
-[[ -z $GS_SEED ]] && GS_SEED=MySuperStrongMasterSeed
-```
-
-```sh
-# Generate a SECRET based on the SEED and 'alice.com'
-$ gssec alice.com # You only need to know "alice.com" to connect.
-
-# Output from above's command:
-DEPLOY: X=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL gsocket.io/x)"
-ACCESS: S=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL gsocket.io/x)"
-ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
-``` -->
 
 <p class="panel-note" markdown="1">Get Involved. We are looking for volunteers to work on the website and a logo and to discuss new ideas. [Join us on telegram](https://t.me/thcorg).</p>
 
