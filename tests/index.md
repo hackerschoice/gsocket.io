@@ -371,7 +371,6 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
             <input type="radio" name="css-tabs-advanced" id="wget-advanced" class="tab-switch">
             <label for="wget-advanced" class="tab-label">Wget</label>
             <div class="tab-content" style="height: 31.5rem; padding-left: 1.2em;">
-<p>
 {% highlight sh %}
 # cut & paste this into your shell on your workstation or add to ~/.bashrc
 gssec()
@@ -386,8 +385,6 @@ gssec()
 # Pick a STRONG master seed:
 [[ -z $GS_SEED ]] && GS_SEED=MySuperStrongMasterSeed
 {% endhighlight %}
-</p>
-<p>
 {% highlight sh %}
 # Generate a SECRET based on the SEED and 'alice.com'
 $ gssec alice.com # You only need to know "alice.com" to connect.
@@ -397,7 +394,6 @@ DEPLOY: X=2m1zidi1zkkmxjjj0z0jlj bash -c "$(wget --no-check-certificate -qO- gso
 ACCESS: S=2m1zidi1zkkmxjjj0z0jlj bash -c "$(wget --no-check-certificate -qO- gsocket.io/x)"
 ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 {% endhighlight %}
-</p>
             </div>
         </div>
     </div>
