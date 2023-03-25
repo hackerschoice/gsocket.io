@@ -337,11 +337,11 @@ echo "Connect with: gs-netcat -s $SECRET -i"
 Remembering many secrets from many deployments is cumbersome. It is easier to remember just one MASTER-SEED and derive the SECRET from the target's hostname. The following script generates a secure SECRET based on a single MASTER-SEED and the target's hostname.
 
 <div class="tabs-wrapper">
-    <div class="tabs" style="height: 33.45rem;">
+    <div class="tabs" style="height: 35.45rem;">
         <div class="tab">
             <input type="radio" name="css-tabs-advanced" id="curl-advanced" class="tab-switch" checked>
             <label for="curl-advanced" class="tab-label">Curl</label>
-            <div class="tab-content" style="height: 31.5rem; padding-left: 1.2em;">
+            <div class="tab-content" style="height: 33.5rem; padding-left: 1.2em;">
 {% highlight sh %}
 # cut & paste this into your shell on your workstation or add to ~/.bashrc
 gssec()
@@ -370,7 +370,7 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
         <div class="tab">
             <input type="radio" name="css-tabs-advanced" id="wget-advanced" class="tab-switch">
             <label for="wget-advanced" class="tab-label">Wget</label>
-            <div class="tab-content" style="height: 31.5rem; padding-left: 1.2em;">
+            <div class="tab-content" style="height: 33.5rem; padding-left: 1.2em;">
 {% highlight sh %}
 # cut & paste this into your shell on your workstation or add to ~/.bashrc
 gssec()
@@ -427,29 +427,29 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 
 <!-- Adding some 'magic' over tabs ;) -->
 <script>
-    (() => {
-        const tabsSelector = 'input.tab-switch';
-        const tabsDebug = false;
-        document.querySelectorAll(tabsSelector).forEach((el) => {
-            const id = el.id;
-            const type = id.split('-')[0];
+(() => {
+    const tabsSelector = 'input.tab-switch';
+    const tabsDebug = false;
+    document.querySelectorAll(tabsSelector).forEach((el) => {
+        const id = el.id;
+        const type = id.split('-')[0];
+        if (tabsDebug === true) {
+            console.log('[change] event listener attached on', id, '- type:', type);
+        }
+        el.addEventListener('change', (event) => {
             if (tabsDebug === true) {
-                console.log('[change] event listener attached on', id, '- type:', type);
+                console.log('Change event triggered.', event);
             }
-            el.addEventListener('change', (event) => {
-                if (tabsDebug === true) {
-                    console.log('Change event triggered.', event);
+            let targetTabs = String(event.target.id).includes(type) ? type : 'undefined';
+            if (tabsDebug === true) {
+                console.log(`Should select other [${targetTabs}] tabs.`);
+            }
+            document.querySelectorAll(tabsSelector).forEach((target) => {
+                if (String(target.id).includes(targetTabs) && !target.checked) {
+                    target.checked = true;
                 }
-                let targetTabs = String(event.target.id).includes(type) ? type : 'undefined';
-                if (tabsDebug === true) {
-                    console.log(`Should select other [${targetTabs}] tabs.`);
-                }
-                document.querySelectorAll(tabsSelector).forEach((target) => {
-                    if (String(target.id).includes(targetTabs) && !target.checked) {
-                        target.checked = true;
-                    }
-                });
             });
         });
-    })();
+    });
+})();
 </script>
