@@ -306,8 +306,9 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
     opacity: 0;
     padding: 2px 6px;
     position: absolute;
-    right: 4px;
-    top: 4px;
+    right: 7px;
+    /* top: 4px; */
+    margin-top: -3px;
 }
 .highlight:hover .copy-button {
     opacity: 1;
@@ -323,10 +324,10 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 
     const copyIconEncoded = `data:image/svg+xml;base64,${btoa(copyIcon16)}`;
 
-    /* const snippets = document.querySelectorAll('figure.highlight');
-    snippets.firstChild.forEach((snippet) => {
+    const snippets = document.querySelectorAll('figure.highlight pre');
+    snippets.forEach((snippet) => {
         console.log('Connected on element:', snippet);
-        snippet.insertAdjacentHTML(
+        snippet.firstChild.insertAdjacentHTML(
             'beforebegin',
             '<button class="copy-button" data-clipboard-snippet><img width="16" src="' + copyIconEncoded + '" alt="Copy to clipboard"></button>'
         );
@@ -350,6 +351,6 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
         console.log('Received [error] event.', e);
         console.error('Copy error.', e.trigger);
         // showTooltip(e.trigger,fallbackMessage(e.action));
-    }); */
+    });
 })();
 </script>
