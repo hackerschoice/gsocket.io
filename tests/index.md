@@ -341,7 +341,6 @@ figure.highlight:hover .copy-button {
     
     const clipboardSnippets = new ClipboardJS('[data-clipboard-snippet]', {
         target: (trigger) => {
-            console.log('Copy button clicked.', trigger);
             return trigger.nextElementSibling; // 'nextElementSibling' is used because the button is placed before the other elements
         }
     });
