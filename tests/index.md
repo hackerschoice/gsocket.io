@@ -323,7 +323,7 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 
     const copyIconEncoded = `data:image/svg+xml;base64,${btoa(copyIcon16)}`;
 
-    const snippets = document.querySelectorAll('figure.highlight');
+    /* const snippets = document.querySelectorAll('figure.highlight');
     snippets.firstChild.forEach((snippet) => {
         console.log('Connected on element:', snippet);
         snippet.insertAdjacentHTML(
@@ -350,6 +350,6 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
         console.log('Received [error] event.', e);
         console.error('Copy error.', e.trigger);
         // showTooltip(e.trigger,fallbackMessage(e.action));
-    });
+    }); */
 })();
 </script>
