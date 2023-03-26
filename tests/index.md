@@ -267,7 +267,7 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 
 <p class="panel-note" markdown="1">Get Involved. We are looking for volunteers to work on the website and a logo and to discuss new ideas. [Join us on telegram](https://t.me/thcorg).</p>
 
-<!-- Adding some 'magic' over tabs ;) -->
+<!-- Adding some 'magic' on tabs ;) -->
 <script>
 (() => {
     const tabsSelector = 'input.tab-switch';
@@ -305,10 +305,10 @@ Goal: Keep things as light as possible.
 -->
 <style>
 figure.highlight .copy-button {
-    -webkit-transition: opacity .2s ease-in-out;
-    -moz-transition: opacity .2s ease-in-out;
-    -o-transition: opacity .2s ease-in-out;
-    transition: opacity .2s ease-in-out;
+    -webkit-transition: opacity .3s ease-in-out;
+    -moz-transition: opacity .3s ease-in-out;
+    -o-transition: opacity .3s ease-in-out;
+    transition: opacity .3s ease-in-out;
     opacity: 0;
     padding: 2px 6px;
     position: absolute;
