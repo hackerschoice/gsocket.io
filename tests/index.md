@@ -274,8 +274,7 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 (() => {
     const testButton = document.querySelector('button.copy-button.test');
     testButton.addEventListener('click', (event) => {
-        const clickedButton = event.target;
-        console.log('Click event received.', event, clickedButton);
+        console.log('Click event received.', event);
     })
 })
 </script>
