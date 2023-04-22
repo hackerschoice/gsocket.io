@@ -350,7 +350,7 @@ const thc = window.thc = {
 
 <!-- Adding some 'magic' on tabs ;) -->
 <script>
-(() => {
+((window) => {
     const tabsDebug = window.thc.verbose || false;
     const tabsSelector = 'input.tab-switch';
     document.querySelectorAll(tabsSelector).forEach((el) => {
@@ -374,7 +374,7 @@ const thc = window.thc = {
             });
         });
     });
-})();
+})(window);
 </script>
 
 <!-- Adding some other 'magic' on code snippets :P -->
