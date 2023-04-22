@@ -272,7 +272,7 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 
 <script>
 // Standalone Methods
-const thc = {
+const thc = window.thc = {
     verbose: false,
     showTooltip: (element, text, direction) => {
         // Target element
@@ -350,8 +350,8 @@ const thc = {
 
 <!-- Adding some 'magic' on tabs ;) -->
 <script>
-((thc) => {
-    const tabsDebug = thc.verbose || false;
+(() => {
+    const tabsDebug = window.thc.verbose || false;
     const tabsSelector = 'input.tab-switch';
     document.querySelectorAll(tabsSelector).forEach((el) => {
         const id = el.id;
@@ -374,7 +374,7 @@ const thc = {
             });
         });
     });
-})(thc);
+})();
 </script>
 
 <!-- Adding some other 'magic' on code snippets :P -->
