@@ -331,8 +331,15 @@ const thc = {
             // Remove tooltip with a delay
             const delayedRemoval = setTimeout(() => {
                 document.querySelectorAll('.tooltip').forEach((el) => {
-                    console.log('Removing tooltip.', el);
+                    // Debug
+                    if (thc.verbose === true) {
+                        console.log('Removing tooltip.', el);
+                    }
+
+                    // Remove detected tooltip
                     el.remove();
+
+                    // Remove timeout
                     clearTimeout(delayedRemoval);
                 });
             }, 1000);
@@ -384,9 +391,12 @@ Author: Doctor Who (Jiab77)
     // Copy icon from GitHub Primer
     // https://primer.style/design/foundations/icons
     
+    const clipDebug = false;
     const snippets = document.querySelectorAll('figure.highlight pre');
     snippets.forEach((snippet) => {
-        console.log('Connected on element:', snippet);
+        if (clipDebug === true) {
+            console.log('Connected on element:', snippet);
+        }
         snippet.firstChild.insertAdjacentHTML(
             'beforebegin',
             '<button class="copy-button" data-clipboard-snippet><img width="16" src="/assets/icons/copy_16.svg" alt="Copy to clipboard" title="Copy to clipboard"></button>'
@@ -401,10 +411,12 @@ Author: Doctor Who (Jiab77)
     
     clipboardSnippets.on('success', function(e){
         e.clearSelection();
-        console.log('Received [success] event.', e);
-        console.log('Action:', e.action);
-        console.log('Text:', e.text);
-        console.log('Trigger:', e.trigger);
+        if (clipDebug === true) {
+            console.log('Received [success] event.', e);
+            console.log('Action:', e.action);
+            console.log('Text:', e.text);
+            console.log('Trigger:', e.trigger);
+        }
         thc.showTooltip(e.trigger,'Copied!', 'right');
     });
 
