@@ -351,7 +351,7 @@ const thc = {
 <!-- Adding some 'magic' on tabs ;) -->
 <script>
 (() => {
-    const tabsDebug = false;
+    const tabsDebug = thc.verbose || false;
     const tabsSelector = 'input.tab-switch';
     document.querySelectorAll(tabsSelector).forEach((el) => {
         const id = el.id;
@@ -391,7 +391,7 @@ Author: Doctor Who (Jiab77)
     // Copy icon from GitHub Primer
     // https://primer.style/design/foundations/icons
     
-    const clipDebug = false;
+    const clipDebug = thc.verbose || false;
     const snippets = document.querySelectorAll('figure.highlight pre');
     snippets.forEach((snippet) => {
         if (clipDebug === true) {
