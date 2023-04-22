@@ -285,7 +285,7 @@ const thc = {
         const tooltipContent = tooltipContainer.children[0];
         console.log('Related tooltip:', tooltipContainer);
         console.log('Tooltip content:', tooltipContainer.children[0]);
-        tooltipContainer.style.position = 'absolute';
+        // tooltipContainer.style.position = 'absolute';
         // tooltip.style.marginTop = '4px';
         // tooltip.style.marginLeft = '10px';
         tooltipContent.style.opacity = 1;
@@ -309,110 +309,6 @@ const thc = {
         }, { once: true });
     }
 }
-/* function showTooltip(element, text) {
-    console.log('Called from element:', element);
-    console.log('Element children:', element.children);
-    const el = element.children[0];
-    console.log('Target element:', el);
-    const tooltipHTML = '<div class="tooltip"><span class="tooltiptext right">' + text + '</span></div>'
-
-    el.insertAdjacentHTML('afterend', tooltipHTML);
-    const tooltipContainer = document.querySelector('.tooltip');
-    const tooltipContent = tooltipContainer.children[0];
-    console.log('Related tooltip:', tooltipContainer);
-    console.log('Tooltip content:', tooltipContainer.children[0]);
-    tooltipContainer.style.position = 'absolute';
-    // tooltip.style.marginTop = '4px';
-    // tooltip.style.marginLeft = '10px';
-    tooltipContent.style.opacity = 1;
-
-    el.addEventListener('mouseleave', (event) => {
-        console.log('Mouse [mouseleave] event received:', event);
-        const el = event.target;
-        console.log('Target element:', el);
-        const tooltipContainer = document.querySelector('.tooltip');
-        const tooltipContent = tooltipContainer.children[0];
-        console.log('Related tooltip:', tooltipContainer);
-        console.log('Tooltip content:', tooltipContainer.children[0]);
-        tooltipContent.style.opacity = 0;
-        const delayedRemoval = setTimeout(() => {
-            document.querySelectorAll('.tooltip').forEach((el) => {
-                console.log('Removing tooltip.', el);
-                el.remove();
-                clearTimeout(delayedRemoval);
-            });
-        }, 1000);
-    }, { once: true });
-} */
-</script>
-
-<script>
-// Click
-/* (() => {
-    document.querySelectorAll('button.copy-button img').forEach((el) => {
-        console.log('Target button:', el);
-        const tooltipHTML = '<div class="tooltip"><span class="tooltiptext right">Copied.</span></div>'
-        el.addEventListener('click', (event) => {
-            console.log('Mouse [click] event received.', event);
-            console.log('Target:', event.target);
-            el.insertAdjacentHTML('afterend', tooltipHTML);
-            const tooltipContainer = document.querySelector('.tooltip');
-            const tooltipContent = document.querySelector('.tooltip .tooltiptext');
-            console.log('Related tooltip:', tooltipContainer);
-            tooltipContainer.style.position = 'absolute';
-            // tooltip.style.marginTop = '4px';
-            // tooltip.style.marginLeft = '10px';
-            tooltipContent.style.opacity = 1;
-        });
-        el.addEventListener('mouseleave', (event) => {
-            console.log('Mouse [leave] event received.', event);
-            console.log('Target:', event.target);
-            const tooltip = document.querySelector('.tooltip .tooltiptext');
-            console.log('Related tooltip:', tooltip);
-            tooltip.style.opacity = 0;
-            const delayedRemoval = setTimeout(() => {
-                document.querySelectorAll('.tooltip').forEach((el) => {
-                    console.log('Removing tooltip.', el);
-                    el.remove();
-                    clearTimeout(delayedRemoval);
-                });
-            }, 1000);
-        });
-    });
-})(); */
-</script>
-
-<script>
-// MouseOver
-/* (() => {
-    const testButton = document.querySelector('button.copy-button.test');
-    console.log('Target button:', testButton);
-    const tooltipHTML = '<div class="tooltip"><span class="tooltiptext right">Copied.</span></div>'
-    testButton.addEventListener('mouseenter', (event) => {
-        console.log('Mouse [enter] event received.', event);
-        console.log('Target:', event.target);
-        testButton.insertAdjacentHTML('afterend', tooltipHTML);
-        const tooltip = document.querySelector('.tooltip .tooltiptext');
-        console.log('Related tooltip:', tooltip);
-        tooltip.style.marginTop = '4px';
-        tooltip.style.marginLeft = '10px';
-        tooltip.style.opacity = 1;
-    });
-    testButton.addEventListener('mouseleave', (event) => {
-        console.log('Mouse [leave] event received.', event);
-        console.log('Target:', event.target);
-        const tooltip = document.querySelector('.tooltip .tooltiptext');
-        console.log('Related tooltip:', tooltip);
-        tooltip.style.opacity = 0;
-        const delayedRemoval = setTimeout(() => {
-            document.querySelectorAll('.tooltip').forEach((el) => {
-                console.log('Removing tooltip.', el);
-                el.remove();
-                clearTimeout(delayedRemoval);
-            });
-        }, 1000);
-    });
-})(); */
 </script>
 
 <!-- Adding some 'magic' on tabs ;) -->
@@ -461,7 +357,6 @@ Goal: Keep things as light as possible.
         console.log('Connected on element:', snippet);
         snippet.firstChild.insertAdjacentHTML(
             'beforebegin',
-            // '<button class="copy-button" data-clipboard-snippet><img width="16" src="' + copyIconEncoded + '" alt="Copy to clipboard" title="Copy to clipboard"></button>'
             '<button class="copy-button" data-clipboard-snippet><img width="16" src="/assets/icons/copy_16.svg" alt="Copy to clipboard" title="Copy to clipboard"></button>'
         );
     });
