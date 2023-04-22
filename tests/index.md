@@ -350,7 +350,7 @@ const thc = {
 
 <!-- Adding some 'magic' on tabs ;) -->
 <script>
-(() => {
+((thc) => {
     const tabsDebug = thc.verbose || false;
     const tabsSelector = 'input.tab-switch';
     document.querySelectorAll(tabsSelector).forEach((el) => {
@@ -374,7 +374,7 @@ const thc = {
             });
         });
     });
-})();
+})(thc);
 </script>
 
 <!-- Adding some other 'magic' on code snippets :P -->
@@ -387,7 +387,7 @@ Reached: Replaced 'showTooltip()' method from GitHub Primer by custom one.
 Author: Doctor Who (Jiab77)
 -->
 <script>
-(() => {
+((thc) => {
     // Copy icon from GitHub Primer
     // https://primer.style/design/foundations/icons
     
@@ -426,5 +426,5 @@ Author: Doctor Who (Jiab77)
         console.error('Trigger:', e.trigger);
         thc.showTooltip(e.trigger,fallbackMessage(e.action), 'right');
     });
-})();
+})(thc);
 </script>
