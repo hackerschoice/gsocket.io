@@ -273,6 +273,7 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 <script>
 // Standalone Methods
 const thc = {
+    greetings: 'Hello there! Hope you will enjoy reading the code :P',
     verbose: Boolean(new URLSearchParams(document.location.search).get('d')) || false,
     showTooltip: (element, text, direction) => {
         // Target element
