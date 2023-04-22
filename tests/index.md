@@ -405,14 +405,14 @@ Author: Doctor Who (Jiab77)
         console.log('Action:', e.action);
         console.log('Text:', e.text);
         console.log('Trigger:', e.trigger);
-        thc.showTooltip(e.trigger,'Copied!', 'right);
+        thc.showTooltip(e.trigger,'Copied!', 'right');
     });
 
     clipboardSnippets.on('error', function(e){
         console.log('Received [error] event.', e);
         console.error('Action:', e.action);
         console.error('Trigger:', e.trigger);
-        thc.showTooltip(e.trigger,fallbackMessage(e.action), 'right);
+        thc.showTooltip(e.trigger,fallbackMessage(e.action), 'right');
     });
 })();
 </script>
