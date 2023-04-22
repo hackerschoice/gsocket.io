@@ -271,27 +271,70 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 <button class="copy-button test"><img width="16" src="/assets/icons/copy_16.svg" alt="Copy to clipboard" title="Copy to clipboard"></button>
 
 <script>
-// Standalone Method
-function showTooltip(element, text) {
-    const el = document.querySelector(element);
-    console.log('Target button:', el);
+// Standalone Methods
+const thc = {
+    showTooltip: (element, text) => {
+        console.log('Called from element:', element);
+        console.log('Element children:', element.children);
+        const el = element.children[0];
+        console.log('Target element:', el);
+        const tooltipHTML = '<div class="tooltip"><span class="tooltiptext right">' + text + '</span></div>'
+
+        el.insertAdjacentHTML('afterend', tooltipHTML);
+        const tooltipContainer = document.querySelector('.tooltip');
+        const tooltipContent = tooltipContainer.children[0];
+        console.log('Related tooltip:', tooltipContainer);
+        console.log('Tooltip content:', tooltipContainer.children[0]);
+        tooltipContainer.style.position = 'absolute';
+        // tooltip.style.marginTop = '4px';
+        // tooltip.style.marginLeft = '10px';
+        tooltipContent.style.opacity = 1;
+
+        el.addEventListener('mouseleave', (event) => {
+            console.log('Mouse [mouseleave] event received:', event);
+            const el = event.target;
+            console.log('Target element:', el);
+            const tooltipContainer = document.querySelector('.tooltip');
+            const tooltipContent = tooltipContainer.children[0];
+            console.log('Related tooltip:', tooltipContainer);
+            console.log('Tooltip content:', tooltipContainer.children[0]);
+            tooltipContent.style.opacity = 0;
+            const delayedRemoval = setTimeout(() => {
+                document.querySelectorAll('.tooltip').forEach((el) => {
+                    console.log('Removing tooltip.', el);
+                    el.remove();
+                    clearTimeout(delayedRemoval);
+                });
+            }, 1000);
+        }, { once: true });
+    }
+}
+/* function showTooltip(element, text) {
+    console.log('Called from element:', element);
+    console.log('Element children:', element.children);
+    const el = element.children[0];
+    console.log('Target element:', el);
     const tooltipHTML = '<div class="tooltip"><span class="tooltiptext right">' + text + '</span></div>'
 
     el.insertAdjacentHTML('afterend', tooltipHTML);
     const tooltipContainer = document.querySelector('.tooltip');
-    const tooltipContent = document.querySelector('.tooltip .tooltiptext');
+    const tooltipContent = tooltipContainer.children[0];
     console.log('Related tooltip:', tooltipContainer);
+    console.log('Tooltip content:', tooltipContainer.children[0]);
     tooltipContainer.style.position = 'absolute';
     // tooltip.style.marginTop = '4px';
     // tooltip.style.marginLeft = '10px';
     tooltipContent.style.opacity = 1;
 
     el.addEventListener('mouseleave', (event) => {
-        console.log('Mouse [leave] event received.', event);
-        console.log('Target:', event.target);
-        const tooltip = document.querySelector('.tooltip .tooltiptext');
-        console.log('Related tooltip:', tooltip);
-        tooltip.style.opacity = 0;
+        console.log('Mouse [mouseleave] event received:', event);
+        const el = event.target;
+        console.log('Target element:', el);
+        const tooltipContainer = document.querySelector('.tooltip');
+        const tooltipContent = tooltipContainer.children[0];
+        console.log('Related tooltip:', tooltipContainer);
+        console.log('Tooltip content:', tooltipContainer.children[0]);
+        tooltipContent.style.opacity = 0;
         const delayedRemoval = setTimeout(() => {
             document.querySelectorAll('.tooltip').forEach((el) => {
                 console.log('Removing tooltip.', el);
@@ -299,8 +342,8 @@ function showTooltip(element, text) {
                 clearTimeout(delayedRemoval);
             });
         }, 1000);
-    });
-}
+    }, { once: true });
+} */
 </script>
 
 <script>
@@ -435,14 +478,14 @@ Goal: Keep things as light as possible.
         console.log('Action:', e.action);
         console.log('Text:', e.text);
         console.log('Trigger:', e.trigger);
-        showTooltip(e.trigger,'Copied!');
+        thc.showTooltip(e.trigger,'Copied!');
     });
 
     clipboardSnippets.on('error', function(e){
         console.log('Received [error] event.', e);
         console.error('Action:', e.action);
         console.error('Trigger:', e.trigger);
-        showTooltip(e.trigger,fallbackMessage(e.action));
+        thc.showTooltip(e.trigger,fallbackMessage(e.action));
     });
 })();
 </script>
