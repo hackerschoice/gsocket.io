@@ -152,7 +152,6 @@ figure.highlight:hover .copy-button {
 .tooltip {
   position: absolute;
   display: inline-block;
-  // margin-top: -3px;
 }
 .tooltip .tooltiptext {
   // visibility: hidden;
@@ -172,8 +171,7 @@ figure.highlight:hover .copy-button {
 .tooltip .tooltiptext.right {
   top: -5px;
   left: 105%;
-  // margin-left: 10px;
-  // margin-top: 4px;
+  margin-left: 20px;
 }
 .tooltip .tooltiptext.right::after {
   content: " ";
@@ -184,12 +182,12 @@ figure.highlight:hover .copy-button {
   border-width: 5px;
   border-style: solid;
   border-color: transparent black transparent transparent;
+  height: 2px;
 }
 .tooltip .tooltiptext.left {
   top: -5px;
   right: 105%;
-  // margin-right: 10px;
-  // margin-top: 4px;
+  margin-right: 20px;
 }
 .tooltip .tooltiptext.left::after {
   content: " ";
@@ -200,14 +198,14 @@ figure.highlight:hover .copy-button {
   border-width: 5px;
   border-style: solid;
   border-color: transparent transparent transparent black;
+  height: 2px;
 }
 .tooltip .tooltiptext.top {
   width: 120px;
   bottom: 100%;
   left: 50%;
   margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
-  // margin-bottom: 10px;
-  // margin-top: 1px;
+  margin-bottom: 20px;
 }
 .tooltip .tooltiptext.top::after {
   content: " ";
@@ -218,14 +216,14 @@ figure.highlight:hover .copy-button {
   border-width: 5px;
   border-style: solid;
   border-color: black transparent transparent transparent;
+  height: 2px;
 }
 .tooltip .tooltiptext.bottom {
   width: 120px;
   top: 100%;
   left: 50%;
   margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
-  // margin-bottom: 1px;
-  // margin-top: 10px;
+  margin-top: 20px;
 }
 .tooltip .tooltiptext.bottom::after {
   content: " ";
@@ -236,6 +234,7 @@ figure.highlight:hover .copy-button {
   border-width: 5px;
   border-style: solid;
   border-color: transparent transparent black transparent;
+  height: 2px;
 }
 .tooltip:hover .tooltiptext {
   // visibility: visible;
