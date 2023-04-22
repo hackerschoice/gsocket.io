@@ -271,12 +271,105 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 <button class="copy-button test"><img width="16" src="/assets/icons/copy_16.svg" alt="Copy to clipboard" title="Copy to clipboard"></button>
 
 <script>
-(() => {
+// Standalone Method
+function showTooltip(element, text) {
+    const el = document.querySelector(element);
+    console.log('Target button:', el);
+    const tooltipHTML = '<div class="tooltip"><span class="tooltiptext right">' + text + '</span></div>'
+
+    el.insertAdjacentHTML('afterend', tooltipHTML);
+    const tooltipContainer = document.querySelector('.tooltip');
+    const tooltipContent = document.querySelector('.tooltip .tooltiptext');
+    console.log('Related tooltip:', tooltipContainer);
+    tooltipContainer.style.position = 'absolute';
+    // tooltip.style.marginTop = '4px';
+    // tooltip.style.marginLeft = '10px';
+    tooltipContent.style.opacity = 1;
+
+    el.addEventListener('mouseleave', (event) => {
+        console.log('Mouse [leave] event received.', event);
+        console.log('Target:', event.target);
+        const tooltip = document.querySelector('.tooltip .tooltiptext');
+        console.log('Related tooltip:', tooltip);
+        tooltip.style.opacity = 0;
+        const delayedRemoval = setTimeout(() => {
+            document.querySelectorAll('.tooltip').forEach((el) => {
+                console.log('Removing tooltip.', el);
+                el.remove();
+                clearTimeout(delayedRemoval);
+            });
+        }, 1000);
+    });
+}
+</script>
+
+<script>
+// Click
+/* (() => {
+    document.querySelectorAll('button.copy-button img').forEach((el) => {
+        console.log('Target button:', el);
+        const tooltipHTML = '<div class="tooltip"><span class="tooltiptext right">Copied.</span></div>'
+        el.addEventListener('click', (event) => {
+            console.log('Mouse [click] event received.', event);
+            console.log('Target:', event.target);
+            el.insertAdjacentHTML('afterend', tooltipHTML);
+            const tooltipContainer = document.querySelector('.tooltip');
+            const tooltipContent = document.querySelector('.tooltip .tooltiptext');
+            console.log('Related tooltip:', tooltipContainer);
+            tooltipContainer.style.position = 'absolute';
+            // tooltip.style.marginTop = '4px';
+            // tooltip.style.marginLeft = '10px';
+            tooltipContent.style.opacity = 1;
+        });
+        el.addEventListener('mouseleave', (event) => {
+            console.log('Mouse [leave] event received.', event);
+            console.log('Target:', event.target);
+            const tooltip = document.querySelector('.tooltip .tooltiptext');
+            console.log('Related tooltip:', tooltip);
+            tooltip.style.opacity = 0;
+            const delayedRemoval = setTimeout(() => {
+                document.querySelectorAll('.tooltip').forEach((el) => {
+                    console.log('Removing tooltip.', el);
+                    el.remove();
+                    clearTimeout(delayedRemoval);
+                });
+            }, 1000);
+        });
+    });
+})(); */
+</script>
+
+<script>
+// MouseOver
+/* (() => {
     const testButton = document.querySelector('button.copy-button.test');
-    testButton.addEventListener('click', (event) => {
-        console.log('Click event received.', event);
-    })
-})
+    console.log('Target button:', testButton);
+    const tooltipHTML = '<div class="tooltip"><span class="tooltiptext right">Copied.</span></div>'
+    testButton.addEventListener('mouseenter', (event) => {
+        console.log('Mouse [enter] event received.', event);
+        console.log('Target:', event.target);
+        testButton.insertAdjacentHTML('afterend', tooltipHTML);
+        const tooltip = document.querySelector('.tooltip .tooltiptext');
+        console.log('Related tooltip:', tooltip);
+        tooltip.style.marginTop = '4px';
+        tooltip.style.marginLeft = '10px';
+        tooltip.style.opacity = 1;
+    });
+    testButton.addEventListener('mouseleave', (event) => {
+        console.log('Mouse [leave] event received.', event);
+        console.log('Target:', event.target);
+        const tooltip = document.querySelector('.tooltip .tooltiptext');
+        console.log('Related tooltip:', tooltip);
+        tooltip.style.opacity = 0;
+        const delayedRemoval = setTimeout(() => {
+            document.querySelectorAll('.tooltip').forEach((el) => {
+                console.log('Removing tooltip.', el);
+                el.remove();
+                clearTimeout(delayedRemoval);
+            });
+        }, 1000);
+    });
+})(); */
 </script>
 
 <!-- Adding some 'magic' on tabs ;) -->
@@ -319,11 +412,7 @@ Goal: Keep things as light as possible.
 (() => {
     // Copy icon from GitHub Primer
     // https://primer.style/design/foundations/icons
-
-    /* const copyIcon16 = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path></svg>';
-    const copyIcon24 = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M7.024 3.75c0-.966.784-1.75 1.75-1.75H20.25c.966 0 1.75.784 1.75 1.75v11.498a1.75 1.75 0 0 1-1.75 1.75H8.774a1.75 1.75 0 0 1-1.75-1.75Zm1.75-.25a.25.25 0 0 0-.25.25v11.498c0 .139.112.25.25.25H20.25a.25.25 0 0 0 .25-.25V3.75a.25.25 0 0 0-.25-.25Z"></path><path d="M1.995 10.749a1.75 1.75 0 0 1 1.75-1.751H5.25a.75.75 0 1 1 0 1.5H3.745a.25.25 0 0 0-.25.25L3.5 20.25c0 .138.111.25.25.25h9.5a.25.25 0 0 0 .25-.25v-1.51a.75.75 0 1 1 1.5 0v1.51A1.75 1.75 0 0 1 13.25 22h-9.5A1.75 1.75 0 0 1 2 20.25l-.005-9.501Z"></path></svg>';
-    const copyIconEncoded = `data:image/svg+xml;base64,${btoa(copyIcon16)}`; */
-
+    
     const snippets = document.querySelectorAll('figure.highlight pre');
     snippets.forEach((snippet) => {
         console.log('Connected on element:', snippet);
@@ -346,14 +435,14 @@ Goal: Keep things as light as possible.
         console.log('Action:', e.action);
         console.log('Text:', e.text);
         console.log('Trigger:', e.trigger);
-        // showTooltip(e.trigger,'Copied!');
+        showTooltip(e.trigger,'Copied!');
     });
 
     clipboardSnippets.on('error', function(e){
         console.log('Received [error] event.', e);
         console.error('Action:', e.action);
         console.error('Trigger:', e.trigger);
-        // showTooltip(e.trigger,fallbackMessage(e.action));
+        showTooltip(e.trigger,fallbackMessage(e.action));
     });
 })();
 </script>
