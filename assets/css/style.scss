@@ -150,8 +150,9 @@ figure.highlight:hover .copy-button {
   - From: https://www.w3schools.com/css/css_tooltip.asp
 */
 .tooltip {
-  position: relative;
+  position: absolute;
   display: inline-block;
+  margin-top: -3px;
 }
 .tooltip .tooltiptext {
   // visibility: hidden;
@@ -171,6 +172,8 @@ figure.highlight:hover .copy-button {
 .tooltip .tooltiptext.right {
   top: -5px;
   left: 105%;
+  margin-left: 10px;
+  margin-top: 1px;
 }
 .tooltip .tooltiptext.right::after {
   content: " ";
@@ -185,6 +188,8 @@ figure.highlight:hover .copy-button {
 .tooltip .tooltiptext.left {
   top: -5px;
   right: 105%;
+  margin-right: 10px;
+  margin-top: 1px;
 }
 .tooltip .tooltiptext.left::after {
   content: " ";
@@ -201,6 +206,8 @@ figure.highlight:hover .copy-button {
   bottom: 100%;
   left: 50%;
   margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+  margin-bottom: 10px;
+  margin-top: 1px;
 }
 .tooltip .tooltiptext.top::after {
   content: " ";
@@ -217,6 +224,8 @@ figure.highlight:hover .copy-button {
   top: 100%;
   left: 50%;
   margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+  margin-bottom: 1px;
+  margin-top: 10px;
 }
 .tooltip .tooltiptext.bottom::after {
   content: " ";
