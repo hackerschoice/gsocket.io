@@ -272,8 +272,8 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 
 <script>
 // Standalone Methods
-const thc = window.thc = {
-    verbose: false,
+const thc = {
+    verbose: Boolean(new URLSearchParams(document.location.search).get('d')) || false,
     showTooltip: (element, text, direction) => {
         // Target element
         const el = element.children[0];
@@ -350,8 +350,8 @@ const thc = window.thc = {
 
 <!-- Adding some 'magic' on tabs ;) -->
 <script>
-(function(window) {
-    const tabsDebug = window.thc.verbose || false;
+(() => {
+    const tabsDebug = Boolean(new URLSearchParams(document.location.search).get('d')) || false;
     const tabsSelector = 'input.tab-switch';
     document.querySelectorAll(tabsSelector).forEach((el) => {
         const id = el.id;
@@ -374,7 +374,7 @@ const thc = window.thc = {
             });
         });
     });
-})(window);
+})();
 </script>
 
 <!-- Adding some other 'magic' on code snippets :P -->
@@ -387,11 +387,11 @@ Reached: Replaced 'showTooltip()' method from GitHub Primer by custom one.
 Author: Doctor Who (Jiab77)
 -->
 <script>
-((thc) => {
+(() => {
     // Copy icon from GitHub Primer
     // https://primer.style/design/foundations/icons
     
-    const clipDebug = thc.verbose || false;
+    const clipDebug = Boolean(new URLSearchParams(document.location.search).get('d')) || false;
     const snippets = document.querySelectorAll('figure.highlight pre');
     snippets.forEach((snippet) => {
         if (clipDebug === true) {
@@ -426,5 +426,5 @@ Author: Doctor Who (Jiab77)
         console.error('Trigger:', e.trigger);
         thc.showTooltip(e.trigger,fallbackMessage(e.action), 'right');
     });
-})(thc);
+})();
 </script>
