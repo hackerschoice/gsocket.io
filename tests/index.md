@@ -303,23 +303,6 @@ From: https://www.w3schools.com/css/css_tooltip.asp
 Comment: Yes, I'm lazy and don't remind everything. Don't blame me.
 Goal: Keep things as light as possible.
 -->
-<style>
-figure.highlight .copy-button {
-    -webkit-transition: opacity .3s ease-in-out;
-    -moz-transition: opacity .3s ease-in-out;
-    -o-transition: opacity .3s ease-in-out;
-    transition: opacity .3s ease-in-out;
-    opacity: 0;
-    padding: 2px 6px;
-    position: absolute;
-    right: 7px;
-    /* top: 4px; */
-    margin-top: -3px;
-}
-figure.highlight:hover .copy-button {
-    opacity: 1;
-}
-</style>
 <script>
 (() => {
     // Copy icon from GitHub Primer

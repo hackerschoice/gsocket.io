@@ -126,6 +126,26 @@
 }
 
 /*
+  Code snippets
+*/
+figure.highlight .copy-button {
+  -webkit-transition: opacity .3s ease-in-out;
+  -moz-transition: opacity .3s ease-in-out;
+  -o-transition: opacity .3s ease-in-out;
+  transition: opacity .3s ease-in-out;
+  opacity: 0;
+  padding: 2px 6px;
+  position: absolute;
+  right: 7px;
+  /* top: 4px; */
+  margin-top: -3px;
+}
+
+figure.highlight:hover .copy-button {
+  opacity: 1;
+}
+
+/*
   Pure CSS tooltips
   - From: https://www.w3schools.com/css/css_tooltip.asp
 */
