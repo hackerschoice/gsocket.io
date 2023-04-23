@@ -275,6 +275,8 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 const thc = {
     greetings: 'Hello there! Hope you will enjoy reading the code :P',
     verbose: Boolean(new URLSearchParams(document.location.search).get('d')) || false,
+
+    // Custom method to show tooltip next to copy/paste buttons
     showTooltip: (element, text, direction) => {
         // Target element
         const el = element.children[0];
@@ -346,6 +348,8 @@ const thc = {
             }, 1000);
         }, { once: true });
     },
+
+    // Adding some 'magic' on tabs ;)
     initTabs: () => {
         const tabsDebug = thc.verbose;
         const tabsSelector = 'input.tab-switch';
@@ -371,6 +375,16 @@ const thc = {
             });
         });
     },
+
+    // Adding some other 'magic' on code snippets :P
+    /*
+    Done: Add CSS tooltips
+    From: https://www.w3schools.com/css/css_tooltip.asp
+    Comment: Yes, I'm lazy and don't remind everything. Don't blame me.
+    Goal: Keep things as light as possible.
+    Reached: Replaced 'showTooltip()' method from GitHub Primer by custom one.
+    Author: Doctor Who (Jiab77)
+    */
     initCopyPaste: () => {
         // Copy icon from GitHub Primer
         // https://primer.style/design/foundations/icons
@@ -417,85 +431,4 @@ const thc = {
     }
 }
 thc.initAll();
-</script>
-
-<!-- Adding some 'magic' on tabs ;) -->
-<script>
-/* (() => {
-    const tabsDebug = Boolean(new URLSearchParams(document.location.search).get('d')) || false;
-    const tabsSelector = 'input.tab-switch';
-    document.querySelectorAll(tabsSelector).forEach((el) => {
-        const id = el.id;
-        const type = id.split('-')[0];
-        if (tabsDebug === true) {
-            console.log('[change] event listener attached on', id, '- type:', type);
-        }
-        el.addEventListener('change', (event) => {
-            if (tabsDebug === true) {
-                console.log('Change event triggered.', event);
-            }
-            let targetTabs = String(event.target.id).includes(type) ? type : 'undefined';
-            if (tabsDebug === true) {
-                console.log(`Should select other [${targetTabs}] tabs.`);
-            }
-            document.querySelectorAll(tabsSelector).forEach((target) => {
-                if (String(target.id).includes(targetTabs) && !target.checked) {
-                    target.checked = true;
-                }
-            });
-        });
-    });
-})(); */
-</script>
-
-<!-- Adding some other 'magic' on code snippets :P -->
-<!--
-Done: Add CSS tooltips
-From: https://www.w3schools.com/css/css_tooltip.asp
-Comment: Yes, I'm lazy and don't remind everything. Don't blame me.
-Goal: Keep things as light as possible.
-Reached: Replaced 'showTooltip()' method from GitHub Primer by custom one.
-Author: Doctor Who (Jiab77)
--->
-<script>
-/* (() => {
-    // Copy icon from GitHub Primer
-    // https://primer.style/design/foundations/icons
-    
-    const clipDebug = Boolean(new URLSearchParams(document.location.search).get('d')) || false;
-    const snippets = document.querySelectorAll('figure.highlight pre');
-    snippets.forEach((snippet) => {
-        if (clipDebug === true) {
-            console.log('Connected on element:', snippet);
-        }
-        snippet.firstChild.insertAdjacentHTML(
-            'beforebegin',
-            '<button class="copy-button" data-clipboard-snippet><img width="16" src="/assets/icons/copy_16.svg" alt="Copy to clipboard" title="Copy to clipboard"></button>'
-        );
-    });
-    
-    const clipboardSnippets = new ClipboardJS('[data-clipboard-snippet]', {
-        target: (trigger) => {
-            return trigger.nextElementSibling; // 'nextElementSibling' is used because the button is placed before the other elements
-        }
-    });
-    
-    clipboardSnippets.on('success', function(e){
-        e.clearSelection();
-        if (clipDebug === true) {
-            console.log('Received [success] event.', e);
-            console.log('Action:', e.action);
-            console.log('Text:', e.text);
-            console.log('Trigger:', e.trigger);
-        }
-        thc.showTooltip(e.trigger,'Copied!', 'right');
-    });
-
-    clipboardSnippets.on('error', function(e){
-        console.log('Received [error] event.', e);
-        console.error('Action:', e.action);
-        console.error('Trigger:', e.trigger);
-        thc.showTooltip(e.trigger,fallbackMessage(e.action), 'right');
-    });
-})(); */
 </script>
