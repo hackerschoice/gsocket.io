@@ -345,13 +345,83 @@ const thc = {
                 });
             }, 1000);
         }, { once: true });
+    },
+    initTabs: () => {
+        const tabsDebug = thc.verbose;
+        const tabsSelector = 'input.tab-switch';
+        document.querySelectorAll(tabsSelector).forEach((el) => {
+            const id = el.id;
+            const type = id.split('-')[0];
+            if (tabsDebug === true) {
+                console.log('[change] event listener attached on', id, '- type:', type);
+            }
+            el.addEventListener('change', (event) => {
+                if (tabsDebug === true) {
+                    console.log('Change event triggered.', event);
+                }
+                let targetTabs = String(event.target.id).includes(type) ? type : 'undefined';
+                if (tabsDebug === true) {
+                    console.log(`Should select other [${targetTabs}] tabs.`);
+                }
+                document.querySelectorAll(tabsSelector).forEach((target) => {
+                    if (String(target.id).includes(targetTabs) && !target.checked) {
+                        target.checked = true;
+                    }
+                });
+            });
+        });
+    },
+    initCopyPaste: () => {
+        // Copy icon from GitHub Primer
+        // https://primer.style/design/foundations/icons
+        
+        const clipDebug = thc.verbose;
+        const snippets = document.querySelectorAll('figure.highlight pre');
+        snippets.forEach((snippet) => {
+            if (clipDebug === true) {
+                console.log('Connected on element:', snippet);
+            }
+            snippet.firstChild.insertAdjacentHTML(
+                'beforebegin',
+                '<button class="copy-button" data-clipboard-snippet><img width="16" src="/assets/icons/copy_16.svg" alt="Copy to clipboard" title="Copy to clipboard"></button>'
+            );
+        });
+        
+        const clipboardSnippets = new ClipboardJS('[data-clipboard-snippet]', {
+            target: (trigger) => {
+                return trigger.nextElementSibling; // 'nextElementSibling' is used because the button is placed before the other elements
+            }
+        });
+        
+        clipboardSnippets.on('success', function(e){
+            e.clearSelection();
+            if (clipDebug === true) {
+                console.log('Received [success] event.', e);
+                console.log('Action:', e.action);
+                console.log('Text:', e.text);
+                console.log('Trigger:', e.trigger);
+            }
+            thc.showTooltip(e.trigger,'Copied!', 'right');
+        });
+
+        clipboardSnippets.on('error', function(e){
+            console.log('Received [error] event.', e);
+            console.error('Action:', e.action);
+            console.error('Trigger:', e.trigger);
+            thc.showTooltip(e.trigger,fallbackMessage(e.action), 'right');
+        });
+    },
+    initAll: () => {
+        thc.initTabs();
+        thc.initCopyPaste();
     }
 }
+thc.initAll();
 </script>
 
 <!-- Adding some 'magic' on tabs ;) -->
 <script>
-(() => {
+/* (() => {
     const tabsDebug = Boolean(new URLSearchParams(document.location.search).get('d')) || false;
     const tabsSelector = 'input.tab-switch';
     document.querySelectorAll(tabsSelector).forEach((el) => {
@@ -375,7 +445,7 @@ const thc = {
             });
         });
     });
-})();
+})(); */
 </script>
 
 <!-- Adding some other 'magic' on code snippets :P -->
@@ -388,7 +458,7 @@ Reached: Replaced 'showTooltip()' method from GitHub Primer by custom one.
 Author: Doctor Who (Jiab77)
 -->
 <script>
-(() => {
+/* (() => {
     // Copy icon from GitHub Primer
     // https://primer.style/design/foundations/icons
     
@@ -427,5 +497,5 @@ Author: Doctor Who (Jiab77)
         console.error('Trigger:', e.trigger);
         thc.showTooltip(e.trigger,fallbackMessage(e.action), 'right');
     });
-})();
+})(); */
 </script>
