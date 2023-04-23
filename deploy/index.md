@@ -6,7 +6,7 @@ layout: default
 
 > _This must be the quickest way to access a system_ -- anonymous
 
-Use either one of these two commands to _install_, _uninstall_, and _access_:
+Use either one of these three commands to _install_, _uninstall_, and _access_:
 
 <div class="tabs-wrapper">
     <div class="tabs">
@@ -251,37 +251,13 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 </div>
 
 Execute a single command (e.g. `id`) on a remote system:
+
 ```sh
 echo 'id; exit; __START' | gs-netcat -s ExampleSecretChangeMe 2>/dev/null | sed -n '/__START/,$p' | tail +2
 ```
 
 <p class="panel-note" markdown="1">Get Involved. We are looking for volunteers to work on the website and a logo and to discuss new ideas. [Join us on telegram](https://t.me/thcorg).</p>
 
-<!-- Adding some 'magic' over tabs ;) -->
-<script>
-(() => {
-    const tabsSelector = 'input.tab-switch';
-    const tabsDebug = false;
-    document.querySelectorAll(tabsSelector).forEach((el) => {
-        const id = el.id;
-        const type = id.split('-')[0];
-        if (tabsDebug === true) {
-            console.log('[change] event listener attached on', id, '- type:', type);
-        }
-        el.addEventListener('change', (event) => {
-            if (tabsDebug === true) {
-                console.log('Change event triggered.', event);
-            }
-            let targetTabs = String(event.target.id).includes(type) ? type : 'undefined';
-            if (tabsDebug === true) {
-                console.log(`Should select other [${targetTabs}] tabs.`);
-            }
-            document.querySelectorAll(tabsSelector).forEach((target) => {
-                if (String(target.id).includes(targetTabs) && !target.checked) {
-                    target.checked = true;
-                }
-            });
-        });
-    });
-})();
-</script>
+
+<!-- Moved JS code as includes -->
+{% include footer.html %}
