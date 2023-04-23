@@ -267,7 +267,7 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 
 Execute a single command (e.g. `id`) on a remote system:
 
-<div style="margin-right: -1.3rem;">
+<div class="code-container">
 {% highlight sh %}
 echo 'id; exit; __START' | gs-netcat -s ExampleSecretChangeMe 2>/dev/null | sed -n '/__START/,$p' | tail +2
 {% endhighlight %}
