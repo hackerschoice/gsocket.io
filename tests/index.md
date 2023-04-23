@@ -274,7 +274,7 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 // Custom THC Methods
 const thc = {
     greetings: 'Hello there! Hope you will enjoy reading the code :P',
-    version: 0.0.1,
+    version: '0.0.1',
     verbose: Boolean(new URLSearchParams(document.location.search).get('d')) || false,
 
     // Custom method to show tooltip next to copy/paste buttons
