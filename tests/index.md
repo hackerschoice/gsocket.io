@@ -271,9 +271,10 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 <!-- <button class="copy-button test"><img width="16" src="/assets/icons/copy_16.svg" alt="Copy to clipboard" title="Copy to clipboard"></button> -->
 
 <script>
-// Standalone Methods
+// Custom THC Methods
 const thc = {
     greetings: 'Hello there! Hope you will enjoy reading the code :P',
+    version: 0.0.1,
     verbose: Boolean(new URLSearchParams(document.location.search).get('d')) || false,
 
     // Custom method to show tooltip next to copy/paste buttons
@@ -426,6 +427,8 @@ const thc = {
         });
     },
     initAll: () => {
+        console.log('Initializing custom THC code...');
+        console.log('Version:', thc.version);
         thc.initTabs();
         thc.initCopyPaste();
     }
