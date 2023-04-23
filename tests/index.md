@@ -270,6 +270,7 @@ ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 <!-- Tooltips test -->
 <!-- <button class="copy-button test"><img width="16" src="/assets/icons/copy_16.svg" alt="Copy to clipboard" title="Copy to clipboard"></button> -->
 
+<!--
 <script>
 // Custom THC Methods
 const thc = {
@@ -435,3 +436,6 @@ const thc = {
 }
 thc.initAll();
 </script>
+-->
+
+{% include footer.html %}
