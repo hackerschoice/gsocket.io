@@ -63,7 +63,7 @@ S="ExampleSecretChangeMe" bash -c "$(wget --no-verbose -O- gsocket.io/x)"
     </div>
 </div>
 
-<p class="panel-note2" markdown="1">This is just one of many GSOCKET examples. More on [GitHub]({{site.github.repository_url}}).</p>
+<p class="panel-note2" markdown="1">Windows user need to manually install <A HREF="https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-cygwin_full.zip">the binary</A>. Contact us if you like to write a powershell deploy script.</p>
 
 {:refdef: style="text-align: center;"}
 ## Screenshots
