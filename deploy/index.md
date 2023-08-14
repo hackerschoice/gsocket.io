@@ -90,7 +90,7 @@ Log in to the host from your workstation
                 <ul>
                     <li><p><strong>Ignore SSL / Certificate warnings</strong></p>
 {% highlight shell %}
-bash -c "$(curl -fsSLk gsocket.io/x)"
+GS_NOCERTCHECK=1 bash -c "$(curl -fsSLk gsocket.io/x)"
 {% endhighlight %}
                     </li>
                     <li><p><strong>Deploy with a predefined secret</strong></p>
@@ -114,7 +114,7 @@ bash deploy-all.sh
                 <ul>
                     <li><p><strong>Ignore SSL / Certificate warnings</strong></p>
 {% highlight shell %}
-bash -c "$(wget --no-check-certificate -qO- gsocket.io/x)"
+GS_NOCERTCHECK=1 bash -c "$(wget --no-check-certificate -qO- gsocket.io/x)"
 {% endhighlight %}
                     </li>
                     <li><p><strong>Deploy with a predefined secret</strong></p>

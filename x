@@ -51,8 +51,8 @@
 #       - Guess what...
 
 # Global Defines
-# URL_BASE="https://github.com/hackerschoice/binary/raw/main/gsocket/bin/"
-URL_BASE="https://gsocket.io/bin/"
+# URL_BASE="https://github.com/hackerschoice/binary/raw/main/gsocket/bin"
+URL_BASE="https://www.gsocket.io/bin"
 [[ -n "$GS_URL_BASE" ]] && URL_BASE="$GS_URL_BASE" # Use user supplied URL_BASE
 URL_DEPLOY="gsocket.io/x"
 # GS_VERSION=1.4.34
@@ -1183,7 +1183,7 @@ dl()
 
 	# HERE: It's either wget or curl (but not GS_USELOCAL)
 	if [[ "$DL_CMD" == "$DL_CRL" ]]; then
-		arr=("-fL" "-m5" "--retry" "3" "${URL_BASE}/${1}" "--output" "${2}")
+		arr=("-fL" "--connect-timeout" "5" "-m30" "--retry" "3" "${URL_BASE}/${1}" "--output" "${2}")
 		[[ -n $GS_DEBUG ]] && arr+=("-v")
 		dl_ssl "-k" "certificate problem" "curl" "${arr[@]}"
 	elif [[ "$DL_CMD" == "$DL_WGT" ]]; then
