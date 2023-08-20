@@ -146,8 +146,8 @@ Useful environment variables:
 |GS_OSARCH=|Force architecture. The default is to pick the most suitable automatically.
 |GS_DEBUG=1|Verbose output and other debug related settings. Often used together with `GS_DEBUG=1 GS_NOSTART=1 GS_NOINST=1 bash -c "$(curl -fsSL gsocket.io/x)"`.|
 |GS_HIDDEN_NAME=|Use a custom hidden process name.|
-|GSOCKET_HOST=|Use a specific GSRN server (or [your own relay](https://github.com/hackerschoice/gsocket-relay/blob/main/README2.md)). Try GSOCKET_HOST=1.2.3.4|
-|GSOCKET_PORT=|Use a specific GSRN port. Try any of 22,53,67,443,7350|
+|GS_HOST=|Use a specific GSRN server (or [your own relay](https://github.com/hackerschoice/gsocket-relay/blob/main/README2.md)). Try GS_HOST=1.2.3.4|
+|GS_PORT=|Use a specific GSRN port. Try any of 22,53,67,443,7350|
 |TMPDIR=|Use a custom temporary directory. Try TMPDIR=$(pwd)|
 
 If all fails:
