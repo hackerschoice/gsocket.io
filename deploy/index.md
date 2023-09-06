@@ -195,7 +195,7 @@ echo "Connect with: gs-netcat -s $SECRET -i"
 This method logs each successful deployment. The 1-line command creates an ephemeral and public facing HTTPS tunnel (via Cloudflare) so that your server can be behind NAT/Firewall:
 
 {% highlight sh %}
-LOG=results.log bash -c "$(curl -fsSL https://gsocket.io/deploy/xs)"
+LOG=results.log bash -c "$(curl -fsSL https://gsocket.io/xs)"
 {% endhighlight %}
 
 ### 2. Execute a remote command  
