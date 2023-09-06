@@ -234,7 +234,7 @@ GS_SEED="ThisIsMySecretMasterSeed"
 # Connect to 'alice.com'
 gs-netcat -i -s $(gssec alice.com)
 -----------------------------------------------------------------------------
-# or show the SECRET for 'alice.com'
+# or show the commands to deploy on/access to 'alice.com'
 gssec alice.com
 
 # Output from above's command:
