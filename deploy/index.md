@@ -202,7 +202,7 @@ LOG=results.log bash -c "$(curl -fsSL https://gsocket.io/deploy/xs)"
 
 {% highlight sh %}
 # cut & paste this into your shell on your workstation or add to ~/.bashrc
-gsexec(){
+gsexec() {
     echo "$2; exit; __START"|gs-netcat -s "$1" 2>/dev/null|sed -n '/__START/,$p'|tail +2
 }
 {% endhighlight %}
@@ -221,14 +221,21 @@ gssec() {
     [[ -z $GS_SEED ]] && { echo >&2 "Please type: GS_SEED=MySuperStrongMasterSeed"; return 255; }
     str="$(echo "${GS_SEED:?}$1" | sha512sum | base64 | tr -d -c a-z0-9)"
     str="${str:0:22}"
+    [[ ! -t 1 ]] && { echo "${str}"; return; }
     echo "DEPLOY: X=${str}"' bash -c "$(curl -fsSL https://gsocket.io/x)"'
     echo "ACCESS: S=${str}"' bash -c "$(curl -fsSL https://gsocket.io/x)"'
     echo "ACCESS: gs-netcat -s ${str} -i"
 }
 {% endhighlight %}
 {% highlight sh %}
-# Generate a SECRET for 'alice.com'
-gssec alice.com # You only need to know "alice.com" to connect.
+# Set a Master Seed:
+GS_SEED="ThisIsMySecretMasterSeed"
+
+# Connect to 'alice.com'
+gs-netcat -i -s $(gssec alice.com)
+-----------------------------------------------------------------------------
+# or show the SECRET for 'alice.com'
+gssec alice.com
 
 # Output from above's command:
 DEPLOY: X=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL https://gsocket.io/x)"
