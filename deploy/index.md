@@ -100,7 +100,7 @@ X=ExampleSecretChangeMe bash -c "$(curl -fsSL https://gsocket.io/x)"
                     </li>
                     <li><p><strong>Deploy from self-extracting shell-script <a href="https://github.com/hackerschoice/binary/raw/main/gsocket/bin/deploy-all.sh" target="_blank">deploy-all.sh</a> without fetching any packages and using good old plain HTTP</strong></p>
 {% highlight shell %}
-curl -fsSL http://nossl.segfault.net/deploy-all.sh && \
+curl -fsSL http://nossl.segfault.net/deploy-all.sh -o deploy-all.sh && \
 bash deploy-all.sh
 {% endhighlight %}
                     </li>
