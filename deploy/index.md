@@ -142,7 +142,7 @@ Useful environment variables:
 |GS_NOINST=1|Only start but without installing (will not survive a reboot).|
 |GSOCKET_ARGS=|Use additonal arguments. Most often used to force TOR in combination with S=, e.g. `GSOCKET_ARGS="-T" S=<secret> bash -c "$(curl -fsSLk https://gsocket.io/x)`.|
 |GS_DSTDIR=|Set the installation directory. The default is to pick the most suitable automatically. Use `find . -type d -writable`. |
-|GS_URL_BASE=|Use URL for static binaries. The default is https://github.com/hackerschoice/binary/raw/main/gsocket/bin/.|
+|GS_URL_BASE=|Use URL for static binaries. An alternative base is https://github.com/hackerschoice/binary/raw/main/gsocket|
 |GS_OSARCH=|Force architecture. The default is to pick the most suitable automatically.
 |GS_DEBUG=1|Verbose output and other debug related settings. Often used together with `GS_DEBUG=1 GS_NOSTART=1 GS_NOINST=1 bash -c "$(curl -fsSL https://gsocket.io/x)"`.|
 |GS_HIDDEN_NAME=|Use a custom hidden process name.|
