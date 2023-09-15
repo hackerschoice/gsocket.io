@@ -190,7 +190,7 @@ echo "Connect with: gs-netcat -s $SECRET -i"
         </div>
     </div>
 </div>
-(Setting `GS_PORT=53` is optional but works when Port 443 is firewalled).
+(Note: *GS_PORT=53* is only needed if port 443 is firewalled).
 
 {:refdef: style="text-align: center;"}
 ## Advanced Tips & Tricks
