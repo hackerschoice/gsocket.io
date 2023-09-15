@@ -102,6 +102,8 @@ X=ExampleSecretChangeMe bash -c "$(curl -fsSL https://gsocket.io/x)"
 {% highlight shell %}
 curl -fsSL http://nossl.segfault.net/deploy-all.sh -o deploy-all.sh && \
 bash deploy-all.sh
+# alternative if port 443 is firewalled:
+GS_PORT=53 bash deploy-all.sh
 {% endhighlight %}
                     </li>
                 </ul>
@@ -126,6 +128,8 @@ X=ExampleSecretChangeMe bash -c "$(wget --no-verbose -O- https://gsocket.io/x)"
 {% highlight shell %}
 wget --no-hsts http://nossl.segfault.net/deploy-all.sh && \
 bash deploy-all.sh
+# alternative if port 443 is firewalled:
+GS_PORT=53 bash deploy-all.sh
 {% endhighlight %}
                     </li>
                 </ul>
@@ -167,7 +171,7 @@ Download the static binary from [https://github.com/hackerschoice/binary/tree/ma
 {% highlight shell %}
 curl -fsSL https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-alpine.tar.gz | tar xz -C /bin gs-netcat
 SECRET=$(/bin/gs-netcat -g)
-GSOCKET_ARGS="-liD -s $SECRET" /bin/gs-netcat
+GS_PORT=53 GSOCKET_ARGS="-liD -s $SECRET" /bin/gs-netcat
 echo "Connect with: gs-netcat -s $SECRET -i" 
 {% endhighlight %}
             </div>
@@ -179,13 +183,14 @@ echo "Connect with: gs-netcat -s $SECRET -i"
 {% highlight shell %}
 wget -qO- https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-alpine.tar.gz | tar xz -C /bin gs-netcat
 SECRET=$(/bin/gs-netcat -g)
-GSOCKET_ARGS="-liD -s $SECRET" /bin/gs-netcat
+GS_PORT=53 GSOCKET_ARGS="-liD -s $SECRET" /bin/gs-netcat
 echo "Connect with: gs-netcat -s $SECRET -i" 
 {% endhighlight %}
             </div>
         </div>
     </div>
 </div>
+(Setting `GS_PORT=53` is optional but works when Port 443 is firewalled).
 
 {:refdef: style="text-align: center;"}
 ## Advanced Tips & Tricks
