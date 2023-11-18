@@ -208,7 +208,7 @@ LOG=results.log bash -c "$(curl -fsSL https://gsocket.io/xs)"
 {% highlight sh %}
 # cut & paste this into your shell on your workstation or add to ~/.bashrc
 gsexec() {
-    echo "$2; exit; __START"|gs-netcat -s "$1" 2>/dev/null|sed -n '/__START/,$p'|tail +2
+    (set +bm; { echo "$2; kill -9 \$\$; __START";  sleep infinity;}|{ gs-netcat -s "$1"|sed -n '/__START/,$p'|tail +2; kill 0;} )
 }
 {% endhighlight %}
 
