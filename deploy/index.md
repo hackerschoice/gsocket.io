@@ -160,7 +160,7 @@ Useful environment variables:
 
 If all fails:
 
-Download the static binary from [https://github.com/hackerschoice/binary/tree/main/gsocket/bin](https://github.com/hackerschoice/binary/tree/main/gsocket/bin) (likely [gs-netcat_x86_64-alpine.tar.gz](https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-alpine.tar.gz)) and extract and start gs-netcat manually. There also is an (unsupported) [Windows binary](https://github.com/hackerschoice/binary/blob/main/gsocket/bin/gs-netcat_x86_64-cygwin_full.zip) or [qsocket.io](https://www.qsocket.io/).
+Download the static binary from [https://github.com/hackerschoice/gsocket/releases/latest/](https://github.com/hackerschoice/gsocket/releases/latest). There also is an (unsupported) [Windows binary](https://github.com/hackerschoice/binary/blob/main/gsocket/bin/gs-netcat_x86_64-cygwin_full.zip) or use [qsocket.io](https://www.qsocket.io/).
 
 <div class="tabs-wrapper">
     <div class="tabs" style="height: 12.45rem;">
@@ -169,10 +169,13 @@ Download the static binary from [https://github.com/hackerschoice/binary/tree/ma
             <label for="curl-manual" class="tab-label">Curl</label>
             <div class="tab-content" style="height: 10.5rem; padding-left: 1.2em;">
 {% highlight shell %}
-curl -fsSL https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-alpine.tar.gz | tar xz -C /bin gs-netcat
-SECRET=$(/bin/gs-netcat -g)
-GS_PORT=53 GSOCKET_ARGS="-liD -s $SECRET" /bin/gs-netcat
-echo "Connect with: gs-netcat -s $SECRET -i" 
+killall gs; \
+curl -fsSLk -ogs https://github.com/hackerschoice/gsocket/releases/latest/download/gs-netcat_linux-x86_64 \
+&& chmod 755 gs \
+&& S=$(./gs -g) \
+&& GS_PORT=53 GSOCKET_ARGS="-liD -s $S" ./gs \
+&& echo "Connect with: gs-netcat -s $S -i" \
+&& rm -f gs
 {% endhighlight %}
             </div>
         </div>
@@ -181,10 +184,13 @@ echo "Connect with: gs-netcat -s $SECRET -i"
             <label for="wget-manual" class="tab-label">Wget</label>
             <div class="tab-content" style="height: 10.5rem; padding-left: 1.2em;">
 {% highlight shell %}
-wget -qO- https://github.com/hackerschoice/binary/raw/main/gsocket/bin/gs-netcat_x86_64-alpine.tar.gz | tar xz -C /bin gs-netcat
-SECRET=$(/bin/gs-netcat -g)
-GS_PORT=53 GSOCKET_ARGS="-liD -s $SECRET" /bin/gs-netcat
-echo "Connect with: gs-netcat -s $SECRET -i" 
+killall gs; \
+wget --no-check-certificate -qOgs https://github.com/hackerschoice/gsocket/releases/latest/download/gs-netcat_linux-x86_64 \
+&& chmod 755 gs \
+&& S=$(./gs -g) \
+&& GS_PORT=53 GSOCKET_ARGS="-liD -s $S" ./gs \
+&& echo "Connect with: gs-netcat -s $S -i" \
+&& rm -f gs
 {% endhighlight %}
             </div>
         </div>
