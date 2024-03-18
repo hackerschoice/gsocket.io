@@ -208,7 +208,7 @@ wget --no-check-certificate -qOgs https://github.com/hackerschoice/gsocket/relea
 This method logs each successful deployment. The 1-line command creates an ephemeral and public facing HTTPS tunnel (via Cloudflare) so that your server can be behind NAT/Firewall:
 
 {% highlight sh %}
-LOG=results.log bash -c "$(curl -fsSL https://gsocket.io/xs)"
+LOG=results.log bash -c "$(curl -fsSL https://gsocket.io/ys)"
 {% endhighlight %}
 
 ### 2. Execute a remote command  
