@@ -22,4 +22,4 @@ Some frequenty asked questions:
 
 The GSRN source code is available at [https://github.com/hackerschoice/gsocket-relay](https://github.com/hackerschoice/gsocket-relay).
 
-[Join us on telegram](https://t.me/thcorg).
+[Join us](https://thc.org/ops).

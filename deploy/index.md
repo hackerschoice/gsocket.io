@@ -258,7 +258,7 @@ ACCESS: S=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL https://gsocket.io/y)"
 ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
 {% endhighlight %}
 
-<p class="panel-note" markdown="1">Get Involved. We are looking for volunteers to work on the website and a logo and to discuss new ideas. [Join us on telegram](https://t.me/thcorg).</p>
+<p class="panel-note" markdown="1">Get Involved. We are looking for volunteers to work on the website and a logo and to discuss new ideas. [Join us](https://thc.org/ops).</p>
 
 
 <!-- Moved JS code as includes -->
