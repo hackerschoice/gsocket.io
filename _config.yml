@@ -9,8 +9,8 @@ google_analytics:
 remote_theme: pages-themes/midnight@v0.2.0
 plugins:
 - jekyll-remote-theme # add this line to the plugins list if you already have one
-twitter_username: hackerschoice
 github_username:  hackerschoice
 social-network-links:
   github: hackerschoice
-  twitter: hackerschoice
+  bluesky: "hackerschoice.bsky.social"
+  mastodon: "@thc@infosec.exchange"
