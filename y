@@ -1,5 +1,6 @@
 #! /usr/bin/env bash
 
+
 # Install and start a permanent gs-netcat reverse login shell
 #
 # See https://www.gsocket.io/deploy/ for examples.
