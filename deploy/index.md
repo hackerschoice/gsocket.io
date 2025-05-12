@@ -233,15 +233,15 @@ Remembering many secrets from many deployments is cumbersome. It is easier to re
 {% highlight sh %}
 # cut & paste this into your shell on your workstation or add to ~/.bashrc
 gssec() {
-    [[ -z $GS_SEED ]] && { echo >&2 "Please type: GS_SEED=MySuperStrongMasterSeed"; return 255; }
+    [ -z "$GS_SEED" ] && { echo >&2 "Please type: GS_SEED=MySuperStrongMasterSeed"; return 255; }
     str="$(echo "${GS_SEED:?}$1" | sha512sum | base64 | tr -d -c a-z0-9)"
     str="${str:0:22}"
-    [[ ! -t 1 ]] && { echo "${str}"; return; }
+    [ ! -t 1 ] && { echo "${str}"; return; }
     echo "DEPLOY: X=${str}"' bash -c "$(curl -fsSL https://gsocket.io/y)"'
     echo "ACCESS: S=${str}"' bash -c "$(curl -fsSL https://gsocket.io/y)"'
     echo "ACCESS: gs-netcat -s ${str} -i"
 }
-gsnc() { gs-netcat -i -s "$(gssec "$1")"; }
+gsnc() { local s=$(gssec "$1"); [ -z "$s" ] && return 255; gs-netcat -i -s "$s"; }
 {% endhighlight %}
 {% highlight sh %}
 # Set a Master Seed:
