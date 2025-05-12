@@ -241,22 +241,20 @@ gssec() {
     echo "ACCESS: S=${str}"' bash -c "$(curl -fsSL https://gsocket.io/y)"'
     echo "ACCESS: gs-netcat -s ${str} -i"
 }
+gsnc() { gs-netcat -i -s "$(gssec "$1")"; }
 {% endhighlight %}
 {% highlight sh %}
 # Set a Master Seed:
 GS_SEED="ThisIsMySecretMasterSeed"
 
-# Connect to 'alice.com'
-gs-netcat -i -s $(gssec alice.com)
------------------------------------------------------------------------------
-# or show the commands to deploy on/access to 'alice.com'
+# Show commands to deploy on 'alice.com'
 gssec alice.com
 
-# Output from above's command:
-DEPLOY: X=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL https://gsocket.io/y)"
-ACCESS: S=2m1zidi1zkkmxjjj0z0jlj bash -c "$(curl -fsSL https://gsocket.io/y)"
-ACCESS: gs-netcat -s 2m1zidi1zkkmxjjj0z0jlj -i
+# Connect to 'alice.com'
+gsnc alice.com
 {% endhighlight %}
+
+Or use the Gsocket Secret Manager (not by us, use at your own risk): [https://github.com/NumeXx/gsm](https://github.com/NumeXx/gsm)
 
 <p class="panel-note" markdown="1">Get Involved. We are looking for volunteers to work on the website and a logo and to discuss new ideas. [Join us](https://thc.org/ops).</p>
 
