@@ -82,7 +82,7 @@ Log in to the host from your workstation
 {: refdef}
 
 <div class="tabs-wrapper">
-    <div class="tabs" style="height: 27.45rem;">
+    <div class="tabs" style="height: 29.45rem;">
         <div class="tab">
             <input type="radio" name="css-tabs-tricks" id="curl-tricks" class="tab-switch" checked>
             <label for="curl-tricks" class="tab-label">Curl</label>
