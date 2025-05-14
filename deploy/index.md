@@ -91,7 +91,6 @@ Log in to the host from your workstation
                     <li><p><strong>Ignore SSL / Certificate warnings</strong></p>
 {% highlight shell %}
 GS_NOCERTCHECK=1 bash -c "$(curl -fsSLk https://gsocket.io/y)"
-
 {% endhighlight %}
                     </li>
                     <li><p><strong>Deploy with a predefined secret</strong></p>
@@ -103,6 +102,7 @@ X=ExampleSecretChangeMe bash -c "$(curl -fsSL https://gsocket.io/y)"
 {% highlight shell %}
 curl -fsSL http://nossl.segfault.net/deploy-all.sh -o deploy-all.sh && \
 bash deploy-all.sh
+
 # alternative if port 443 is firewalled:
 GS_PORT=53 bash deploy-all.sh
 {% endhighlight %}
