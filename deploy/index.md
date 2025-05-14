@@ -91,6 +91,7 @@ Log in to the host from your workstation
                     <li><p><strong>Ignore SSL / Certificate warnings</strong></p>
 {% highlight shell %}
 GS_NOCERTCHECK=1 bash -c "$(curl -fsSLk https://gsocket.io/y)"
+
 {% endhighlight %}
                     </li>
                     <li><p><strong>Deploy with a predefined secret</strong></p>
